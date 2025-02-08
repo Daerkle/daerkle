@@ -3,10 +3,11 @@ import pandas as pd
 from pathlib import Path
 import json
 from datetime import datetime
-from pivot_plotter_pro.core.pivot_calculator import PivotCalculator, OHLC
-from pivot_plotter_pro.data.yahoo_client import YahooClient
-from pivot_plotter_pro.data.database import Database
+from pivot_calculator import PivotCalculator, OHLC
+from yahoo_client import YahooClient
+from database import Database
 import os
+import tempfile
 
 # Konfiguration
 st.set_page_config(
@@ -37,9 +38,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Datenbankpfad aus Umgebungsvariable oder Standard
-DB_PATH = os.getenv('DATABASE_PATH', 'data/pivot_plotter.db')
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+# Datenbankpfad festlegen
+if os.getenv('STREAMLIT_CLOUD'):
+    # Im Cloud-Deployment: Temporärer Ordner
+    DB_PATH = os.path.join(tempfile.gettempdir(), 'pivot_plotter.db')
+else:
+    # Lokale Entwicklung: Data Ordner
+    DB_PATH = os.path.join('data', 'pivot_plotter.db')
+    os.makedirs('data', exist_ok=True)
 
 # Session State Initialisierung
 if 'yahoo_client' not in st.session_state:
@@ -84,37 +90,40 @@ with st.sidebar:
     else:
         # Aktuelle Kursdaten für alle Symbole holen
         for symbol in watchlist:
-            df = st.session_state.yahoo_client.get_data(symbol, "1d")
-            if df is not None and not df.empty:
-                last_price = df['Close'].iloc[-1]
-                volume = df['Volume'].iloc[-1]
-                price_change = (last_price - df['Open'].iloc[0]) / df['Open'].iloc[0] * 100
-                
-                col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
-                
-                # Symbol mit Preis
-                col1.markdown(f"**{symbol}**")
-                
-                # Aktueller Kurs mit Änderung
-                color = "green" if price_change >= 0 else "red"
-                col2.markdown(
-                    f"<span style='color: {color}'>{last_price:.2f}</span>",
-                    unsafe_allow_html=True
-                )
-                col3.markdown(
-                    f"<span style='color: {color}'>{price_change:+.1f}%</span>",
-                    unsafe_allow_html=True
-                )
-                
-                # Löschen Button
-                if col4.button("🗑️", key=f"del_{symbol}", help="Symbol entfernen"):
-                    watchlist.remove(symbol)
-                    st.session_state.db.save_watchlist(watchlist)
-                    st.rerun()
-                
-                # Volumen
-                st.caption(f"Vol: {volume:,.0f}")
-                st.divider()
+            try:
+                df = st.session_state.yahoo_client.get_data(symbol, "1d")
+                if df is not None and not df.empty:
+                    last_price = df['Close'].iloc[-1]
+                    volume = df['Volume'].iloc[-1]
+                    price_change = (last_price - df['Open'].iloc[0]) / df['Open'].iloc[0] * 100
+                    
+                    col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
+                    
+                    # Symbol mit Preis
+                    col1.markdown(f"**{symbol}**")
+                    
+                    # Aktueller Kurs mit Änderung
+                    color = "green" if price_change >= 0 else "red"
+                    col2.markdown(
+                        f"<span style='color: {color}'>{last_price:.2f}</span>",
+                        unsafe_allow_html=True
+                    )
+                    col3.markdown(
+                        f"<span style='color: {color}'>{price_change:+.1f}%</span>",
+                        unsafe_allow_html=True
+                    )
+                    
+                    # Löschen Button
+                    if col4.button("🗑️", key=f"del_{symbol}", help="Symbol entfernen"):
+                        watchlist.remove(symbol)
+                        st.session_state.db.save_watchlist(watchlist)
+                        st.rerun()
+                    
+                    # Volumen
+                    st.caption(f"Vol: {volume:,.0f}")
+                    st.divider()
+            except Exception as e:
+                st.error(f"Fehler beim Laden von {symbol}: {str(e)}")
 
 # Hauptbereich
 if watchlist:
@@ -167,77 +176,80 @@ if watchlist:
         ):
             with tab:
                 if df is not None and not df.empty:
-                    # Pivot-Analyse durchführen
-                    analysis = PivotCalculator.analyze_timeframe(df)
-                    current_price = df['Close'].iloc[-1]
-                    
-                    # Pivot-Punkte in der Datenbank speichern
-                    st.session_state.db.save_pivot_points(
-                        selected_symbol,
-                        timeframe,
-                        analysis['standard']['levels'],
-                        analysis['demark']['levels']
-                    )
-                    
-                    # Level-Historie speichern
-                    for level_type in ['standard', 'demark']:
-                        for level_name, (reached, date) in analysis[level_type]['history'].items():
-                            if reached:
-                                st.session_state.db.save_level_hit(
-                                    selected_symbol,
-                                    timeframe,
-                                    level_type,
-                                    level_name,
-                                    analysis[level_type]['levels'][level_name],
-                                    date
-                                )
-                    
-                    # Level-Hierarchie definieren
-                    level_order = [
-                        ('R5', None), ('R4', None), ('R3', None), ('R2', None),
-                        ('R1', 'R1'), ('P', 'P'), ('S1', 'S1'),
-                        ('S2', None), ('S3', None), ('S4', None), ('S5', None)
-                    ]
-                    
-                    # Kompakte Darstellung der Pivot-Punkte
-                    for std_level, dm_level in level_order:
-                        cols = st.columns([1, 1.5, 1.5])
+                    try:
+                        # Pivot-Analyse durchführen
+                        analysis = PivotCalculator.analyze_timeframe(df)
+                        current_price = df['Close'].iloc[-1]
                         
-                        # Level-Name
-                        cols[0].markdown(f"**{std_level}**")
+                        # Pivot-Punkte in der Datenbank speichern
+                        st.session_state.db.save_pivot_points(
+                            selected_symbol,
+                            timeframe,
+                            analysis['standard']['levels'],
+                            analysis['demark']['levels']
+                        )
                         
-                        # Standard Pivot
-                        if std_level in analysis['standard']['levels']:
-                            std_value = analysis['standard']['levels'][std_level]
-                            std_reached, std_date = analysis['standard']['history'][std_level]
+                        # Level-Historie speichern
+                        for level_type in ['standard', 'demark']:
+                            for level_name, (reached, date) in analysis[level_type]['history'].items():
+                                if reached:
+                                    st.session_state.db.save_level_hit(
+                                        selected_symbol,
+                                        timeframe,
+                                        level_type,
+                                        level_name,
+                                        analysis[level_type]['levels'][level_name],
+                                        date
+                                    )
+                        
+                        # Level-Hierarchie definieren
+                        level_order = [
+                            ('R5', None), ('R4', None), ('R3', None), ('R2', None),
+                            ('R1', 'R1'), ('P', 'P'), ('S1', 'S1'),
+                            ('S2', None), ('S3', None), ('S4', None), ('S5', None)
+                        ]
+                        
+                        # Kompakte Darstellung der Pivot-Punkte
+                        for std_level, dm_level in level_order:
+                            cols = st.columns([1, 1.5, 1.5])
                             
-                            if std_reached:
-                                cols[1].markdown(
-                                    f"<span style='color: #10B981'>{std_value:.2f}</span> "
-                                    f"({std_date})",
-                                    unsafe_allow_html=True
-                                )
-                            else:
-                                cols[1].markdown(f"{std_value:.2f}")
-                        else:
-                            cols[1].markdown("-")
-                        
-                        # Demark Pivot
-                        if dm_level and dm_level in analysis['demark']['levels']:
-                            dm_value = analysis['demark']['levels'][dm_level]
-                            dm_reached, dm_date = analysis['demark']['history'][dm_level]
+                            # Level-Name
+                            cols[0].markdown(f"**{std_level}**")
                             
-                            if dm_reached:
-                                cols[2].markdown(
-                                    f"<span style='color: #10B981'>{dm_value:.2f}</span> "
-                                    f"({dm_date})",
-                                    unsafe_allow_html=True
-                                )
+                            # Standard Pivot
+                            if std_level in analysis['standard']['levels']:
+                                std_value = analysis['standard']['levels'][std_level]
+                                std_reached, std_date = analysis['standard']['history'][std_level]
+                                
+                                if std_reached:
+                                    cols[1].markdown(
+                                        f"<span style='color: #10B981'>{std_value:.2f}</span> "
+                                        f"({std_date})",
+                                        unsafe_allow_html=True
+                                    )
+                                else:
+                                    cols[1].markdown(f"{std_value:.2f}")
                             else:
-                                cols[2].markdown(f"{dm_value:.2f}")
-                        else:
-                            cols[2].markdown("-")
-                        
+                                cols[1].markdown("-")
+                            
+                            # Demark Pivot
+                            if dm_level and dm_level in analysis['demark']['levels']:
+                                dm_value = analysis['demark']['levels'][dm_level]
+                                dm_reached, dm_date = analysis['demark']['history'][dm_level]
+                                
+                                if dm_reached:
+                                    cols[2].markdown(
+                                        f"<span style='color: #10B981'>{dm_value:.2f}</span> "
+                                        f"({dm_date})",
+                                        unsafe_allow_html=True
+                                    )
+                                else:
+                                    cols[2].markdown(f"{dm_value:.2f}")
+                            else:
+                                cols[2].markdown("-")
+                                
+                    except Exception as e:
+                        st.error(f"Fehler bei der Analyse: {str(e)}")
                 else:
                     st.error(f"Keine Daten verfügbar für {selected_symbol} ({TIMEFRAME_LABELS[timeframe]})")
     

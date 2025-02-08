@@ -1,0 +1,15 @@
+[theme]
+base="dark"
+primaryColor="#10B981"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+runOnSave = true
+
+[client]
+showErrorDetails = true
+
+[global]
+dataFrameSerialization = "arrow"
