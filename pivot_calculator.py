@@ -22,7 +22,6 @@ class OHLC:
             raise ValueError("DataFrame ist leer")
             
         try:
-            # Debug-Ausgabe
             print("\nErstelle OHLC aus DataFrame:")
             print(f"Shape: {df.shape}")
             print(f"Columns: {df.columns.tolist()}")
