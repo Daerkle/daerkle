@@ -1,4 +1,4 @@
-# Pivot Plotter Pro
+# Daerkle
 
 Eine Streamlit-App zur Analyse von Pivot-Punkten mit TradingView Integration und historischer Überprüfung.
 
