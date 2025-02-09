@@ -70,23 +70,36 @@ def check_historical_levels(
                 (df['High'] >= lower_bound)
             ]
             
+            # Aktuelle Position zum Level ermitteln
+            current_price = df['Close'].iloc[-1]
+            is_above = level_value > current_price
+            
             if not hits.empty:
-                # Level wurde erreicht
+                # Level wurde erreicht - zeige Datum
                 last_hit = hits.index[-1]
-                hit_date = last_hit.strftime('%d.%m.%Y')
+                hit_date = last_hit.strftime('%d.%m')  # Kompakteres Datumsformat
                 results[level_name] = (True, hit_date, '')
             else:
-                # Unterscheide zwischen Tages-, Wochen- und Monatsdaten
-                if timeframe == "1d":
-                    status = ''  # Keine spezielle Markierung für Tagesdaten
-                else:
-                    # Prüfe, ob der Level über oder unter dem aktuellen Preis liegt
-                    current_price = df['Close'].iloc[-1]
-                    if level_value > current_price:
-                        status = "Wartet auf Test ↑"  # Level liegt über dem aktuellen Preis
-                    else:
-                        status = "Wartet auf Test ↓"  # Level liegt unter dem aktuellen Preis
+                # Level wurde nicht getestet
+                if timeframe in ["1w", "1m"]:
+                    # Spezielle Markierung für Wochen- und Monatscharts
+                    is_demark_s1 = level_name == "S1" and "demark" in str(levels)
+                    is_pivot = level_name == "P"
+                    is_key_level = level_name in ["R1", "S1"]
                     
+                    if is_demark_s1:
+                        # DMS1 als wichtige Marke markieren
+                        status = "⚑" if is_above else "⚐"
+                    elif is_pivot or is_key_level:
+                        # Offene wichtige Levels markieren
+                        status = "○↑" if is_above else "○↓"
+                    else:
+                        # Standard Level-Markierung
+                        status = "↑" if is_above else "↓"
+                else:
+                    # Einfache Markierung für Tagesdaten
+                    status = "↑" if is_above else "↓"
+                
                 results[level_name] = (False, '', status)
                 
     except Exception as e:

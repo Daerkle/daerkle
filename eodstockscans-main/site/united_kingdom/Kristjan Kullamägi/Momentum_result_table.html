@@ -1,0 +1,5651 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EOD Stock Scans</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+        <link rel="stylesheet" type="text/css"
+            href="https://cdn.datatables.net/v/bm/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/sc-2.0.5/datatables.min.css" />
+
+</head >
+
+
+<body>
+    <section class="hero is-small is-dark">
+    <div class="hero-head">
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+
+                    <div class="navbar-burger" @click="showNav = !showNav" :class="{ 'is-active': showNav }">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="navbar-menu" :class="{ 'is-active': showNav }">
+                    <div class="navbar-start">
+                        
+                        <a class="navbar-item" href="../../index.html">
+                            
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-home"></i>
+                                    </span>
+                                    <span>Home</span>
+                                </span>
+                            </a>
+
+                            <div class="navbar-item has-dropdown is-hoverable has-background-dark">
+                                <a class="navbar-link">
+                                    <span>Choose Market</span>
+                                </a>
+
+                                <div class="navbar-dropdown has-background-dark">
+                                    
+
+                                    
+                                    <a class="navbar-item" href="../../australia/market_monitor.html">
+                                        <span>Australia</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../belgium/market_monitor.html">
+                                        <span>Belgium</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../canada/market_monitor.html">
+                                        <span>Canada</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../france/market_monitor.html">
+                                        <span>France</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../germany/market_monitor.html">
+                                        <span>Germany</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../hong_kong/market_monitor.html">
+                                        <span>Hong Kong</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../indonesia/market_monitor.html">
+                                        <span>Indonesia</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../italy/market_monitor.html">
+                                        <span>Italy</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../japan/market_monitor.html">
+                                        <span>Japan</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../netherlands/market_monitor.html">
+                                        <span>Netherlands</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../nordic_markets/market_monitor.html">
+                                        <span>Nordic Markets</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../poland/market_monitor.html">
+                                        <span>Poland</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../singapore/market_monitor.html">
+                                        <span>Singapore</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../united_kingdom/market_monitor.html">
+                                        <span>United Kingdom</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../united_states/market_monitor.html">
+                                        <span>United States</span>
+                                        
+                                        
+                                </div>
+                            </div>
+                    </div>
+                    <!-- <div class="navbar-end"></div>
+                    <span class="navbar-item">
+                        <a class="button is-info is-light" href="https://twitter.com/LignoL23">
+                            <span class="icon">
+                                <i class="fab fa-twitter"></i>
+                            </span>
+                            <span>Twitter</span>
+                        </a>
+                    </span>
+                    <span class="navbar-item">
+                        <a class="button  is-success is-light" href="https://www.paypal.com/paypalme/volkerlorrmann/5">
+                            <span class="icon">
+                                <i class="fab fa-paypal"></i>
+                            </span>
+                            <span>paypal.me</span>
+                        </a>
+                    </span>
+                    <span class="navbar-item">
+                        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+                        <script
+                            type='text/javascript'>kofiwidget2.init('Support me', '#d6d6d6', 'W7W0ACJPB'); kofiwidget2.draw();</script>
+                    </span>
+                </div> -->
+            </div>
+        </nav>
+    </div>
+
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="columns is-multiline is-mobile is-centered">
+                <div class="column is-1">
+                    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDEwMCAxMDA7IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOm5vbmU7fQoJLnN0MXtmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjA7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO30KPC9zdHlsZT48dGl0bGUvPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MS44LDg0YzAuMSwwLjIsMC4xLDAuMywwLjEsMC41YzAsMy4zLDAuMiw2LjcsMC41LDEwYzIuNi0wLjEsNC45LTAuMSw3LjItMC4ydjBjMC4zLDAsMC43LDAsMSwwICAgYy0wLjMtNS0wLjQtMTAtMC41LTE1QzQ4LjQsODAuNCw0NS41LDgyLjEsNDEuOCw4NHoiLz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTYuMyw5NGMtMC4yLDAuMS0wLjQsMC4xLTAuNSwwLjJjMS43LDAuMSw0LjMsMC4yLDcuNywwLjNjMS40LDAsMi43LDAuMSw0LDAuMWMtMC4xLTEuNC0wLjMtMi44LTAuNC00LjEgICBDMjIuNiw5Mi4xLDE4LjgsOTMuMiwxNi4zLDk0eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik02Ni45LDQ3LjVjMy4xLTMuMyw2LjgtNy41LDEwLjgtMTIuN2MwLDAsMCwwLDAtMC4xYzAuNS0wLjYsMS40LTAuNywyLTAuMmMxLjcsMS41LDMuNiwyLjksNS42LDQuNCAgIGMxLDAuOCwyLjEsMS41LDMuMSwyLjJjMC4zLDAuMiwwLjYsMC4zLDEsMC4zYzAuNCwwLDAuOC0wLjIsMS4yLTAuNGMwLjMtMC4zLDAuNS0wLjcsMC41LTEuMWMwLjItNC45LDAuMy05LjksMC4zLTE1di0wLjcgICBjMC01LjYtMC4xLTExLTAuMy0xNi4zYzAtMC4yLDAtMC4zLTAuMS0wLjVjLTAuMy0xLjQtMS43LTIuMy0zLjItMkM3Ni42LDgsNjUuNSwxMC43LDU0LjUsMTMuN2MtMC4zLDAuMS0wLjYsMC4zLTAuOCwwLjUgICBjLTAuMiwwLjMtMC4zLDAuNi0wLjMsMC45YzAsMC41LDAuMywxLDAuNywxLjJjMC45LDAuNiwxLjgsMS4xLDIuNywxLjdjMi4yLDEuMyw0LjMsMi41LDYuMywzLjVjMC43LDAuNCwxLDEuMiwwLjYsMS45ICAgYy0zLjEsNi02LjYsMTEuNy0xMC42LDE3LjFjLTguNSwxMS40LTE4LDIwLTMwLDMwLjhDMTYuNyw3NywxMiw4MSw5LjQsODMuNWMtMC42LDAuNi0xLjIsMS4yLTEuNywxLjhjMC43LTAuMSwxLjQtMC4yLDIuMS0wLjQgICBjMS4xLTAuMywyLjQtMC43LDMuNi0xLjFjMi41LTAuOSw0LjktMS45LDYuMS0yLjRDMjguOSw3Ny42LDQ3LjEsNjguNiw2Ni45LDQ3LjV6Ii8+PHBhdGggY2xhc3M9InN0MCIgZD0iTTMxLjUsODguN2MtMC42LDAuMi0xLjIsMC41LTEuNywwLjdjMC4yLDEuNywwLjQsMy41LDAuNSw1LjJjMC43LDAsMS4zLDAsMS45LDBjMi42LDAsNSwwLDcuMy0wLjEgICBjLTAuMy0zLjEtMC40LTYuMS0wLjUtOS4yQzM2LjgsODYuNSwzNC4yLDg3LjYsMzEuNSw4OC43eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik01Mi45LDc3LjVjMCwwLjEsMCwwLjEsMCwwLjJjMC4xLDUuNSwwLjMsMTEuMSwwLjYsMTYuNmMzLjQtMC4xLDYuOS0wLjIsMTAuNC0wLjNjLTAuMy04LjEtMC41LTE2LjMtMC44LTI0LjQgICBDNTkuOCw3Mi40LDU2LjQsNzUsNTIuOSw3Ny41eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik05MS4yLDU1LjNjLTAuMS0wLjEtMC4xLTAuMS0wLjItMC4xYy0wLjEsMC0wLjItMC4xLTAuNS0wLjJjLTAuNi0wLjMtMS42LTAuNy0zLjUtMS42ICAgYy0xLjItMC42LTIuMy0xLjEtMy40LTEuNmMtMC41LTAuMi0xLTAuNC0xLjYtMC40Yy0xLjEsMC0yLjEsMC41LTIuOCwxLjRsMCwwYy0wLjIsMC4zLTAuNCwwLjUtMC42LDAuOGwyLjMsNDAuM2gwLjYgICBjMi4yLDAsMy45LDAsNS4yLTAuMmMxLTAuMSwxLjktMC4zLDIuOC0wLjdjMC41LTAuMiwwLjktMC41LDEuMi0wLjljMC41LTAuNCwwLjgtMSwxLTEuNmMwLjItMC45LDAuMy0xLjgsMC4zLTIuNyAgIGMwLTEuNy0wLjEtNC4xLTAuMS03LjVjMC0yLjEsMC4xLTQuNywwLjMtNy43bDAsMGMwLjMtNC45LDAuOC04LjgsMC44LTExLjhjMC0xLjItMC4xLTIuNC0wLjQtMy41QzkyLjIsNTYuNSw5MS44LDU1LjgsOTEuMiw1NS4zeiAgICIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik02NS44LDY3LjFjMCwwLjEsMC4xLDAuMywwLjEsMC40YzAuMyw4LjgsMC42LDE3LjYsMC45LDI2LjRjMy4yLTAuMSw2LjQtMC4xLDkuNi0wLjF2MGgwLjNoMS4xICAgYzAtMC4xLDAuMS0wLjIsMC4xLTAuNGMtMC43LTEyLjItMS40LTI0LjUtMi4xLTM2LjdDNzIuNyw2MC40LDY5LjMsNjMuOCw2NS44LDY3LjF6Ii8+PHBhdGggZD0iTTIwLjYsODQuMWM5LjYtMy45LDI4LjMtMTMuMSw0OC40LTM0LjZjMi45LTMuMSw2LjMtNywxMC4xLTExLjhjMS40LDEuMiwzLDIuNCw0LjYsMy42YzEuMSwwLjgsMi4xLDEuNSwzLjIsMi4zICAgYzEuOCwxLjIsNC4xLDEuMSw1LjctMC40YzAuOS0wLjgsMS40LTIsMS41LTMuMmMwLjItNC45LDAuMy05LjksMC4zLTE1LjF2LTAuN2MwLTUuNi0wLjEtMTEuMS0wLjMtMTYuNGMtMC4xLTMtMi43LTUuNC01LjctNS4zICAgYy0wLjMsMC0wLjcsMC4xLTEsMC4xQzc2LDUuMiw2NC44LDcuOSw1My43LDEwLjljLTEsMC4zLTEuOCwwLjgtMi40LDEuNmMtMC41LDAuOC0wLjgsMS43LTAuOCwyLjZjMCwxLjUsMC44LDIuOSwyLDMuNyAgIGMwLjksMC42LDEuOCwxLjEsMi44LDEuN2MxLjgsMS4xLDMuNSwyLDUuMiwyLjljLTIuOCw1LjQtNi4xLDEwLjYtOS43LDE1LjVDNDIuNiw1MCwzMy4yLDU4LjQsMjEuMiw2OS4yQzE2LDczLjksMTEuOSw3Ny40LDksNzkuOSAgIGMtMS4yLDEtMi4zLDIuMS0zLjMsMy4zYy0wLjQsMC40LTAuNywwLjgtMSwxLjNjLTAuMywwLjUtMC41LDEtMC41LDEuNWMwLDAuNywwLjMsMS4zLDAuOSwxLjdjMC4zLDAuMiwwLjYsMC40LDEsMC40ICAgYzAuMywwLjEsMC42LDAuMSwxLDAuMWMxLjEsMCwyLjMtMC4yLDMuNC0wLjVjMi0wLjUsMy45LTEuMiw1LjgtMS45QzE4LjEsODUuMSwxOS43LDg0LjQsMjAuNiw4NC4xeiBNOS43LDg0LjkgICBjLTAuNywwLjItMS40LDAuMy0yLjEsMC40YzAuNS0wLjYsMS4xLTEuMiwxLjctMS44QzEyLDgxLDE2LjcsNzcsMjMuMSw3MS40YzEyLTEwLjgsMjEuNi0xOS40LDMwLTMwLjhjNC01LjQsNy42LTExLjEsMTAuNi0xNy4xICAgYzAuNC0wLjcsMC4xLTEuNi0wLjYtMS45Yy0yLjEtMS4xLTQuMi0yLjMtNi4zLTMuNWMtMC45LTAuNi0xLjgtMS4xLTIuNy0xLjdjLTAuNC0wLjMtMC43LTAuNy0wLjctMS4yYzAtMC4zLDAuMS0wLjYsMC4zLTAuOSAgIGMwLjItMC4zLDAuNS0wLjUsMC44LTAuNUM2NS41LDEwLjcsNzYuNiw4LDg3LjgsNS40YzEuNC0wLjMsMi44LDAuNiwzLjIsMkM5MSw3LjYsOTEsNy44LDkxLDcuOWMwLjIsNS4yLDAuMywxMC43LDAuMywxNi4zdjAuNyAgIGMwLDUuMi0wLjEsMTAuMi0wLjMsMTVjMCwwLjQtMC4yLDAuOS0wLjUsMS4xYy0wLjMsMC4zLTAuNywwLjQtMS4yLDAuNGMtMC4zLDAtMC43LTAuMS0xLTAuM2MtMS0wLjctMi0xLjQtMy4xLTIuMiAgIGMtMi0xLjUtMy45LTMtNS42LTQuNGMtMC42LTAuNS0xLjUtMC40LTIsMC4yYzAsMCwwLDAsMCwwLjFjLTQsNS4yLTcuNyw5LjUtMTAuOCwxMi43Yy0xOS43LDIxLjEtMzgsMzAuMS00Ny40LDMzLjkgICBjLTEuMiwwLjUtMy42LDEuNS02LjEsMi40QzEyLjEsODQuMiwxMC44LDg0LjYsOS43LDg0Ljl6Ii8+PGxpbmUgY2xhc3M9InN0MSIgeDE9IjQuNSIgeDI9IjQuNSIgeTE9Ijg3LjEiIHkyPSI4Ny4xIi8+PHBhdGggZD0iTTk1LjcsNjAuN2MwLTEuNS0wLjEtMy0wLjUtNC40Qzk0LjgsNTUsOTQsNTMuOSw5Mi45LDUzYy0wLjItMC4xLTAuNC0wLjMtMC42LTAuNGMtMC4zLTAuMi0wLjYtMC4zLTEuMi0wLjYgICBjLTAuNi0wLjMtMS41LTAuNy0yLjktMS4zYy0xLjItMC42LTIuMy0xLjEtMy4zLTEuNmMtMi43LTEuNC02LTAuNi03LjksMS44bDAsMGMtNy44LDkuOS0xNywxOC40LTI3LjUsMjUuNCAgIGMtNiwzLjgtMTIuNCw3LjEtMTksOS44Yy01LjMsMi4yLTEwLDMuNi0xMy40LDQuN2MtMS43LDAuNS0zLjEsMS00LjEsMS40Yy0wLjUsMC4yLTAuOSwwLjQtMS40LDAuN2MtMC4yLDAuMi0wLjQsMC40LTAuNiwwLjYgICBjLTAuMiwwLjMtMC40LDAuNy0wLjQsMS4xYzAsMC4xLDAsMC4yLDAsMC4ydjB2MGMwLDAuMiwwLjEsMC41LDAuMywwLjdjMC4yLDAuMywwLjUsMC42LDAuOCwwLjdjMC41LDAuMiwxLjEsMC40LDEuNiwwLjUgICBjMS4zLDAuMiwyLjUsMC4zLDMuOCwwLjRjMS42LDAuMSwzLjcsMC4yLDYuMiwwLjJjMy4yLDAuMSw2LjIsMC4xLDguOSwwLjFjNywwLDEyLjUtMC4yLDE3LjQtMC4zYzguOS0wLjIsMTcuOC0wLjYsMjYuNy0wLjZoMC4zICAgYzEuOCwwLDMuNCwwLDQuOCwwYzIuMywwLjEsNC42LDAsNi45LTAuNGMwLjgtMC4xLDEuNi0wLjQsMi40LTAuOGMwLjctMC40LDEuNC0wLjgsMi0xLjRjMC44LTAuOCwxLjQtMS44LDEuOC0yLjkgICBjMC4zLTEuMSwwLjQtMi4zLDAuNC0zLjVjMC0xLjktMC4xLTQuMi0wLjEtNy41YzAtMi4xLDAuMS00LjYsMC4yLTcuNUM5NS4yLDY3LjksOTUuNyw2NCw5NS43LDYwLjd6IE0yMy40LDk0LjUgICBjLTMuNC0wLjEtNi0wLjItNy43LTAuM2MwLjItMC4xLDAuNC0wLjEsMC41LTAuMmMyLjUtMC44LDYuMy0yLDEwLjctMy42YzAuMSwxLjQsMC4zLDIuOCwwLjQsNC4xQzI2LjEsOTQuNiwyNC44LDk0LjYsMjMuNCw5NC41eiAgICBNMzIuMiw5NC42Yy0wLjYsMC0xLjMsMC0xLjksMGMtMC4yLTEuNy0wLjQtMy41LTAuNS01LjJjMC42LTAuMiwxLjEtMC40LDEuNy0wLjdjMi43LTEuMSw1LjMtMi4zLDcuNS0zLjQgICBjMC4xLDMuMSwwLjIsNi4xLDAuNSw5LjJDMzcuMyw5NC42LDM0LjksOTQuNiwzMi4yLDk0LjZ6IE00OS42LDk0LjNMNDkuNiw5NC4zYy0yLjMsMC00LjcsMC4xLTcuMiwwLjJjLTAuMy0zLjMtMC41LTYuNy0wLjUtMTAgICBjMC0wLjIsMC0wLjMtMC4xLTAuNWMzLjctMS45LDYuNi0zLjYsOC4zLTQuN2MwLjEsNSwwLjMsMTAsMC41LDE1QzUwLjMsOTQuMyw0OS45LDk0LjMsNDkuNiw5NC4zeiBNNTMuNSw5NC4yICAgYy0wLjMtNS41LTAuNS0xMS0wLjYtMTYuNmMwLTAuMSwwLTAuMSwwLTAuMmMzLjUtMi40LDYuOS01LjEsMTAuMi03LjljMC4zLDguMSwwLjUsMTYuMywwLjgsMjQuNEM2MC40LDk0LDU2LjksOTQuMSw1My41LDk0LjJ6ICAgIE03Ny44LDkzLjhoLTEuMWgtMC4zdjBjLTMuMiwwLTYuNCwwLjEtOS42LDAuMWMtMC4zLTguOC0wLjYtMTcuNi0wLjktMjYuNGMwLTAuMSwwLTAuMy0wLjEtMC40YzMuNi0zLjMsNi45LTYuOCwxMC4xLTEwLjQgICBjMC43LDEyLjIsMS40LDI0LjUsMi4xLDM2LjdDNzcuOSw5My41LDc3LjgsOTMuNiw3Ny44LDkzLjh6IE05Miw3Mi41TDkyLDcyLjVjLTAuMiwzLTAuMiw1LjYtMC4yLDcuN2MwLDMuNCwwLjEsNS44LDAuMSw3LjUgICBjMCwwLjktMC4xLDEuOC0wLjMsMi43Yy0wLjIsMC42LTAuNSwxLjItMSwxLjZjLTAuNCwwLjQtMC44LDAuNy0xLjIsMC45Yy0wLjksMC40LTEuOCwwLjYtMi44LDAuN2MtMS4zLDAuMS0zLDAuMi01LjIsMC4yaC0wLjYgICBsLTIuMy00MC4zYzAuMi0wLjMsMC40LTAuNSwwLjYtMC44bDAsMGMwLjctMC45LDEuNy0xLjQsMi44LTEuNGMwLjUsMCwxLjEsMC4xLDEuNiwwLjRjMSwwLjUsMi4xLDEuMSwzLjQsMS42ICAgYzEuOSwwLjksMi45LDEuMywzLjUsMS42YzAuMywwLjEsMC40LDAuMiwwLjUsMC4yYzAuMSwwLDAuMSwwLjEsMC4yLDAuMWMwLjYsMC41LDEuMSwxLjIsMS4zLDEuOWMwLjMsMS4xLDAuNCwyLjMsMC40LDMuNSAgIEM5Mi45LDYzLjYsOTIuMyw2Ny42LDkyLDcyLjV6Ii8+PC9nPjwvc3ZnPg==" alt="Logo">
+                </div>
+                <div class="column is-4">
+                    <p class="title">
+                        EOD Stock Market Scans
+                    </p>
+                    <p class="subtitle">
+                        Fintwits most popular stockmarket scans
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-foot">
+        <nav class="tabs is-boxed is-fullwidth">
+            <div class="container">
+                <ul>
+                    
+                    <li class="is-active">
+                        <a href="../Kristjan Kullamägi/Momentum_result_table.html"> Results </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Kristjan Kullamägi/Momentum_minicharts.html"> Minicharts </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Kristjan Kullamägi/Momentum_charts.html"> Charts </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Kristjan Kullamägi/Momentum_criteria.html"> Criteria </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+    
+</section>
+    <div class="columns is-centered">
+        <div class="column is-2">
+            <div class="box has-background-light my-0 mx-2 p-auto">
+    <aside class="menu">
+        <p class="menu-label has-text-dark">
+            Market Monitor
+        </p>
+        <ul class="menu-list">
+            <li><a class="has-text-grey-light">New Highs/Lows</a></li>
+            <li><a class="has-text-grey-light">Breadth</a></li>
+            <li><a class="has-text-grey-light">Above/Below SMA</a></li>
+            <li><a class="has-text-grey-light">Sectors</a></li>
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Kristjan Kullamägi
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/Biggest Gainers 1M_minicharts.html">
+                        Biggest Gainers 1M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/Biggest Gainers 3M_minicharts.html">
+                        Biggest Gainers 3M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/Biggest Gainers 6M_minicharts.html">
+                        Biggest Gainers 6M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/Biggest Gainers 12M_minicharts.html">
+                        Biggest Gainers 12M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/EP with Growth_minicharts.html">
+                        EP with Growth
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/EP_minicharts.html">
+                        EP
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/High Trend Intensity_minicharts.html">
+                        High Trend Intensity
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Kristjan Kullamägi/Small Stock Momo_minicharts.html">
+                        Small Stock Momo
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="is-active"
+                        href="../../united_kingdom/Kristjan Kullamägi/Momentum_minicharts.html">
+                        Momentum
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Brad Schulz
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Brad Schulz/Pocket Pivot_minicharts.html">
+                        Pocket Pivot
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Stockbee
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Stockbee/4 PCT  Gainers_minicharts.html">
+                        4 PCT  Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Stockbee/Combo_minicharts.html">
+                        Combo
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Stockbee/Ants_minicharts.html">
+                        Ants
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Stockbee/Breakout 1M Base_minicharts.html">
+                        Breakout 1M Base
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Stockbee/Breakout 3M Base_minicharts.html">
+                        Breakout 3M Base
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Leif Soreide
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Leif Soreide/HTF_minicharts.html">
+                        HTF
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Blake Davis
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Blake Davis/Strength_minicharts.html">
+                        Strength
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Ben
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ben/Power of 3_minicharts.html">
+                        Power of 3
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ben/Velocity_minicharts.html">
+                        Velocity
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ben/Focus_minicharts.html">
+                        Focus
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Ray
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ray/RSNHBP 5D_minicharts.html">
+                        RSNHBP 5D
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ray/RSNHBP 1M_minicharts.html">
+                        RSNHBP 1M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ray/RSNHBP 3M_minicharts.html">
+                        RSNHBP 3M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ray/RSNHBP 6M_minicharts.html">
+                        RSNHBP 6M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Ray/RSNHBP 12M_minicharts.html">
+                        RSNHBP 12M
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Mark Minvervini
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Mark Minvervini/Trend Template_minicharts.html">
+                        Trend Template
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Vo
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Top Gainers From Open_minicharts.html">
+                        Top Gainers From Open
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Top Gainers_minicharts.html">
+                        Top Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Volume Gainers_minicharts.html">
+                        Volume Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Insiders_minicharts.html">
+                        Insiders
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Darvas Scan_minicharts.html">
+                        Darvas Scan
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Darvas Scan with Growth_minicharts.html">
+                        Darvas Scan with Growth
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/52W High_minicharts.html">
+                        52W High
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Quite and Tight_minicharts.html">
+                        Quite and Tight
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../united_kingdom/Vo/Mo Scan_minicharts.html">
+                        Mo Scan
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+    </aside>
+</div>
+        </div>
+        <div class="column is-10">
+
+            
+<section class="block my-6">
+    <div class="columns ">
+        <div class="column is-5 has-text-left">
+            <h1 class="title is-4">Momentum @ United Kingdom</h1>
+            <h2 class="subtitle is-6">2023-03-07</h2>
+        </div>
+        <div class="column has-text-right mr-5">
+            <div class="media">
+
+                <div class="media-content">
+                    <p class="title is-5">Kristjan Kullamägi</p>
+                    <p class="subtitle is-6"><a class="has-text-grey-light" href="https://twitter.com/Qullamaggie">@Qullamaggie</a></p>
+                </div>
+                <div class="media-right">
+                    <figure class="image is-48x48">
+                        <img src="https://unavatar.io/twitter/Qullamaggie" alt="Placeholder image">
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+            <section class="my-auto mr-5">
+                
+    <div class="table-container">
+        <table border="1" class="dataframe table is-striped no-wrap" id="data" style="width:100%; font-size:85%">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>symbol</th>
+      <th>yahoo_symbol</th>
+      <th>name</th>
+      <th>sector</th>
+      <th>industry</th>
+      <th>roc</th>
+      <th>close</th>
+      <th>volume</th>
+      <th>rel Volume</th>
+      <th>adr(20)</th>
+      <th>atr(14)</th>
+      <th>roc(5)</th>
+      <th>roc(21)</th>
+      <th>roc(63)</th>
+      <th>roc(126)</th>
+      <th>roc(252)</th>
+      <th>52w High</th>
+      <th>% below 52w High</th>
+      <th>52w Low</th>
+      <th>% above 52w Low</th>
+      <th>UD Ratio</th>
+      <th>50d avg Volume</th>
+      <th>Pocket Pivot</th>
+      <th>1w Pocket Pivots</th>
+      <th>1m Pocket Pivots</th>
+      <th>Rocket Ratio</th>
+      <th>1m RS</th>
+      <th>3m RS</th>
+      <th>RS</th>
+      <th>Industry 1m RS</th>
+      <th>Industry 3m RS</th>
+      <th>Industry RS</th>
+      <th>ema(9)</th>
+      <th>% from 9d ema</th>
+      <th>ema(21)</th>
+      <th>% from 21d ema</th>
+      <th>sma(50)</th>
+      <th>% from 50d sma</th>
+      <th>EPS Growth Q</th>
+      <th>EPS Growth Y</th>
+      <th>EPS Growth FQ</th>
+      <th>EPS Growth FY</th>
+      <th>EPS Growth FQ1</th>
+      <th>EPS Growth FY1</th>
+      <th>Rev Growth Q</th>
+      <th>Rev Growth FQ</th>
+      <th>Rev Growth FY</th>
+      <th>Rev Growth FQ1</th>
+      <th>Rev Growth FY1</th>
+      <th>Insiders %</th>
+      <th>Institutions %</th>
+      <th>Institutions No.</th>
+      <th>Market Cap</th>
+      <th>Shares Outstanding</th>
+      <th>Shares Float</th>
+      <th>Shares Short</th>
+      <th>Short Ratio</th>
+      <th>Net Insider Trading %</th>
+      <th>exchange</th>
+      <th>country</th>
+      <th>IPO Date</th>
+      <th>market</th>
+      <th>date</th>
+      <th>group_name</th>
+      <th>scan_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MACT</td>
+      <td>MAC.L</td>
+      <td>Marechale Capital Plc</td>
+      <td>Financial Services</td>
+      <td>Capital Markets</td>
+      <td>16.82</td>
+      <td>1.25</td>
+      <td>1326438.0</td>
+      <td>2.93</td>
+      <td>9.48</td>
+      <td>0.16</td>
+      <td>4.17</td>
+      <td>-32.43</td>
+      <td>-39.02</td>
+      <td>-51.92</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.41</td>
+      <td>453173.20</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>13.30</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>28</td>
+      <td>29</td>
+      <td>36</td>
+      <td>1.24</td>
+      <td>0.64</td>
+      <td>1.40</td>
+      <td>-10.74</td>
+      <td>1.71</td>
+      <td>-26.83</td>
+      <td>2.42</td>
+      <td>1.64</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.66</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>51.26</td>
+      <td>0.10</td>
+      <td>1.0</td>
+      <td>1.669113e+06</td>
+      <td>9.537790e+07</td>
+      <td>6.027888e+06</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2008-03-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>CRTM</td>
+      <td>CRTM.L</td>
+      <td>Critical Metals PLC</td>
+      <td>Basic Materials</td>
+      <td>Other Industrial Metals &amp; Mining</td>
+      <td>15.46</td>
+      <td>28.00</td>
+      <td>1365074.0</td>
+      <td>4.46</td>
+      <td>5.70</td>
+      <td>1.39</td>
+      <td>13.13</td>
+      <td>10.89</td>
+      <td>-10.40</td>
+      <td>90.48</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.40</td>
+      <td>306343.64</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>51.33</td>
+      <td>89</td>
+      <td>18</td>
+      <td>94</td>
+      <td>7</td>
+      <td>6</td>
+      <td>9</td>
+      <td>25.38</td>
+      <td>10.31</td>
+      <td>25.45</td>
+      <td>10.04</td>
+      <td>26.21</td>
+      <td>6.83</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>42.91</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>1.530857e+07</td>
+      <td>5.324720e+07</td>
+      <td>1.572572e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2020-09-29 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MTRM</td>
+      <td>MTR.L</td>
+      <td>Metal Tiger PLC</td>
+      <td>Basic Materials</td>
+      <td>Other Industrial Metals &amp; Mining</td>
+      <td>13.51</td>
+      <td>10.50</td>
+      <td>5520276.0</td>
+      <td>8.74</td>
+      <td>8.44</td>
+      <td>1.29</td>
+      <td>-12.50</td>
+      <td>-32.26</td>
+      <td>-10.26</td>
+      <td>-43.24</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.76</td>
+      <td>631647.18</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>181.94</td>
+      <td>0</td>
+      <td>18</td>
+      <td>10</td>
+      <td>28</td>
+      <td>29</td>
+      <td>36</td>
+      <td>10.96</td>
+      <td>-4.17</td>
+      <td>12.34</td>
+      <td>-14.94</td>
+      <td>14.20</td>
+      <td>-26.05</td>
+      <td>-0.34</td>
+      <td>-0.38</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.31</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>25.46</td>
+      <td>5.96</td>
+      <td>2.0</td>
+      <td>2.922555e+07</td>
+      <td>1.694240e+08</td>
+      <td>1.149217e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2001-05-31 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>WG</td>
+      <td>WG.L</td>
+      <td>John Wood Group PLC</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas Integrated</td>
+      <td>12.26</td>
+      <td>217.90</td>
+      <td>11531863.0</td>
+      <td>6.59</td>
+      <td>4.46</td>
+      <td>12.87</td>
+      <td>11.49</td>
+      <td>55.92</td>
+      <td>63.22</td>
+      <td>69.90</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.72</td>
+      <td>1750451.86</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>366.32</td>
+      <td>99</td>
+      <td>98</td>
+      <td>96</td>
+      <td>93</td>
+      <td>85</td>
+      <td>79</td>
+      <td>193.32</td>
+      <td>12.71</td>
+      <td>176.26</td>
+      <td>23.62</td>
+      <td>154.32</td>
+      <td>41.20</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.36</td>
+      <td>NaN</td>
+      <td>0.00</td>
+      <td>-0.01</td>
+      <td>1.01</td>
+      <td>-0.14</td>
+      <td>1.01</td>
+      <td>0.01</td>
+      <td>0.93</td>
+      <td>87.82</td>
+      <td>137.0</td>
+      <td>1.003512e+09</td>
+      <td>6.918390e+08</td>
+      <td>6.412284e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2002-05-29 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>QBTQ</td>
+      <td>QBT.L</td>
+      <td>Quantum Blockchain Technologies PLC</td>
+      <td>Financial Services</td>
+      <td>Capital Markets</td>
+      <td>11.86</td>
+      <td>1.65</td>
+      <td>4380784.0</td>
+      <td>0.36</td>
+      <td>9.79</td>
+      <td>0.16</td>
+      <td>1.54</td>
+      <td>-9.59</td>
+      <td>40.43</td>
+      <td>-8.33</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.29</td>
+      <td>12263920.70</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>68.14</td>
+      <td>13</td>
+      <td>94</td>
+      <td>72</td>
+      <td>28</td>
+      <td>29</td>
+      <td>36</td>
+      <td>1.59</td>
+      <td>3.83</td>
+      <td>1.65</td>
+      <td>0.14</td>
+      <td>1.72</td>
+      <td>-4.07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.81</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>18.86</td>
+      <td>0.05</td>
+      <td>2.0</td>
+      <td>2.094859e+07</td>
+      <td>9.975520e+08</td>
+      <td>8.356121e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-04-07 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>JUSTJ</td>
+      <td>JUST.L</td>
+      <td>Just Group PLC</td>
+      <td>Financial Services</td>
+      <td>Insurance—Specialty</td>
+      <td>11.11</td>
+      <td>91.00</td>
+      <td>6934373.0</td>
+      <td>4.46</td>
+      <td>4.53</td>
+      <td>3.80</td>
+      <td>4.00</td>
+      <td>11.59</td>
+      <td>18.11</td>
+      <td>31.41</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.13</td>
+      <td>1554920.30</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>657.31</td>
+      <td>89</td>
+      <td>81</td>
+      <td>83</td>
+      <td>77</td>
+      <td>68</td>
+      <td>76</td>
+      <td>85.68</td>
+      <td>6.20</td>
+      <td>85.04</td>
+      <td>7.00</td>
+      <td>83.82</td>
+      <td>8.57</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.04</td>
+      <td>NaN</td>
+      <td>0.16</td>
+      <td>-0.19</td>
+      <td>NaN</td>
+      <td>0.24</td>
+      <td>NaN</td>
+      <td>0.18</td>
+      <td>1.43</td>
+      <td>70.14</td>
+      <td>96.0</td>
+      <td>8.697856e+08</td>
+      <td>1.038550e+09</td>
+      <td>1.022072e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2013-11-12 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>PFD</td>
+      <td>PFD.L</td>
+      <td>Premier Foods PLC</td>
+      <td>Consumer Defensive</td>
+      <td>Packaged Foods</td>
+      <td>10.43</td>
+      <td>127.00</td>
+      <td>7347136.0</td>
+      <td>7.52</td>
+      <td>3.36</td>
+      <td>4.55</td>
+      <td>11.60</td>
+      <td>13.80</td>
+      <td>20.49</td>
+      <td>20.04</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.38</td>
+      <td>977245.60</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>653.64</td>
+      <td>92</td>
+      <td>84</td>
+      <td>79</td>
+      <td>48</td>
+      <td>45</td>
+      <td>44</td>
+      <td>116.45</td>
+      <td>9.06</td>
+      <td>114.40</td>
+      <td>11.01</td>
+      <td>112.87</td>
+      <td>12.52</td>
+      <td>0.72</td>
+      <td>0.71</td>
+      <td>NaN</td>
+      <td>-0.03</td>
+      <td>NaN</td>
+      <td>-0.03</td>
+      <td>0.06</td>
+      <td>0.06</td>
+      <td>0.09</td>
+      <td>0.02</td>
+      <td>0.03</td>
+      <td>25.17</td>
+      <td>45.24</td>
+      <td>124.0</td>
+      <td>9.842874e+08</td>
+      <td>8.634100e+08</td>
+      <td>6.387641e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2004-07-20 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>AWE</td>
+      <td>AWE.L</td>
+      <td>Alphawave IP Group PLC</td>
+      <td>Technology</td>
+      <td>Semiconductors</td>
+      <td>10.23</td>
+      <td>105.60</td>
+      <td>1835832.0</td>
+      <td>1.86</td>
+      <td>4.49</td>
+      <td>4.78</td>
+      <td>15.92</td>
+      <td>6.67</td>
+      <td>-1.68</td>
+      <td>-24.14</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.77</td>
+      <td>985164.80</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>227.83</td>
+      <td>81</td>
+      <td>35</td>
+      <td>16</td>
+      <td>22</td>
+      <td>21</td>
+      <td>49</td>
+      <td>96.28</td>
+      <td>9.68</td>
+      <td>95.56</td>
+      <td>10.51</td>
+      <td>99.82</td>
+      <td>5.79</td>
+      <td>156.79</td>
+      <td>132.33</td>
+      <td>NaN</td>
+      <td>0.33</td>
+      <td>NaN</td>
+      <td>1.00</td>
+      <td>1.07</td>
+      <td>NaN</td>
+      <td>0.72</td>
+      <td>NaN</td>
+      <td>1.17</td>
+      <td>54.49</td>
+      <td>47.07</td>
+      <td>58.0</td>
+      <td>6.865843e+08</td>
+      <td>6.950680e+08</td>
+      <td>2.244536e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2021-05-13 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>GDRG</td>
+      <td>GDR.L</td>
+      <td>Genedrive PLC</td>
+      <td>Healthcare</td>
+      <td>Diagnostics &amp; Research</td>
+      <td>9.80</td>
+      <td>28.00</td>
+      <td>3081622.0</td>
+      <td>1.17</td>
+      <td>13.33</td>
+      <td>2.63</td>
+      <td>20.43</td>
+      <td>14.29</td>
+      <td>250.00</td>
+      <td>93.10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.86</td>
+      <td>2639986.50</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>34.58</td>
+      <td>93</td>
+      <td>99</td>
+      <td>99</td>
+      <td>54</td>
+      <td>77</td>
+      <td>48</td>
+      <td>25.21</td>
+      <td>11.05</td>
+      <td>24.62</td>
+      <td>13.74</td>
+      <td>20.07</td>
+      <td>39.50</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.58</td>
+      <td>NaN</td>
+      <td>2.00</td>
+      <td>-0.86</td>
+      <td>NaN</td>
+      <td>292.88</td>
+      <td>NaN</td>
+      <td>0.09</td>
+      <td>51.81</td>
+      <td>4.55</td>
+      <td>7.0</td>
+      <td>1.646244e+07</td>
+      <td>9.254240e+07</td>
+      <td>9.127832e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2007-04-04 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>CMET</td>
+      <td>CMET.L</td>
+      <td>Capital Metals PLC</td>
+      <td>Basic Materials</td>
+      <td>Other Industrial Metals &amp; Mining</td>
+      <td>9.33</td>
+      <td>4.10</td>
+      <td>448803.0</td>
+      <td>1.86</td>
+      <td>11.63</td>
+      <td>0.50</td>
+      <td>9.33</td>
+      <td>43.86</td>
+      <td>-15.46</td>
+      <td>-16.33</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.35</td>
+      <td>241356.10</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>392.57</td>
+      <td>98</td>
+      <td>12</td>
+      <td>13</td>
+      <td>89</td>
+      <td>78</td>
+      <td>73</td>
+      <td>3.90</td>
+      <td>5.14</td>
+      <td>3.77</td>
+      <td>8.75</td>
+      <td>3.12</td>
+      <td>31.58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>62.53</td>
+      <td>0.22</td>
+      <td>1.0</td>
+      <td>5.011230e+06</td>
+      <td>1.891030e+08</td>
+      <td>9.474838e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2021-01-14 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>UOGU</td>
+      <td>UOG.L</td>
+      <td>United Oil &amp; Gas PLC</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>8.70</td>
+      <td>1.25</td>
+      <td>4097839.0</td>
+      <td>1.57</td>
+      <td>9.17</td>
+      <td>0.10</td>
+      <td>4.17</td>
+      <td>2.04</td>
+      <td>-9.09</td>
+      <td>-27.54</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.57</td>
+      <td>2603783.36</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>219.43</td>
+      <td>65</td>
+      <td>20</td>
+      <td>12</td>
+      <td>45</td>
+      <td>35</td>
+      <td>2</td>
+      <td>1.19</td>
+      <td>5.07</td>
+      <td>1.20</td>
+      <td>4.37</td>
+      <td>1.19</td>
+      <td>4.94</td>
+      <td>0.18</td>
+      <td>0.17</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.29</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>32.48</td>
+      <td>13.04</td>
+      <td>6.0</td>
+      <td>8.040336e+06</td>
+      <td>6.563540e+08</td>
+      <td>5.713543e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2015-11-10 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>ORCP</td>
+      <td>ORCP.L</td>
+      <td>Oracle Coalfields Plc</td>
+      <td>Energy</td>
+      <td>Thermal Coal</td>
+      <td>7.06</td>
+      <td>0.18</td>
+      <td>186999904.0</td>
+      <td>14.77</td>
+      <td>5.43</td>
+      <td>0.01</td>
+      <td>5.51</td>
+      <td>-6.67</td>
+      <td>-20.87</td>
+      <td>-32.59</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.60</td>
+      <td>12661010.54</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>173.52</td>
+      <td>21</td>
+      <td>9</td>
+      <td>8</td>
+      <td>7</td>
+      <td>6</td>
+      <td>9</td>
+      <td>0.18</td>
+      <td>3.82</td>
+      <td>0.18</td>
+      <td>0.57</td>
+      <td>0.20</td>
+      <td>-7.16</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>25.30</td>
+      <td>10.13</td>
+      <td>2.0</td>
+      <td>6.156599e+06</td>
+      <td>3.078300e+09</td>
+      <td>2.196980e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2011-04-20 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>TOME</td>
+      <td>TOM.L</td>
+      <td>TomCo Energy PLC</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>6.65</td>
+      <td>0.38</td>
+      <td>5658701.0</td>
+      <td>0.53</td>
+      <td>7.83</td>
+      <td>0.03</td>
+      <td>16.67</td>
+      <td>-3.27</td>
+      <td>17.56</td>
+      <td>-6.10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.75</td>
+      <td>10651871.16</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>156.45</td>
+      <td>36</td>
+      <td>80</td>
+      <td>57</td>
+      <td>69</td>
+      <td>42</td>
+      <td>27</td>
+      <td>0.36</td>
+      <td>7.37</td>
+      <td>0.36</td>
+      <td>6.85</td>
+      <td>0.35</td>
+      <td>9.92</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>7.69</td>
+      <td>0.05</td>
+      <td>1.0</td>
+      <td>6.888876e+06</td>
+      <td>1.980220e+09</td>
+      <td>1.666478e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1995-12-15 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>JEMA</td>
+      <td>JEMA.L</td>
+      <td>JPMorgan Russian Securities</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>6.44</td>
+      <td>124.00</td>
+      <td>135406.0</td>
+      <td>1.07</td>
+      <td>4.23</td>
+      <td>4.67</td>
+      <td>13.76</td>
+      <td>23.75</td>
+      <td>49.40</td>
+      <td>43.35</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.32</td>
+      <td>126361.00</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>NaN</td>
+      <td>96</td>
+      <td>96</td>
+      <td>96</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>112.82</td>
+      <td>9.91</td>
+      <td>107.31</td>
+      <td>15.55</td>
+      <td>98.92</td>
+      <td>25.35</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>21.60</td>
+      <td>28.43</td>
+      <td>23.0</td>
+      <td>3.902093e+07</td>
+      <td>4.043620e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1997-01-09 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>CYAN</td>
+      <td>CYAN.L</td>
+      <td>Cyanconnode Holdings PLC</td>
+      <td>Technology</td>
+      <td>Communication Equipment</td>
+      <td>5.37</td>
+      <td>19.62</td>
+      <td>735020.0</td>
+      <td>1.34</td>
+      <td>4.27</td>
+      <td>0.69</td>
+      <td>12.11</td>
+      <td>-11.82</td>
+      <td>53.88</td>
+      <td>28.66</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.10</td>
+      <td>547236.22</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>243.77</td>
+      <td>10</td>
+      <td>97</td>
+      <td>94</td>
+      <td>22</td>
+      <td>21</td>
+      <td>49</td>
+      <td>18.35</td>
+      <td>6.92</td>
+      <td>18.58</td>
+      <td>5.62</td>
+      <td>18.34</td>
+      <td>6.96</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.78</td>
+      <td>NaN</td>
+      <td>1.95</td>
+      <td>-0.67</td>
+      <td>NaN</td>
+      <td>0.31</td>
+      <td>NaN</td>
+      <td>0.28</td>
+      <td>36.74</td>
+      <td>18.61</td>
+      <td>5.0</td>
+      <td>4.391899e+07</td>
+      <td>2.406520e+08</td>
+      <td>1.333999e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-12-07 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>LND</td>
+      <td>LND.L</td>
+      <td>Landore Resources Plc</td>
+      <td>Basic Materials</td>
+      <td>Other Industrial Metals &amp; Mining</td>
+      <td>5.26</td>
+      <td>15.00</td>
+      <td>1430739.0</td>
+      <td>3.49</td>
+      <td>3.63</td>
+      <td>0.59</td>
+      <td>13.21</td>
+      <td>10.09</td>
+      <td>1.69</td>
+      <td>-10.45</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.96</td>
+      <td>410453.70</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>208.56</td>
+      <td>88</td>
+      <td>46</td>
+      <td>23</td>
+      <td>7</td>
+      <td>6</td>
+      <td>9</td>
+      <td>14.16</td>
+      <td>5.94</td>
+      <td>13.93</td>
+      <td>7.68</td>
+      <td>14.52</td>
+      <td>3.27</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>23.38</td>
+      <td>8.67</td>
+      <td>1.0</td>
+      <td>1.586008e+07</td>
+      <td>1.153460e+08</td>
+      <td>8.560576e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-04-06 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>RSGR</td>
+      <td>RSG.AX</td>
+      <td>Resolute Mining Ltd</td>
+      <td>Basic Materials</td>
+      <td>Gold</td>
+      <td>4.88</td>
+      <td>15.68</td>
+      <td>76548.0</td>
+      <td>0.73</td>
+      <td>7.92</td>
+      <td>1.14</td>
+      <td>17.67</td>
+      <td>5.06</td>
+      <td>41.58</td>
+      <td>6.31</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.93</td>
+      <td>105183.78</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>9328.84</td>
+      <td>77</td>
+      <td>95</td>
+      <td>85</td>
+      <td>7</td>
+      <td>6</td>
+      <td>9</td>
+      <td>14.72</td>
+      <td>6.51</td>
+      <td>14.59</td>
+      <td>7.49</td>
+      <td>14.41</td>
+      <td>8.83</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.00</td>
+      <td>NaN</td>
+      <td>-1.00</td>
+      <td>0.22</td>
+      <td>0.24</td>
+      <td>0.14</td>
+      <td>0.15</td>
+      <td>-0.02</td>
+      <td>6.30</td>
+      <td>39.15</td>
+      <td>39.0</td>
+      <td>6.280432e+08</td>
+      <td>2.128960e+09</td>
+      <td>9.812425e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1999-01-03 23:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>XPF</td>
+      <td>GB00BDB79J29.SG</td>
+      <td>XP Factory PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Leisure</td>
+      <td>4.76</td>
+      <td>22.00</td>
+      <td>712751.0</td>
+      <td>2.44</td>
+      <td>5.32</td>
+      <td>1.09</td>
+      <td>7.32</td>
+      <td>15.79</td>
+      <td>10.00</td>
+      <td>87.23</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.13</td>
+      <td>292458.90</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>405.11</td>
+      <td>94</td>
+      <td>67</td>
+      <td>86</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>20.80</td>
+      <td>5.78</td>
+      <td>20.34</td>
+      <td>8.15</td>
+      <td>18.55</td>
+      <td>18.60</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.46</td>
+      <td>NaN</td>
+      <td>3.20</td>
+      <td>5.89</td>
+      <td>-0.45</td>
+      <td>2.62</td>
+      <td>-0.45</td>
+      <td>0.57</td>
+      <td>25.66</td>
+      <td>44.94</td>
+      <td>10.0</td>
+      <td>2.372470e+07</td>
+      <td>1.506330e+08</td>
+      <td>1.184779e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2016-07-08 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>PXC</td>
+      <td>PXC.L</td>
+      <td>Phoenix Global Mining Ltd</td>
+      <td>Basic Materials</td>
+      <td>Other Industrial Metals &amp; Mining</td>
+      <td>4.76</td>
+      <td>44.00</td>
+      <td>649328.0</td>
+      <td>1.79</td>
+      <td>8.06</td>
+      <td>2.48</td>
+      <td>23.94</td>
+      <td>0.00</td>
+      <td>95.56</td>
+      <td>81.44</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.42</td>
+      <td>363374.86</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>290.30</td>
+      <td>55</td>
+      <td>99</td>
+      <td>98</td>
+      <td>7</td>
+      <td>6</td>
+      <td>9</td>
+      <td>39.56</td>
+      <td>11.23</td>
+      <td>38.21</td>
+      <td>15.15</td>
+      <td>35.54</td>
+      <td>23.80</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-160.00</td>
+      <td>NaN</td>
+      <td>1.40</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>16.97</td>
+      <td>25.53</td>
+      <td>5.0</td>
+      <td>4.475958e+07</td>
+      <td>1.226290e+08</td>
+      <td>1.054876e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2017-06-29 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>BGO</td>
+      <td>BGO.L</td>
+      <td>Bango</td>
+      <td>Technology</td>
+      <td>Software—Infrastructure</td>
+      <td>4.33</td>
+      <td>265.00</td>
+      <td>274372.0</td>
+      <td>1.32</td>
+      <td>4.43</td>
+      <td>11.28</td>
+      <td>4.95</td>
+      <td>21.28</td>
+      <td>38.38</td>
+      <td>39.47</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.40</td>
+      <td>207890.08</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>199.89</td>
+      <td>96</td>
+      <td>94</td>
+      <td>95</td>
+      <td>59</td>
+      <td>15</td>
+      <td>18</td>
+      <td>251.75</td>
+      <td>5.26</td>
+      <td>242.13</td>
+      <td>9.45</td>
+      <td>220.42</td>
+      <td>20.23</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-1.50</td>
+      <td>NaN</td>
+      <td>7.00</td>
+      <td>0.09</td>
+      <td>0.60</td>
+      <td>0.48</td>
+      <td>0.64</td>
+      <td>0.58</td>
+      <td>36.94</td>
+      <td>45.04</td>
+      <td>17.0</td>
+      <td>1.699747e+08</td>
+      <td>7.633180e+07</td>
+      <td>4.155421e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-06-30 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>EOG</td>
+      <td>EOG.L</td>
+      <td>Europa Oil &amp; Gas Holdings</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>4.26</td>
+      <td>1.23</td>
+      <td>2532492.0</td>
+      <td>0.62</td>
+      <td>7.34</td>
+      <td>0.09</td>
+      <td>-2.00</td>
+      <td>8.89</td>
+      <td>13.95</td>
+      <td>-57.76</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.52</td>
+      <td>4090555.06</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>182.30</td>
+      <td>86</td>
+      <td>75</td>
+      <td>13</td>
+      <td>69</td>
+      <td>42</td>
+      <td>27</td>
+      <td>1.23</td>
+      <td>-0.10</td>
+      <td>1.22</td>
+      <td>0.59</td>
+      <td>1.16</td>
+      <td>5.38</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.13</td>
+      <td>3.74</td>
+      <td>0.08</td>
+      <td>NaN</td>
+      <td>0.09</td>
+      <td>8.39</td>
+      <td>11.69</td>
+      <td>2.0</td>
+      <td>1.176599e+07</td>
+      <td>9.591840e+08</td>
+      <td>7.456999e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2004-11-11 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>0MPJ</td>
+      <td>G1A.DE</td>
+      <td>GEA Group AG</td>
+      <td>Industrials</td>
+      <td>Specialty Industrial Machinery</td>
+      <td>3.85</td>
+      <td>43.38</td>
+      <td>417132.0</td>
+      <td>2.13</td>
+      <td>1.73</td>
+      <td>0.82</td>
+      <td>4.13</td>
+      <td>4.48</td>
+      <td>9.82</td>
+      <td>33.77</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.15</td>
+      <td>196201.92</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>757.31</td>
+      <td>75</td>
+      <td>67</td>
+      <td>79</td>
+      <td>42</td>
+      <td>60</td>
+      <td>63</td>
+      <td>41.93</td>
+      <td>3.46</td>
+      <td>41.57</td>
+      <td>4.35</td>
+      <td>40.80</td>
+      <td>6.33</td>
+      <td>0.32</td>
+      <td>0.35</td>
+      <td>-0.10</td>
+      <td>0.02</td>
+      <td>-0.16</td>
+      <td>0.09</td>
+      <td>0.13</td>
+      <td>0.10</td>
+      <td>0.09</td>
+      <td>0.08</td>
+      <td>0.06</td>
+      <td>6.68</td>
+      <td>59.25</td>
+      <td>362.0</td>
+      <td>7.073946e+09</td>
+      <td>1.739780e+08</td>
+      <td>1.485862e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>CRN</td>
+      <td>CRN.L</td>
+      <td>Cairn Homes PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Residential Construction</td>
+      <td>3.74</td>
+      <td>94.40</td>
+      <td>173301.0</td>
+      <td>0.58</td>
+      <td>2.87</td>
+      <td>2.84</td>
+      <td>14.84</td>
+      <td>8.76</td>
+      <td>22.60</td>
+      <td>11.58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.31</td>
+      <td>300426.96</td>
+      <td>False</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1852.21</td>
+      <td>86</td>
+      <td>86</td>
+      <td>76</td>
+      <td>15</td>
+      <td>57</td>
+      <td>45</td>
+      <td>88.31</td>
+      <td>6.89</td>
+      <td>86.36</td>
+      <td>9.31</td>
+      <td>84.35</td>
+      <td>11.92</td>
+      <td>3.22</td>
+      <td>3.35</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.84</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.11</td>
+      <td>15.36</td>
+      <td>70.59</td>
+      <td>70.0</td>
+      <td>5.942369e+08</td>
+      <td>6.857770e+08</td>
+      <td>5.564525e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2015-06-10 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>TRFT</td>
+      <td>TRI.L</td>
+      <td>Trifast</td>
+      <td>Industrials</td>
+      <td>Tools &amp; Accessories</td>
+      <td>3.72</td>
+      <td>72.40</td>
+      <td>225041.0</td>
+      <td>0.29</td>
+      <td>6.02</td>
+      <td>6.64</td>
+      <td>9.70</td>
+      <td>-8.35</td>
+      <td>16.77</td>
+      <td>-22.90</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.35</td>
+      <td>780711.80</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>145.02</td>
+      <td>16</td>
+      <td>79</td>
+      <td>33</td>
+      <td>42</td>
+      <td>60</td>
+      <td>63</td>
+      <td>69.98</td>
+      <td>3.45</td>
+      <td>72.53</td>
+      <td>-0.18</td>
+      <td>76.36</td>
+      <td>-5.19</td>
+      <td>-0.43</td>
+      <td>-0.42</td>
+      <td>NaN</td>
+      <td>-0.01</td>
+      <td>NaN</td>
+      <td>0.20</td>
+      <td>0.16</td>
+      <td>0.06</td>
+      <td>0.11</td>
+      <td>0.06</td>
+      <td>0.07</td>
+      <td>13.82</td>
+      <td>78.59</td>
+      <td>39.0</td>
+      <td>1.061619e+08</td>
+      <td>1.361050e+08</td>
+      <td>1.132213e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1994-02-15 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>FRP</td>
+      <td>FRP.L</td>
+      <td>Frp Advisory Group Plc</td>
+      <td>Financial Services</td>
+      <td>Capital Markets</td>
+      <td>3.64</td>
+      <td>128.00</td>
+      <td>87999.0</td>
+      <td>0.34</td>
+      <td>2.49</td>
+      <td>3.06</td>
+      <td>0.79</td>
+      <td>-14.67</td>
+      <td>-23.58</td>
+      <td>-19.50</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.69</td>
+      <td>258281.40</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>695.98</td>
+      <td>7</td>
+      <td>8</td>
+      <td>12</td>
+      <td>37</td>
+      <td>50</td>
+      <td>52</td>
+      <td>127.15</td>
+      <td>0.67</td>
+      <td>132.37</td>
+      <td>-3.30</td>
+      <td>145.28</td>
+      <td>-11.89</td>
+      <td>-0.03</td>
+      <td>-0.04</td>
+      <td>NaN</td>
+      <td>0.04</td>
+      <td>NaN</td>
+      <td>0.01</td>
+      <td>0.17</td>
+      <td>0.04</td>
+      <td>0.06</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>17.44</td>
+      <td>32.76</td>
+      <td>30.0</td>
+      <td>3.862751e+08</td>
+      <td>2.492640e+08</td>
+      <td>1.797582e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2020-03-06 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>0QK3</td>
+      <td>DUFN.SW</td>
+      <td>Dufry AG</td>
+      <td>Consumer Cyclical</td>
+      <td>Specialty Retail</td>
+      <td>3.18</td>
+      <td>43.75</td>
+      <td>279888.0</td>
+      <td>2.36</td>
+      <td>1.93</td>
+      <td>1.00</td>
+      <td>3.65</td>
+      <td>7.02</td>
+      <td>11.92</td>
+      <td>24.40</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.09</td>
+      <td>118843.74</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>547.75</td>
+      <td>82</td>
+      <td>72</td>
+      <td>78</td>
+      <td>46</td>
+      <td>70</td>
+      <td>74</td>
+      <td>41.91</td>
+      <td>4.40</td>
+      <td>41.38</td>
+      <td>5.72</td>
+      <td>40.99</td>
+      <td>6.73</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.04</td>
+      <td>NaN</td>
+      <td>2.40</td>
+      <td>1.46</td>
+      <td>-0.04</td>
+      <td>0.69</td>
+      <td>NaN</td>
+      <td>0.30</td>
+      <td>20.60</td>
+      <td>34.30</td>
+      <td>119.0</td>
+      <td>3.757620e+09</td>
+      <td>9.078570e+07</td>
+      <td>6.509700e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-12-06 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>MAB</td>
+      <td>MAB.L</td>
+      <td>Mitchells &amp; Butlers PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Restaurants</td>
+      <td>3.15</td>
+      <td>167.20</td>
+      <td>830102.0</td>
+      <td>1.94</td>
+      <td>4.88</td>
+      <td>6.86</td>
+      <td>2.89</td>
+      <td>-0.42</td>
+      <td>15.47</td>
+      <td>1.39</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.62</td>
+      <td>427975.82</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>582.37</td>
+      <td>51</td>
+      <td>78</td>
+      <td>53</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>161.70</td>
+      <td>3.40</td>
+      <td>161.45</td>
+      <td>3.56</td>
+      <td>160.69</td>
+      <td>4.05</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.43</td>
+      <td>NaN</td>
+      <td>0.61</td>
+      <td>0.24</td>
+      <td>0.04</td>
+      <td>0.04</td>
+      <td>NaN</td>
+      <td>0.04</td>
+      <td>57.52</td>
+      <td>27.99</td>
+      <td>78.0</td>
+      <td>1.021525e+09</td>
+      <td>5.973830e+08</td>
+      <td>2.492424e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2003-03-31 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>FIF</td>
+      <td>FIF.L</td>
+      <td>Finsbury Food Group</td>
+      <td>Consumer Defensive</td>
+      <td>Packaged Foods</td>
+      <td>3.06</td>
+      <td>101.00</td>
+      <td>665388.0</td>
+      <td>3.99</td>
+      <td>2.62</td>
+      <td>2.91</td>
+      <td>3.06</td>
+      <td>1.00</td>
+      <td>15.43</td>
+      <td>33.77</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.68</td>
+      <td>166615.14</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>595.54</td>
+      <td>61</td>
+      <td>77</td>
+      <td>88</td>
+      <td>48</td>
+      <td>45</td>
+      <td>44</td>
+      <td>98.35</td>
+      <td>2.69</td>
+      <td>97.66</td>
+      <td>3.42</td>
+      <td>95.28</td>
+      <td>6.00</td>
+      <td>-0.10</td>
+      <td>-0.09</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>NaN</td>
+      <td>0.01</td>
+      <td>0.19</td>
+      <td>0.05</td>
+      <td>0.08</td>
+      <td>NaN</td>
+      <td>0.03</td>
+      <td>24.65</td>
+      <td>66.11</td>
+      <td>24.0</td>
+      <td>1.212562e+08</td>
+      <td>1.303830e+08</td>
+      <td>9.922657e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1995-12-05 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>0O5H</td>
+      <td>EKTA-B.ST</td>
+      <td>Elekta AB ser. B</td>
+      <td>Healthcare</td>
+      <td>Medical Instruments &amp; Supplies</td>
+      <td>2.90</td>
+      <td>85.09</td>
+      <td>1454542.0</td>
+      <td>2.14</td>
+      <td>2.56</td>
+      <td>2.50</td>
+      <td>4.21</td>
+      <td>8.71</td>
+      <td>37.07</td>
+      <td>43.71</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.62</td>
+      <td>680572.82</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>526.55</td>
+      <td>86</td>
+      <td>93</td>
+      <td>91</td>
+      <td>54</td>
+      <td>77</td>
+      <td>48</td>
+      <td>81.58</td>
+      <td>4.30</td>
+      <td>79.08</td>
+      <td>7.60</td>
+      <td>73.84</td>
+      <td>15.24</td>
+      <td>-0.68</td>
+      <td>-0.68</td>
+      <td>-0.12</td>
+      <td>0.00</td>
+      <td>0.06</td>
+      <td>0.37</td>
+      <td>0.10</td>
+      <td>NaN</td>
+      <td>0.12</td>
+      <td>0.12</td>
+      <td>0.07</td>
+      <td>2.10</td>
+      <td>65.75</td>
+      <td>177.0</td>
+      <td>2.827016e+10</td>
+      <td>3.671020e+08</td>
+      <td>3.583558e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>HGEN</td>
+      <td>HGEN.L</td>
+      <td>Hydrogenone Capital Growth PLC</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Gas</td>
+      <td>2.79</td>
+      <td>64.50</td>
+      <td>472891.0</td>
+      <td>2.47</td>
+      <td>3.20</td>
+      <td>2.12</td>
+      <td>-3.73</td>
+      <td>-15.52</td>
+      <td>-23.94</td>
+      <td>-29.00</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.40</td>
+      <td>191164.94</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>542.05</td>
+      <td>6</td>
+      <td>8</td>
+      <td>9</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>66.14</td>
+      <td>-2.48</td>
+      <td>69.54</td>
+      <td>-7.25</td>
+      <td>74.26</td>
+      <td>-13.14</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.47</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>60.72</td>
+      <td>22.53</td>
+      <td>15.0</td>
+      <td>9.559950e+07</td>
+      <td>1.288200e+08</td>
+      <td>1.036215e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2021-07-30 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>CBOX</td>
+      <td>CBOX.L</td>
+      <td>Cake Box Holdings PLC</td>
+      <td>Consumer Defensive</td>
+      <td>Grocery Stores</td>
+      <td>2.27</td>
+      <td>135.00</td>
+      <td>90561.0</td>
+      <td>0.80</td>
+      <td>4.75</td>
+      <td>6.10</td>
+      <td>2.66</td>
+      <td>-4.26</td>
+      <td>16.88</td>
+      <td>-8.16</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.40</td>
+      <td>112755.76</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>243.10</td>
+      <td>31</td>
+      <td>79</td>
+      <td>42</td>
+      <td>48</td>
+      <td>45</td>
+      <td>44</td>
+      <td>133.24</td>
+      <td>1.32</td>
+      <td>135.30</td>
+      <td>-0.22</td>
+      <td>135.70</td>
+      <td>-0.52</td>
+      <td>-0.50</td>
+      <td>-0.50</td>
+      <td>NaN</td>
+      <td>-0.26</td>
+      <td>NaN</td>
+      <td>0.08</td>
+      <td>0.02</td>
+      <td>0.05</td>
+      <td>0.05</td>
+      <td>NaN</td>
+      <td>0.11</td>
+      <td>38.76</td>
+      <td>45.83</td>
+      <td>22.0</td>
+      <td>6.208338e+07</td>
+      <td>4.000000e+07</td>
+      <td>2.741049e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2018-06-27 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>AHT</td>
+      <td>AHT.L</td>
+      <td>Ashtead Group PLC</td>
+      <td>Industrials</td>
+      <td>Rental &amp; Leasing Services</td>
+      <td>2.23</td>
+      <td>5874.00</td>
+      <td>890537.0</td>
+      <td>1.44</td>
+      <td>2.03</td>
+      <td>124.87</td>
+      <td>6.61</td>
+      <td>3.52</td>
+      <td>16.64</td>
+      <td>39.62</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.68</td>
+      <td>618972.58</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>691.31</td>
+      <td>72</td>
+      <td>79</td>
+      <td>90</td>
+      <td>37</td>
+      <td>50</td>
+      <td>52</td>
+      <td>5666.36</td>
+      <td>3.66</td>
+      <td>5576.67</td>
+      <td>5.33</td>
+      <td>5316.80</td>
+      <td>10.48</td>
+      <td>0.40</td>
+      <td>0.41</td>
+      <td>0.20</td>
+      <td>0.20</td>
+      <td>0.07</td>
+      <td>0.09</td>
+      <td>0.25</td>
+      <td>0.28</td>
+      <td>0.18</td>
+      <td>0.11</td>
+      <td>0.08</td>
+      <td>1.17</td>
+      <td>59.78</td>
+      <td>497.0</td>
+      <td>2.218064e+10</td>
+      <td>4.388730e+08</td>
+      <td>4.279001e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1988-07-01 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>JLEN</td>
+      <td>JLEN.L</td>
+      <td>JLEN Environmental Assets Group Ltd</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>2.22</td>
+      <td>119.60</td>
+      <td>1410145.0</td>
+      <td>1.49</td>
+      <td>1.31</td>
+      <td>1.51</td>
+      <td>2.22</td>
+      <td>-0.50</td>
+      <td>-5.83</td>
+      <td>-8.00</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.13</td>
+      <td>946811.76</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>NaN</td>
+      <td>50</td>
+      <td>26</td>
+      <td>32</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>117.77</td>
+      <td>1.55</td>
+      <td>118.57</td>
+      <td>0.87</td>
+      <td>119.73</td>
+      <td>-0.11</td>
+      <td>0.73</td>
+      <td>0.54</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.71</td>
+      <td>0.35</td>
+      <td>0.35</td>
+      <td>0.35</td>
+      <td>0.03</td>
+      <td>0.43</td>
+      <td>42.27</td>
+      <td>50.0</td>
+      <td>8.071034e+08</td>
+      <td>6.615310e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2014-03-31 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>0MKO</td>
+      <td>MEL.MC</td>
+      <td>Melia Hotels</td>
+      <td>Consumer Cyclical</td>
+      <td>Lodging</td>
+      <td>2.17</td>
+      <td>6.59</td>
+      <td>217037.0</td>
+      <td>2.10</td>
+      <td>2.19</td>
+      <td>0.15</td>
+      <td>4.60</td>
+      <td>5.27</td>
+      <td>27.96</td>
+      <td>13.82</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.59</td>
+      <td>103382.64</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>1019.49</td>
+      <td>77</td>
+      <td>90</td>
+      <td>75</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>6.31</td>
+      <td>4.42</td>
+      <td>6.18</td>
+      <td>6.68</td>
+      <td>5.82</td>
+      <td>13.17</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.25</td>
+      <td>1.32</td>
+      <td>1.42</td>
+      <td>0.04</td>
+      <td>0.83</td>
+      <td>0.03</td>
+      <td>0.76</td>
+      <td>0.10</td>
+      <td>0.07</td>
+      <td>54.85</td>
+      <td>21.73</td>
+      <td>103.0</td>
+      <td>1.348057e+09</td>
+      <td>2.200910e+08</td>
+      <td>1.053972e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>IWG</td>
+      <td>IWG.L</td>
+      <td>IWG PLC</td>
+      <td>Real Estate</td>
+      <td>Real Estate Services</td>
+      <td>2.02</td>
+      <td>192.05</td>
+      <td>2063040.0</td>
+      <td>2.15</td>
+      <td>3.22</td>
+      <td>5.71</td>
+      <td>4.77</td>
+      <td>-0.08</td>
+      <td>15.80</td>
+      <td>30.07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.06</td>
+      <td>957615.08</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>597.09</td>
+      <td>53</td>
+      <td>78</td>
+      <td>68</td>
+      <td>17</td>
+      <td>47</td>
+      <td>14</td>
+      <td>185.31</td>
+      <td>3.64</td>
+      <td>184.32</td>
+      <td>4.19</td>
+      <td>181.76</td>
+      <td>5.66</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.83</td>
+      <td>NaN</td>
+      <td>2.89</td>
+      <td>0.23</td>
+      <td>NaN</td>
+      <td>0.23</td>
+      <td>NaN</td>
+      <td>0.12</td>
+      <td>28.89</td>
+      <td>28.73</td>
+      <td>93.0</td>
+      <td>1.828634e+09</td>
+      <td>1.006680e+09</td>
+      <td>5.717804e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2001-08-06 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>AIREA</td>
+      <td>AIRE.L</td>
+      <td>Alternative Income REIT PLC</td>
+      <td>Real Estate</td>
+      <td>REIT—Diversified</td>
+      <td>1.93</td>
+      <td>68.50</td>
+      <td>583141.0</td>
+      <td>4.62</td>
+      <td>2.99</td>
+      <td>2.34</td>
+      <td>3.01</td>
+      <td>-3.52</td>
+      <td>-6.04</td>
+      <td>-17.67</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.18</td>
+      <td>126345.22</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>449.54</td>
+      <td>35</td>
+      <td>25</td>
+      <td>21</td>
+      <td>12</td>
+      <td>23</td>
+      <td>4</td>
+      <td>67.21</td>
+      <td>1.91</td>
+      <td>67.81</td>
+      <td>1.01</td>
+      <td>68.99</td>
+      <td>-0.72</td>
+      <td>1.73</td>
+      <td>1.73</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>46.30</td>
+      <td>20.47</td>
+      <td>10.0</td>
+      <td>5.731600e+07</td>
+      <td>8.050000e+07</td>
+      <td>5.679758e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2017-06-06 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>YOU</td>
+      <td>YOU.L</td>
+      <td>YouGov plc</td>
+      <td>Communication Services</td>
+      <td>Advertising Agencies</td>
+      <td>1.89</td>
+      <td>970.00</td>
+      <td>48976.0</td>
+      <td>0.22</td>
+      <td>3.63</td>
+      <td>36.20</td>
+      <td>7.78</td>
+      <td>1.04</td>
+      <td>-5.83</td>
+      <td>-0.61</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.65</td>
+      <td>224332.68</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>404.10</td>
+      <td>61</td>
+      <td>26</td>
+      <td>27</td>
+      <td>65</td>
+      <td>65</td>
+      <td>69</td>
+      <td>932.52</td>
+      <td>4.02</td>
+      <td>935.88</td>
+      <td>3.65</td>
+      <td>969.16</td>
+      <td>0.09</td>
+      <td>0.47</td>
+      <td>0.49</td>
+      <td>NaN</td>
+      <td>0.47</td>
+      <td>NaN</td>
+      <td>0.19</td>
+      <td>0.33</td>
+      <td>0.19</td>
+      <td>0.19</td>
+      <td>NaN</td>
+      <td>0.12</td>
+      <td>11.19</td>
+      <td>73.89</td>
+      <td>99.0</td>
+      <td>1.099262e+09</td>
+      <td>1.114690e+08</td>
+      <td>9.065268e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-04-25 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>MONY</td>
+      <td>MONY.L</td>
+      <td>Moneysupermarket.Com Group PLC</td>
+      <td>Communication Services</td>
+      <td>Internet Content &amp; Information</td>
+      <td>1.86</td>
+      <td>241.40</td>
+      <td>1274853.0</td>
+      <td>1.19</td>
+      <td>3.08</td>
+      <td>7.54</td>
+      <td>4.68</td>
+      <td>-0.49</td>
+      <td>23.79</td>
+      <td>23.92</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.16</td>
+      <td>1073222.30</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>499.02</td>
+      <td>51</td>
+      <td>87</td>
+      <td>88</td>
+      <td>59</td>
+      <td>15</td>
+      <td>18</td>
+      <td>235.67</td>
+      <td>2.43</td>
+      <td>232.55</td>
+      <td>3.80</td>
+      <td>221.53</td>
+      <td>8.97</td>
+      <td>0.18</td>
+      <td>0.18</td>
+      <td>NaN</td>
+      <td>0.18</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>0.19</td>
+      <td>0.06</td>
+      <td>0.23</td>
+      <td>0.06</td>
+      <td>0.05</td>
+      <td>8.27</td>
+      <td>83.77</td>
+      <td>140.0</td>
+      <td>1.169580e+09</td>
+      <td>5.368620e+08</td>
+      <td>5.355579e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2007-07-26 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>0RI5</td>
+      <td>REE.MC</td>
+      <td>Red Electrica Corporacion SA</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Electric</td>
+      <td>1.81</td>
+      <td>15.75</td>
+      <td>465354.0</td>
+      <td>0.68</td>
+      <td>1.46</td>
+      <td>0.28</td>
+      <td>0.90</td>
+      <td>-3.08</td>
+      <td>-8.70</td>
+      <td>-14.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.89</td>
+      <td>687804.06</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>587.38</td>
+      <td>37</td>
+      <td>20</td>
+      <td>22</td>
+      <td>18</td>
+      <td>1</td>
+      <td>2</td>
+      <td>15.77</td>
+      <td>-0.10</td>
+      <td>15.98</td>
+      <td>-1.46</td>
+      <td>16.31</td>
+      <td>-3.45</td>
+      <td>-0.02</td>
+      <td>0.03</td>
+      <td>-0.04</td>
+      <td>-0.02</td>
+      <td>0.04</td>
+      <td>-0.02</td>
+      <td>0.03</td>
+      <td>-0.11</td>
+      <td>0.03</td>
+      <td>NaN</td>
+      <td>0.01</td>
+      <td>25.00</td>
+      <td>29.94</td>
+      <td>445.0</td>
+      <td>8.922338e+09</td>
+      <td>5.392770e+08</td>
+      <td>4.040045e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>ENQ</td>
+      <td>ENQ.L</td>
+      <td>Enquest Plc</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>1.75</td>
+      <td>19.76</td>
+      <td>2993645.0</td>
+      <td>0.66</td>
+      <td>3.75</td>
+      <td>0.87</td>
+      <td>4.00</td>
+      <td>-3.84</td>
+      <td>-16.80</td>
+      <td>-32.90</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.96</td>
+      <td>4562289.64</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>351.30</td>
+      <td>33</td>
+      <td>11</td>
+      <td>10</td>
+      <td>69</td>
+      <td>42</td>
+      <td>27</td>
+      <td>19.42</td>
+      <td>1.76</td>
+      <td>19.89</td>
+      <td>-0.66</td>
+      <td>21.05</td>
+      <td>-6.11</td>
+      <td>172.83</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.40</td>
+      <td>NaN</td>
+      <td>-0.07</td>
+      <td>0.74</td>
+      <td>0.97</td>
+      <td>0.23</td>
+      <td>0.97</td>
+      <td>0.04</td>
+      <td>18.51</td>
+      <td>46.52</td>
+      <td>81.0</td>
+      <td>4.318757e+08</td>
+      <td>1.885920e+09</td>
+      <td>1.602719e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2010-04-06 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>HIK</td>
+      <td>HIK.L</td>
+      <td>Hikma Pharmaceuticals PLC</td>
+      <td>Healthcare</td>
+      <td>Drug Manufacturers—Specialty &amp; Generic</td>
+      <td>1.74</td>
+      <td>1808.50</td>
+      <td>479424.0</td>
+      <td>1.18</td>
+      <td>2.47</td>
+      <td>48.05</td>
+      <td>4.42</td>
+      <td>4.87</td>
+      <td>19.45</td>
+      <td>39.98</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.27</td>
+      <td>406258.70</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>378.94</td>
+      <td>76</td>
+      <td>82</td>
+      <td>85</td>
+      <td>33</td>
+      <td>37</td>
+      <td>32</td>
+      <td>1764.37</td>
+      <td>2.50</td>
+      <td>1746.37</td>
+      <td>3.56</td>
+      <td>1702.90</td>
+      <td>6.20</td>
+      <td>-0.30</td>
+      <td>-0.29</td>
+      <td>NaN</td>
+      <td>-0.05</td>
+      <td>NaN</td>
+      <td>0.13</td>
+      <td>-0.00</td>
+      <td>NaN</td>
+      <td>0.01</td>
+      <td>NaN</td>
+      <td>0.08</td>
+      <td>29.67</td>
+      <td>41.66</td>
+      <td>297.0</td>
+      <td>3.668030e+09</td>
+      <td>2.202360e+08</td>
+      <td>1.539494e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-11-01 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>RTO</td>
+      <td>RTO.L</td>
+      <td>Rentokil Initial PLC</td>
+      <td>Industrials</td>
+      <td>Specialty Business Services</td>
+      <td>1.68</td>
+      <td>520.00</td>
+      <td>5131438.0</td>
+      <td>0.90</td>
+      <td>1.53</td>
+      <td>8.56</td>
+      <td>1.48</td>
+      <td>3.01</td>
+      <td>-3.70</td>
+      <td>-1.92</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.34</td>
+      <td>5678190.58</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>322.69</td>
+      <td>70</td>
+      <td>30</td>
+      <td>41</td>
+      <td>37</td>
+      <td>50</td>
+      <td>52</td>
+      <td>514.28</td>
+      <td>1.11</td>
+      <td>511.60</td>
+      <td>1.64</td>
+      <td>510.01</td>
+      <td>1.96</td>
+      <td>0.04</td>
+      <td>0.04</td>
+      <td>NaN</td>
+      <td>0.07</td>
+      <td>NaN</td>
+      <td>0.23</td>
+      <td>0.08</td>
+      <td>NaN</td>
+      <td>0.25</td>
+      <td>NaN</td>
+      <td>0.46</td>
+      <td>0.69</td>
+      <td>75.29</td>
+      <td>369.0</td>
+      <td>1.289756e+10</td>
+      <td>2.520040e+09</td>
+      <td>1.832286e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1988-07-01 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>0Q99</td>
+      <td>AGS.BR</td>
+      <td>Ageas</td>
+      <td>Financial Services</td>
+      <td>Insurance—Diversified</td>
+      <td>1.63</td>
+      <td>43.55</td>
+      <td>891883.0</td>
+      <td>2.22</td>
+      <td>1.83</td>
+      <td>0.94</td>
+      <td>2.16</td>
+      <td>-1.94</td>
+      <td>7.21</td>
+      <td>9.61</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.34</td>
+      <td>400896.34</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>409.43</td>
+      <td>43</td>
+      <td>61</td>
+      <td>60</td>
+      <td>77</td>
+      <td>68</td>
+      <td>76</td>
+      <td>42.84</td>
+      <td>1.66</td>
+      <td>43.01</td>
+      <td>1.26</td>
+      <td>43.39</td>
+      <td>0.38</td>
+      <td>-0.12</td>
+      <td>-0.11</td>
+      <td>-0.18</td>
+      <td>0.13</td>
+      <td>-0.08</td>
+      <td>0.10</td>
+      <td>-0.27</td>
+      <td>0.09</td>
+      <td>-0.27</td>
+      <td>0.18</td>
+      <td>0.03</td>
+      <td>7.23</td>
+      <td>35.24</td>
+      <td>297.0</td>
+      <td>8.162902e+09</td>
+      <td>1.834360e+08</td>
+      <td>1.641394e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2001-06-18 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>BIRG</td>
+      <td>BIRG.IR</td>
+      <td>Bank of Ireland Group PLC</td>
+      <td>Financial Services</td>
+      <td>Banks—Regional</td>
+      <td>1.53</td>
+      <td>10.62</td>
+      <td>759827.0</td>
+      <td>0.90</td>
+      <td>2.91</td>
+      <td>0.29</td>
+      <td>2.66</td>
+      <td>10.93</td>
+      <td>36.50</td>
+      <td>68.68</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.79</td>
+      <td>847324.74</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>1260.39</td>
+      <td>89</td>
+      <td>93</td>
+      <td>97</td>
+      <td>83</td>
+      <td>81</td>
+      <td>82</td>
+      <td>10.29</td>
+      <td>3.18</td>
+      <td>10.04</td>
+      <td>5.76</td>
+      <td>9.61</td>
+      <td>10.50</td>
+      <td>-0.18</td>
+      <td>-0.20</td>
+      <td>NaN</td>
+      <td>-0.23</td>
+      <td>NaN</td>
+      <td>0.40</td>
+      <td>-0.06</td>
+      <td>-0.02</td>
+      <td>0.03</td>
+      <td>-0.38</td>
+      <td>0.18</td>
+      <td>0.03</td>
+      <td>61.77</td>
+      <td>239.0</td>
+      <td>1.012960e+10</td>
+      <td>1.070330e+09</td>
+      <td>1.067957e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2001-07-13 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>MCB</td>
+      <td>MCB.L</td>
+      <td>McBride plc</td>
+      <td>Consumer Defensive</td>
+      <td>Household &amp; Personal Products</td>
+      <td>1.48</td>
+      <td>27.40</td>
+      <td>217088.0</td>
+      <td>1.80</td>
+      <td>7.63</td>
+      <td>1.65</td>
+      <td>14.17</td>
+      <td>15.61</td>
+      <td>33.66</td>
+      <td>19.91</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.37</td>
+      <td>120451.94</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>639.47</td>
+      <td>93</td>
+      <td>93</td>
+      <td>82</td>
+      <td>80</td>
+      <td>52</td>
+      <td>57</td>
+      <td>25.64</td>
+      <td>6.86</td>
+      <td>24.64</td>
+      <td>11.19</td>
+      <td>23.62</td>
+      <td>16.01</td>
+      <td>0.19</td>
+      <td>0.24</td>
+      <td>NaN</td>
+      <td>0.73</td>
+      <td>NaN</td>
+      <td>2.05</td>
+      <td>-0.11</td>
+      <td>0.23</td>
+      <td>0.29</td>
+      <td>NaN</td>
+      <td>0.04</td>
+      <td>22.71</td>
+      <td>77.08</td>
+      <td>31.0</td>
+      <td>4.384545e+07</td>
+      <td>1.740570e+08</td>
+      <td>7.702559e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1995-07-10 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>CRU</td>
+      <td>CRU.L</td>
+      <td>Coral Products</td>
+      <td>Consumer Cyclical</td>
+      <td>Packaging &amp; Containers</td>
+      <td>1.47</td>
+      <td>17.25</td>
+      <td>1295829.0</td>
+      <td>7.34</td>
+      <td>6.20</td>
+      <td>1.12</td>
+      <td>13.11</td>
+      <td>9.52</td>
+      <td>2.99</td>
+      <td>27.78</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.35</td>
+      <td>176584.90</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>357.87</td>
+      <td>87</td>
+      <td>49</td>
+      <td>65</td>
+      <td>19</td>
+      <td>63</td>
+      <td>78</td>
+      <td>16.05</td>
+      <td>7.47</td>
+      <td>16.02</td>
+      <td>7.71</td>
+      <td>16.11</td>
+      <td>7.07</td>
+      <td>0.58</td>
+      <td>0.55</td>
+      <td>NaN</td>
+      <td>-0.18</td>
+      <td>NaN</td>
+      <td>0.18</td>
+      <td>1.48</td>
+      <td>NaN</td>
+      <td>1.40</td>
+      <td>NaN</td>
+      <td>0.21</td>
+      <td>32.79</td>
+      <td>8.49</td>
+      <td>3.0</td>
+      <td>1.376299e+07</td>
+      <td>9.027760e+07</td>
+      <td>6.319447e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1995-04-13 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>JET2</td>
+      <td>JET2.L</td>
+      <td>Jet2 PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Travel Services</td>
+      <td>1.42</td>
+      <td>1358.50</td>
+      <td>423072.0</td>
+      <td>0.55</td>
+      <td>3.58</td>
+      <td>43.12</td>
+      <td>5.03</td>
+      <td>9.20</td>
+      <td>33.51</td>
+      <td>53.96</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.75</td>
+      <td>775211.72</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>183.23</td>
+      <td>87</td>
+      <td>92</td>
+      <td>93</td>
+      <td>85</td>
+      <td>83</td>
+      <td>87</td>
+      <td>1316.54</td>
+      <td>3.19</td>
+      <td>1280.67</td>
+      <td>6.08</td>
+      <td>1175.99</td>
+      <td>15.52</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.76</td>
+      <td>NaN</td>
+      <td>0.02</td>
+      <td>7.30</td>
+      <td>0.29</td>
+      <td>2.97</td>
+      <td>0.29</td>
+      <td>0.10</td>
+      <td>19.17</td>
+      <td>50.99</td>
+      <td>107.0</td>
+      <td>2.453804e+09</td>
+      <td>2.146810e+08</td>
+      <td>1.420416e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1988-12-02 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>GNC</td>
+      <td>GNC.L</td>
+      <td>Greencore Group</td>
+      <td>Consumer Defensive</td>
+      <td>Packaged Foods</td>
+      <td>1.33</td>
+      <td>83.60</td>
+      <td>695612.0</td>
+      <td>0.30</td>
+      <td>3.43</td>
+      <td>2.74</td>
+      <td>2.64</td>
+      <td>-4.51</td>
+      <td>27.63</td>
+      <td>-3.30</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.52</td>
+      <td>2301808.90</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>209.44</td>
+      <td>30</td>
+      <td>90</td>
+      <td>62</td>
+      <td>48</td>
+      <td>45</td>
+      <td>44</td>
+      <td>82.10</td>
+      <td>1.83</td>
+      <td>81.05</td>
+      <td>3.14</td>
+      <td>77.01</td>
+      <td>8.56</td>
+      <td>0.24</td>
+      <td>0.22</td>
+      <td>NaN</td>
+      <td>0.00</td>
+      <td>NaN</td>
+      <td>0.22</td>
+      <td>0.30</td>
+      <td>0.16</td>
+      <td>0.09</td>
+      <td>NaN</td>
+      <td>0.03</td>
+      <td>0.80</td>
+      <td>71.52</td>
+      <td>81.0</td>
+      <td>3.893247e+08</td>
+      <td>5.092540e+08</td>
+      <td>4.820838e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-04 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>SSPG</td>
+      <td>SSPG.L</td>
+      <td>SSP Group PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Restaurants</td>
+      <td>1.32</td>
+      <td>267.80</td>
+      <td>5698329.0</td>
+      <td>4.07</td>
+      <td>2.75</td>
+      <td>7.20</td>
+      <td>3.24</td>
+      <td>-0.45</td>
+      <td>23.75</td>
+      <td>28.20</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.25</td>
+      <td>1399291.12</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>517.45</td>
+      <td>51</td>
+      <td>87</td>
+      <td>82</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>261.38</td>
+      <td>2.46</td>
+      <td>261.31</td>
+      <td>2.48</td>
+      <td>256.55</td>
+      <td>4.38</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.80</td>
+      <td>1.39</td>
+      <td>NaN</td>
+      <td>-0.42</td>
+      <td>NaN</td>
+      <td>1.62</td>
+      <td>1.50</td>
+      <td>82.22</td>
+      <td>129.0</td>
+      <td>2.107716e+09</td>
+      <td>7.962660e+08</td>
+      <td>7.240642e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2014-07-10 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>0Q6M</td>
+      <td>UNI.MI</td>
+      <td>Unipol Gruppo Finanziario Spa</td>
+      <td>Financial Services</td>
+      <td>Insurance—Diversified</td>
+      <td>1.18</td>
+      <td>5.14</td>
+      <td>291827.0</td>
+      <td>1.64</td>
+      <td>1.38</td>
+      <td>0.07</td>
+      <td>2.39</td>
+      <td>4.90</td>
+      <td>7.53</td>
+      <td>24.46</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.70</td>
+      <td>178148.30</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2521.56</td>
+      <td>76</td>
+      <td>62</td>
+      <td>70</td>
+      <td>77</td>
+      <td>68</td>
+      <td>76</td>
+      <td>5.03</td>
+      <td>2.20</td>
+      <td>4.97</td>
+      <td>3.35</td>
+      <td>4.85</td>
+      <td>5.90</td>
+      <td>0.07</td>
+      <td>0.07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.00</td>
+      <td>-0.03</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.10</td>
+      <td>48.55</td>
+      <td>14.36</td>
+      <td>143.0</td>
+      <td>3.426990e+09</td>
+      <td>7.163440e+08</td>
+      <td>4.492122e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1991-04-01 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>DIVI</td>
+      <td>DIVI.L</td>
+      <td>Diverse Income Trust PLC</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>1.16</td>
+      <td>95.90</td>
+      <td>321144.0</td>
+      <td>0.89</td>
+      <td>2.18</td>
+      <td>2.42</td>
+      <td>3.56</td>
+      <td>0.95</td>
+      <td>4.92</td>
+      <td>3.68</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.98</td>
+      <td>362774.14</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>60</td>
+      <td>55</td>
+      <td>47</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>94.53</td>
+      <td>1.44</td>
+      <td>94.58</td>
+      <td>1.40</td>
+      <td>94.24</td>
+      <td>1.77</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.15</td>
+      <td>52.43</td>
+      <td>35.0</td>
+      <td>3.446174e+08</td>
+      <td>3.558710e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2011-04-27 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>0O59</td>
+      <td>SAN.PA</td>
+      <td>Sanofi SA</td>
+      <td>Healthcare</td>
+      <td>Drug Manufacturers—General</td>
+      <td>1.14</td>
+      <td>90.14</td>
+      <td>674623.0</td>
+      <td>0.66</td>
+      <td>1.36</td>
+      <td>1.28</td>
+      <td>1.24</td>
+      <td>6.28</td>
+      <td>5.11</td>
+      <td>12.10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.11</td>
+      <td>1025805.82</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>1081.87</td>
+      <td>80</td>
+      <td>55</td>
+      <td>53</td>
+      <td>33</td>
+      <td>37</td>
+      <td>32</td>
+      <td>89.42</td>
+      <td>0.80</td>
+      <td>89.25</td>
+      <td>0.99</td>
+      <td>89.64</td>
+      <td>0.56</td>
+      <td>-0.10</td>
+      <td>-0.10</td>
+      <td>0.25</td>
+      <td>0.26</td>
+      <td>0.10</td>
+      <td>0.03</td>
+      <td>0.21</td>
+      <td>0.13</td>
+      <td>0.17</td>
+      <td>0.14</td>
+      <td>0.04</td>
+      <td>11.24</td>
+      <td>46.97</td>
+      <td>934.0</td>
+      <td>1.129567e+11</td>
+      <td>1.252640e+09</td>
+      <td>1.109787e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-01-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>0KFX</td>
+      <td>BN.PA</td>
+      <td>Danone SA</td>
+      <td>Consumer Defensive</td>
+      <td>Packaged Foods</td>
+      <td>1.08</td>
+      <td>54.05</td>
+      <td>1007680.0</td>
+      <td>1.32</td>
+      <td>1.48</td>
+      <td>0.85</td>
+      <td>1.41</td>
+      <td>7.18</td>
+      <td>6.99</td>
+      <td>6.27</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.38</td>
+      <td>763674.42</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>824.11</td>
+      <td>83</td>
+      <td>60</td>
+      <td>58</td>
+      <td>48</td>
+      <td>45</td>
+      <td>44</td>
+      <td>53.46</td>
+      <td>1.11</td>
+      <td>52.64</td>
+      <td>2.67</td>
+      <td>51.03</td>
+      <td>5.92</td>
+      <td>-0.31</td>
+      <td>-0.30</td>
+      <td>NaN</td>
+      <td>0.00</td>
+      <td>NaN</td>
+      <td>0.04</td>
+      <td>0.13</td>
+      <td>0.08</td>
+      <td>0.13</td>
+      <td>NaN</td>
+      <td>0.02</td>
+      <td>2.35</td>
+      <td>56.05</td>
+      <td>668.0</td>
+      <td>3.210182e+10</td>
+      <td>6.396080e+08</td>
+      <td>6.293486e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1989-01-16 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>BGFD</td>
+      <td>BGFD.L</td>
+      <td>Baillie Gifford Japan Trust</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>1.02</td>
+      <td>790.00</td>
+      <td>178394.0</td>
+      <td>1.08</td>
+      <td>1.54</td>
+      <td>12.07</td>
+      <td>3.81</td>
+      <td>-1.00</td>
+      <td>2.60</td>
+      <td>8.67</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.41</td>
+      <td>165630.68</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>47</td>
+      <td>48</td>
+      <td>59</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>776.10</td>
+      <td>1.79</td>
+      <td>777.13</td>
+      <td>1.66</td>
+      <td>776.24</td>
+      <td>1.77</td>
+      <td>-0.96</td>
+      <td>-0.96</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.92</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.17</td>
+      <td>34.52</td>
+      <td>55.0</td>
+      <td>7.302650e+08</td>
+      <td>9.362260e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1981-12-31 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>AZN</td>
+      <td>AZN.L</td>
+      <td>AstraZeneca PLC</td>
+      <td>Healthcare</td>
+      <td>Drug Manufacturers—General</td>
+      <td>1.01</td>
+      <td>10850.00</td>
+      <td>3068913.0</td>
+      <td>1.53</td>
+      <td>1.67</td>
+      <td>173.75</td>
+      <td>-0.28</td>
+      <td>2.55</td>
+      <td>-3.64</td>
+      <td>3.20</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.29</td>
+      <td>2002346.88</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>770.51</td>
+      <td>68</td>
+      <td>30</td>
+      <td>45</td>
+      <td>33</td>
+      <td>37</td>
+      <td>32</td>
+      <td>10934.47</td>
+      <td>-0.77</td>
+      <td>11038.93</td>
+      <td>-1.71</td>
+      <td>11169.44</td>
+      <td>-2.86</td>
+      <td>-0.34</td>
+      <td>-0.45</td>
+      <td>-0.18</td>
+      <td>0.32</td>
+      <td>-0.18</td>
+      <td>0.11</td>
+      <td>0.11</td>
+      <td>-0.02</td>
+      <td>0.24</td>
+      <td>0.06</td>
+      <td>0.04</td>
+      <td>0.22</td>
+      <td>48.73</td>
+      <td>856.0</td>
+      <td>1.692437e+11</td>
+      <td>1.549800e+09</td>
+      <td>1.542830e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1993-05-21 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>IGG</td>
+      <td>IGG.L</td>
+      <td>IG Group Holdings PLC</td>
+      <td>Financial Services</td>
+      <td>Capital Markets</td>
+      <td>0.98</td>
+      <td>822.50</td>
+      <td>1968626.0</td>
+      <td>2.06</td>
+      <td>1.30</td>
+      <td>10.61</td>
+      <td>2.43</td>
+      <td>3.13</td>
+      <td>0.98</td>
+      <td>3.72</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.37</td>
+      <td>955110.96</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>7.0</td>
+      <td>425.83</td>
+      <td>70</td>
+      <td>43</td>
+      <td>58</td>
+      <td>28</td>
+      <td>29</td>
+      <td>36</td>
+      <td>810.15</td>
+      <td>1.52</td>
+      <td>805.62</td>
+      <td>2.09</td>
+      <td>796.90</td>
+      <td>3.21</td>
+      <td>0.17</td>
+      <td>0.16</td>
+      <td>NaN</td>
+      <td>-0.21</td>
+      <td>NaN</td>
+      <td>0.03</td>
+      <td>0.12</td>
+      <td>0.06</td>
+      <td>0.06</td>
+      <td>-0.06</td>
+      <td>0.07</td>
+      <td>5.51</td>
+      <td>69.66</td>
+      <td>230.0</td>
+      <td>3.264813e+09</td>
+      <td>4.156350e+08</td>
+      <td>4.067187e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-04-28 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>TUIT</td>
+      <td>TUI1.DE</td>
+      <td>Tui AG NA</td>
+      <td>Consumer Cyclical</td>
+      <td>Travel Services</td>
+      <td>0.92</td>
+      <td>1651.00</td>
+      <td>252037.0</td>
+      <td>0.62</td>
+      <td>5.78</td>
+      <td>103.64</td>
+      <td>1.34</td>
+      <td>-9.73</td>
+      <td>1018.94</td>
+      <td>1216.59</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.82</td>
+      <td>404481.86</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>3111.43</td>
+      <td>13</td>
+      <td>99</td>
+      <td>99</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>1622.68</td>
+      <td>1.75</td>
+      <td>1644.94</td>
+      <td>0.37</td>
+      <td>1575.62</td>
+      <td>4.78</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.00</td>
+      <td>NaN</td>
+      <td>0.38</td>
+      <td>1.26</td>
+      <td>0.57</td>
+      <td>0.12</td>
+      <td>0.30</td>
+      <td>0.04</td>
+      <td>33.10</td>
+      <td>15.99</td>
+      <td>127.0</td>
+      <td>3.764745e+09</td>
+      <td>1.785210e+09</td>
+      <td>1.258517e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1998-02-06 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>0PMJ</td>
+      <td>SHL.DE</td>
+      <td>Siemens Healthineers AG</td>
+      <td>Healthcare</td>
+      <td>Medical Devices</td>
+      <td>0.92</td>
+      <td>51.08</td>
+      <td>136401.0</td>
+      <td>1.26</td>
+      <td>1.80</td>
+      <td>1.03</td>
+      <td>3.08</td>
+      <td>-3.14</td>
+      <td>0.16</td>
+      <td>3.60</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.57</td>
+      <td>107837.24</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>2498.15</td>
+      <td>37</td>
+      <td>41</td>
+      <td>41</td>
+      <td>54</td>
+      <td>77</td>
+      <td>48</td>
+      <td>50.20</td>
+      <td>1.76</td>
+      <td>50.28</td>
+      <td>1.60</td>
+      <td>49.68</td>
+      <td>2.82</td>
+      <td>0.37</td>
+      <td>0.37</td>
+      <td>-0.22</td>
+      <td>-0.09</td>
+      <td>-0.31</td>
+      <td>0.17</td>
+      <td>0.16</td>
+      <td>0.12</td>
+      <td>0.02</td>
+      <td>0.07</td>
+      <td>0.06</td>
+      <td>75.35</td>
+      <td>11.81</td>
+      <td>475.0</td>
+      <td>5.632385e+10</td>
+      <td>1.119390e+09</td>
+      <td>2.693933e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2018-04-12 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>SEQI</td>
+      <td>SEQI.L</td>
+      <td>Sequoia Economic Infrastructure</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.81</td>
+      <td>86.70</td>
+      <td>1859494.0</td>
+      <td>0.92</td>
+      <td>1.55</td>
+      <td>1.16</td>
+      <td>0.12</td>
+      <td>1.17</td>
+      <td>-1.25</td>
+      <td>-2.58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.03</td>
+      <td>2023271.08</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>61</td>
+      <td>36</td>
+      <td>35</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>86.04</td>
+      <td>0.77</td>
+      <td>85.99</td>
+      <td>0.83</td>
+      <td>86.52</td>
+      <td>0.21</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.26</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>51.25</td>
+      <td>80.0</td>
+      <td>1.536478e+09</td>
+      <td>1.746000e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2015-03-03 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>BSIF</td>
+      <td>BSIF.L</td>
+      <td>Bluefield Solar Income Fund Limited</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>0.74</td>
+      <td>137.00</td>
+      <td>347589.0</td>
+      <td>0.46</td>
+      <td>1.83</td>
+      <td>2.46</td>
+      <td>-0.72</td>
+      <td>-2.84</td>
+      <td>0.00</td>
+      <td>-3.52</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.89</td>
+      <td>752336.90</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>38</td>
+      <td>40</td>
+      <td>45</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>136.81</td>
+      <td>0.14</td>
+      <td>137.91</td>
+      <td>-0.66</td>
+      <td>138.61</td>
+      <td>-1.16</td>
+      <td>9.96</td>
+      <td>7.67</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00</td>
+      <td>9.37</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.46</td>
+      <td>54.19</td>
+      <td>52.0</td>
+      <td>8.499183e+08</td>
+      <td>6.114520e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2013-07-12 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>SXS</td>
+      <td>SXS.L</td>
+      <td>Spectris PLC</td>
+      <td>Technology</td>
+      <td>Scientific &amp; Technical Instruments</td>
+      <td>0.73</td>
+      <td>3608.00</td>
+      <td>298493.0</td>
+      <td>1.08</td>
+      <td>2.86</td>
+      <td>101.78</td>
+      <td>2.59</td>
+      <td>9.63</td>
+      <td>11.77</td>
+      <td>27.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.41</td>
+      <td>276657.64</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>6.0</td>
+      <td>396.11</td>
+      <td>87</td>
+      <td>72</td>
+      <td>80</td>
+      <td>81</td>
+      <td>53</td>
+      <td>67</td>
+      <td>3503.54</td>
+      <td>2.98</td>
+      <td>3391.50</td>
+      <td>6.38</td>
+      <td>3237.52</td>
+      <td>11.44</td>
+      <td>-0.78</td>
+      <td>-0.77</td>
+      <td>NaN</td>
+      <td>0.09</td>
+      <td>NaN</td>
+      <td>0.11</td>
+      <td>0.06</td>
+      <td>NaN</td>
+      <td>-0.00</td>
+      <td>NaN</td>
+      <td>0.04</td>
+      <td>1.51</td>
+      <td>98.08</td>
+      <td>211.0</td>
+      <td>3.351745e+09</td>
+      <td>1.045460e+08</td>
+      <td>1.095864e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1988-11-28 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>0LBM</td>
+      <td>TRN.MI</td>
+      <td>Terna Rete Elettrica Nazionale SpA</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Electric</td>
+      <td>0.70</td>
+      <td>7.17</td>
+      <td>489407.0</td>
+      <td>2.04</td>
+      <td>1.43</td>
+      <td>0.13</td>
+      <td>0.99</td>
+      <td>-2.05</td>
+      <td>-2.85</td>
+      <td>1.41</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.63</td>
+      <td>240392.40</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>5852.60</td>
+      <td>42</td>
+      <td>32</td>
+      <td>38</td>
+      <td>18</td>
+      <td>1</td>
+      <td>2</td>
+      <td>7.16</td>
+      <td>0.21</td>
+      <td>7.22</td>
+      <td>-0.70</td>
+      <td>7.27</td>
+      <td>-1.32</td>
+      <td>-0.04</td>
+      <td>0.06</td>
+      <td>0.40</td>
+      <td>0.08</td>
+      <td>1.80</td>
+      <td>0.00</td>
+      <td>0.04</td>
+      <td>0.13</td>
+      <td>0.07</td>
+      <td>0.02</td>
+      <td>0.02</td>
+      <td>29.85</td>
+      <td>29.02</td>
+      <td>423.0</td>
+      <td>1.476939e+10</td>
+      <td>2.005620e+09</td>
+      <td>1.406920e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2004-06-23 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>IQG</td>
+      <td>IQG.L</td>
+      <td>IQGeo Group PLC</td>
+      <td>Technology</td>
+      <td>Software—Application</td>
+      <td>0.66</td>
+      <td>214.00</td>
+      <td>105302.0</td>
+      <td>0.67</td>
+      <td>1.01</td>
+      <td>1.93</td>
+      <td>0.00</td>
+      <td>0.94</td>
+      <td>7.00</td>
+      <td>50.18</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>37.01</td>
+      <td>156376.92</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>338.39</td>
+      <td>60</td>
+      <td>60</td>
+      <td>89</td>
+      <td>59</td>
+      <td>15</td>
+      <td>18</td>
+      <td>213.91</td>
+      <td>0.04</td>
+      <td>212.76</td>
+      <td>0.58</td>
+      <td>206.27</td>
+      <td>3.75</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.44</td>
+      <td>0.24</td>
+      <td>0.52</td>
+      <td>NaN</td>
+      <td>0.34</td>
+      <td>11.83</td>
+      <td>77.68</td>
+      <td>13.0</td>
+      <td>1.271779e+08</td>
+      <td>6.143860e+07</td>
+      <td>5.291700e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2011-06-22 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>63</th>
+      <td>0RLT</td>
+      <td>QGEN</td>
+      <td>Qiagen NV</td>
+      <td>Healthcare</td>
+      <td>Diagnostics &amp; Research</td>
+      <td>0.64</td>
+      <td>43.92</td>
+      <td>142475.0</td>
+      <td>0.61</td>
+      <td>1.39</td>
+      <td>0.64</td>
+      <td>0.60</td>
+      <td>-4.02</td>
+      <td>-6.07</td>
+      <td>-4.19</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.45</td>
+      <td>235244.12</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>961.15</td>
+      <td>32</td>
+      <td>25</td>
+      <td>35</td>
+      <td>20</td>
+      <td>19</td>
+      <td>41</td>
+      <td>43.72</td>
+      <td>0.45</td>
+      <td>44.30</td>
+      <td>-0.87</td>
+      <td>45.60</td>
+      <td>-3.67</td>
+      <td>-0.38</td>
+      <td>-0.37</td>
+      <td>-0.36</td>
+      <td>-0.12</td>
+      <td>-0.38</td>
+      <td>-0.09</td>
+      <td>-0.07</td>
+      <td>-0.16</td>
+      <td>-0.05</td>
+      <td>-0.22</td>
+      <td>-0.03</td>
+      <td>0.32</td>
+      <td>72.96</td>
+      <td>665.0</td>
+      <td>1.140094e+10</td>
+      <td>2.277000e+08</td>
+      <td>2.261038e+08</td>
+      <td>5378999.0</td>
+      <td>8.45</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1996-06-28 13:30:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>64</th>
+      <td>JDW</td>
+      <td>JDW.L</td>
+      <td>J D Wetherspoon PLC</td>
+      <td>Consumer Cyclical</td>
+      <td>Restaurants</td>
+      <td>0.59</td>
+      <td>594.00</td>
+      <td>2381550.0</td>
+      <td>2.09</td>
+      <td>3.99</td>
+      <td>22.49</td>
+      <td>5.60</td>
+      <td>18.44</td>
+      <td>32.59</td>
+      <td>16.24</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.09</td>
+      <td>1141732.18</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>82.95</td>
+      <td>95</td>
+      <td>92</td>
+      <td>76</td>
+      <td>87</td>
+      <td>87</td>
+      <td>85</td>
+      <td>563.76</td>
+      <td>5.36</td>
+      <td>538.81</td>
+      <td>10.24</td>
+      <td>497.32</td>
+      <td>19.44</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.75</td>
+      <td>NaN</td>
+      <td>0.34</td>
+      <td>1.73</td>
+      <td>0.06</td>
+      <td>0.06</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>26.12</td>
+      <td>59.59</td>
+      <td>92.0</td>
+      <td>6.167125e+08</td>
+      <td>1.287500e+08</td>
+      <td>9.470429e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1992-10-29 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>65</th>
+      <td>CRH</td>
+      <td>CRH.L</td>
+      <td>CRH PLC</td>
+      <td>Basic Materials</td>
+      <td>Building Materials</td>
+      <td>0.58</td>
+      <td>4336.50</td>
+      <td>613338.0</td>
+      <td>0.95</td>
+      <td>1.87</td>
+      <td>101.25</td>
+      <td>10.98</td>
+      <td>12.14</td>
+      <td>32.70</td>
+      <td>40.43</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.83</td>
+      <td>644373.20</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>1187.24</td>
+      <td>90</td>
+      <td>92</td>
+      <td>93</td>
+      <td>89</td>
+      <td>78</td>
+      <td>73</td>
+      <td>4138.89</td>
+      <td>4.77</td>
+      <td>3998.22</td>
+      <td>8.46</td>
+      <td>3766.93</td>
+      <td>15.12</td>
+      <td>1.67</td>
+      <td>1.74</td>
+      <td>NaN</td>
+      <td>0.12</td>
+      <td>NaN</td>
+      <td>-0.06</td>
+      <td>0.14</td>
+      <td>0.07</td>
+      <td>0.08</td>
+      <td>NaN</td>
+      <td>0.01</td>
+      <td>0.02</td>
+      <td>55.20</td>
+      <td>571.0</td>
+      <td>3.084669e+10</td>
+      <td>7.442800e+08</td>
+      <td>7.650240e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2000-06-06 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>66</th>
+      <td>AUTOA</td>
+      <td>AUTO.L</td>
+      <td>Auto Trader Group Plc</td>
+      <td>Communication Services</td>
+      <td>Internet Content &amp; Information</td>
+      <td>0.47</td>
+      <td>593.60</td>
+      <td>1407152.0</td>
+      <td>0.59</td>
+      <td>1.60</td>
+      <td>9.03</td>
+      <td>-0.30</td>
+      <td>-4.63</td>
+      <td>2.34</td>
+      <td>-7.10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.67</td>
+      <td>2391733.32</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>386.88</td>
+      <td>29</td>
+      <td>48</td>
+      <td>46</td>
+      <td>59</td>
+      <td>15</td>
+      <td>18</td>
+      <td>593.80</td>
+      <td>-0.03</td>
+      <td>596.55</td>
+      <td>-0.49</td>
+      <td>583.27</td>
+      <td>1.77</td>
+      <td>-0.05</td>
+      <td>-0.04</td>
+      <td>NaN</td>
+      <td>0.02</td>
+      <td>NaN</td>
+      <td>0.06</td>
+      <td>0.16</td>
+      <td>0.13</td>
+      <td>0.15</td>
+      <td>NaN</td>
+      <td>0.09</td>
+      <td>1.04</td>
+      <td>70.56</td>
+      <td>343.0</td>
+      <td>5.499128e+09</td>
+      <td>9.264030e+08</td>
+      <td>9.253165e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2015-03-19 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>NAVF</td>
+      <td>NAVF.L</td>
+      <td>Nippon Active Value Fund Plc</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.35</td>
+      <td>143.50</td>
+      <td>20238.0</td>
+      <td>0.11</td>
+      <td>2.24</td>
+      <td>3.70</td>
+      <td>3.24</td>
+      <td>5.13</td>
+      <td>17.14</td>
+      <td>29.28</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.36</td>
+      <td>178785.86</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>77</td>
+      <td>80</td>
+      <td>84</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>141.68</td>
+      <td>1.29</td>
+      <td>140.13</td>
+      <td>2.40</td>
+      <td>134.02</td>
+      <td>7.07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.60</td>
+      <td>43.91</td>
+      <td>10.0</td>
+      <td>1.522553e+08</td>
+      <td>1.132010e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2020-02-21 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>IGAS</td>
+      <td>IGAS.L</td>
+      <td>IGas Energy PLC</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>0.26</td>
+      <td>19.50</td>
+      <td>404240.0</td>
+      <td>0.48</td>
+      <td>7.58</td>
+      <td>1.64</td>
+      <td>-1.39</td>
+      <td>-7.14</td>
+      <td>13.37</td>
+      <td>-79.81</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.09</td>
+      <td>836049.84</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>104.54</td>
+      <td>20</td>
+      <td>74</td>
+      <td>14</td>
+      <td>69</td>
+      <td>42</td>
+      <td>27</td>
+      <td>19.61</td>
+      <td>-0.57</td>
+      <td>20.02</td>
+      <td>-2.60</td>
+      <td>20.16</td>
+      <td>-3.30</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.18</td>
+      <td>NaN</td>
+      <td>-0.21</td>
+      <td>0.84</td>
+      <td>0.22</td>
+      <td>0.50</td>
+      <td>0.22</td>
+      <td>-0.16</td>
+      <td>3.22</td>
+      <td>55.97</td>
+      <td>12.0</td>
+      <td>2.807114e+07</td>
+      <td>1.267320e+08</td>
+      <td>8.740172e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2005-07-29 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>ORIT</td>
+      <td>ORIT.L</td>
+      <td>Octopus Renewables Infra Trust</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>0.22</td>
+      <td>9700.00</td>
+      <td>2168104.0</td>
+      <td>1.58</td>
+      <td>1495.40</td>
+      <td>2058.76</td>
+      <td>9900.00</td>
+      <td>9391.19</td>
+      <td>9737.73</td>
+      <td>8364.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.67</td>
+      <td>1368869.58</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>411.44</td>
+      <td>100</td>
+      <td>100</td>
+      <td>100</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>4780.18</td>
+      <td>102.92</td>
+      <td>2484.95</td>
+      <td>290.35</td>
+      <td>675.23</td>
+      <td>1336.55</td>
+      <td>12.53</td>
+      <td>7.38</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>9.03</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.48</td>
+      <td>66.34</td>
+      <td>51.0</td>
+      <td>5.411939e+08</td>
+      <td>5.649280e+08</td>
+      <td>5.632102e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>2019-12-10 08:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>JFJ</td>
+      <td>JFJ.L</td>
+      <td>JPMorgan Japanese Investment Trust</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>0.21</td>
+      <td>478.50</td>
+      <td>159948.0</td>
+      <td>0.78</td>
+      <td>1.46</td>
+      <td>7.24</td>
+      <td>2.03</td>
+      <td>-3.43</td>
+      <td>0.10</td>
+      <td>5.05</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.00</td>
+      <td>205083.30</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>35</td>
+      <td>41</td>
+      <td>50</td>
+      <td>100</td>
+      <td>94</td>
+      <td>94</td>
+      <td>473.31</td>
+      <td>1.10</td>
+      <td>474.94</td>
+      <td>0.75</td>
+      <td>472.63</td>
+      <td>1.24</td>
+      <td>-0.69</td>
+      <td>-0.68</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.67</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.26</td>
+      <td>67.62</td>
+      <td>48.0</td>
+      <td>7.334145e+08</td>
+      <td>1.539170e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>London</td>
+      <td>United Kingdom</td>
+      <td>1969-12-31 07:00:00</td>
+      <td>united_kingdom</td>
+      <td>2023-03-07</td>
+      <td>Kristjan Kullamägi</td>
+      <td>Momentum</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+            </section>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+    <div class="content has-text-centered">
+        <p>
+            <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+            is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+        </p>
+    </div>
+</footer>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bm/jq-3.6.0/jszip-2.5.0/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/datatables.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#data').DataTable(
+                {
+                    "scrollX": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copy', 'csv', 'excel', 'print'
+                    ]
+
+                }
+            );
+        });
+    </script>
+    
+</body>
+
+</html>

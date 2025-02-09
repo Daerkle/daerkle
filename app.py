@@ -90,15 +90,97 @@ st.markdown("""
             }
         }
         
+        .pivot-table {
+            line-height: 1.2;
+        }
+        
         .pivot-table th,
         .pivot-table td {
-            padding: clamp(4px, 1vw, 8px);
+            padding: 4px 6px;
             text-align: right;
+            font-size: 0.9em;
+        }
+        
+        /* Datumsanzeige in Pivot-Tabellen */
+        .pivot-date {
+            color: #6B7280;
+            font-size: 0.7em;
+            margin-left: 4px;
+            font-feature-settings: "tnum";
         }
         
         .pivot-table th:first-child,
         .pivot-table td:first-child {
             text-align: left;
+            font-weight: 500;
+        }
+        
+        /* Pivot-Status Icons */
+        .pivot-icon {
+            display: inline-block;
+            min-width: 16px;
+            text-align: center;
+            margin-left: 4px;
+        }
+        
+        /* Info-Button Styling */
+        .info-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: rgba(99,102,241,0.1);
+            color: #6366F1;
+            font-size: 12px;
+            cursor: help;
+            margin-left: 6px;
+            border: none;
+        }
+        
+        .info-button:hover {
+            background-color: rgba(99,102,241,0.2);
+        }
+        
+        /* Überschriften mit Info-Buttons */
+        .header-with-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Tooltip-Styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            background-color: rgba(17, 24, 39, 0.95);
+            color: #fff;
+            text-align: left;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            line-height: 1.4;
+            width: 280px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        /* Kompakte Darstellung der Pivot-Level */
+        .pivot-table tr {
+            height: 24px;
         }
         
         .pivot-table tr:hover,
@@ -201,10 +283,7 @@ st.markdown("""
 # Funktion zum Rerun (sicherer Fallback)
 # ---------------------------
 def safe_rerun():
-    if hasattr(st, "experimental_rerun"):
-        st.experimental_rerun()
-    else:
-        st._rerun()
+    st.rerun()
 
 # ---------------------------
 # Datenbankpfad festlegen
@@ -360,9 +439,20 @@ with col_main:
             # DeMark Setup Übersicht
             st.markdown("""
             <div style="margin: 20px 0;">
-                <h4>DeMark Trading Setups</h4>
-                <p 
-                </p>
+                <div class="header-with-info">
+                    <h4>DeMark Trading Setups</h4>
+                    <div class="tooltip">
+                        <span class="info-button">?</span>
+                        <span class="tooltip-text">
+                            <strong>DeMark Trading Setups:</strong><br>
+                            • Setup wird aktiv wenn R1/S1 berührt wurde oder der Preis 0.1% darüber/darunter liegt<br>
+                            • R2/S2 dienen als Kursziele<br>
+                            • ⚑/⚐ markiert wichtige DeMark S1 Levels<br>
+                            • ○↑/○↓ zeigt offene, noch nicht getestete Pivot-Punkte<br>
+                            • Pivot-Punkte bleiben oft „offen" und werden später getestet
+                        </span>
+                    </div>
+                </div>
                 <style>
                     .setup-badge {
                         display: inline-block;
@@ -546,21 +636,52 @@ with col_main:
                             # Anzeige des Standard Pivot Status
                             st.markdown(f"""
                             <div style="padding: 10px; border-radius: 5px; background-color: rgba(255,255,255,0.05); margin-bottom: 10px;">
-                                <strong>Standard Pivot Status:</strong>
-                                <span style="color: {pivot_status['color']}">
-                                    {pivot_status['status']} ({pivot_status['distance']})
-                                </span>
+                                <div class="header-with-info" style="align-items: center;">
+                                    <strong>Standard Pivot Status:</strong>
+                                    <div class="tooltip">
+                                        <span class="info-button">?</span>
+                                        <span class="tooltip-text">
+                                            <strong>Pivot Status:</strong><br>
+                                            • Zeigt die Position zum Standard Pivot-Punkt P<br>
+                                            • Grüner Status: Preis über Pivot<br>
+                                            • Roter Status: Preis unter Pivot<br>
+                                            • Prozent: Abstand zum Pivot-Punkt<br>
+                                            • Wichtig für Trendbestimmung
+                                        </span>
+                                    </div>
+                                    <span style="color: {pivot_status['color']}; margin-left: 8px;">
+                                        {pivot_status['status']} ({pivot_status['distance']})
+                                    </span>
+                                </div>
                             </div>
                             """, unsafe_allow_html=True)
                             
                             # Pivot-Tabelle
                             level_order = [
-                                ('R5', None), ('R4', None), ('R3', None), ('R2', 'R2'),
-                                ('R1', 'R1'), ('P', 'P'), ('S1', 'S1'), ('S2', 'S2'),
+                                ('R5', None), ('R4', None), ('R3', None), ('R2', None),
+                                ('R1', 'R1'), ('P', 'P'), ('S1', 'S1'), ('S2', None),
                                 ('S3', None), ('S4', None), ('S5', None)
                             ]
                             st.markdown("""
                             <table class="pivot-table">
+                                <tr>
+                                    <th colspan="3">
+                                        <div class="header-with-info" style="justify-content: center; margin-bottom: 8px;">
+                                            <span>Pivot-Levels</span>
+                                            <div class="tooltip">
+                                                <span class="info-button">?</span>
+                                                <span class="tooltip-text">
+                                                    <strong>Pivot-Levels:</strong><br>
+                                                    • Standard: Klassische Pivot-Punkte für Support/Resistance<br>
+                                                    • DeMark: Präzisere Berechnung basierend auf Open/Close<br>
+                                                    • Graues Datum: Level wurde bereits getestet<br>
+                                                    • ○ mit Pfeil: Level wartet auf Test<br>
+                                                    • Farbige Markierung: Wichtige Trigger- und Target-Levels
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                </tr>
                                 <tr>
                                     <th>Level</th>
                                     <th>Standard</th>
@@ -592,48 +713,45 @@ with col_main:
                                     std_value = analysis['standard']['levels'][std_level]
                                     std_reached, std_date, std_status = analysis['standard']['history'][std_level]
                                     if std_reached:
+                                        # Level wurde getroffen - zeige Datum klein und in grauer Farbe
                                         row.append(
-                                            f'<td style="{level_style}"><span style="color: #10B981">{std_value:.2f}</span> <small>({std_date})</small></td>'
+                                            f'<td style="{level_style}">{std_value:.2f} <span class="pivot-date">{std_date}</span></td>'
                                         )
                                     else:
-                                        # Farbkodierung für nicht getestete Levels
-                                        if std_status.endswith('↑'):
-                                            # Widerstand wartet auf Test
-                                            status_color = '#EC4899'  # Pink
-                                        elif std_status.endswith('↓'):
-                                            # Unterstützung wartet auf Test
-                                            status_color = '#F59E0B'  # Orange
+                                        # Status-Icons für nicht getestete Levels
+                                        if '⚑' in std_status or '⚐' in std_status:
+                                            # DMS1 Markierung
+                                            status_color = '#EC4899'  # Pink für wichtige Marke
+                                        elif '○' in std_status:
+                                            # Offene wichtige Levels
+                                            status_color = '#F59E0B'  # Orange für offene Levels
                                         else:
-                                            status_color = ''
-                                            
-                                        if std_status:
-                                            row.append(f'<td style="{level_style}">{std_value:.2f} <small style="color: {status_color}">{std_status}</small></td>')
-                                        else:
-                                            row.append(f'<td style="{level_style}">{std_value:.2f}</td>')
+                                            # Standard Richtungspfeile
+                                            status_color = '#6B7280'  # Grau für normale Levels
+                                        
+                                        icon = f'<span class="pivot-icon" style="color: {status_color}">{std_status}</span>'
+                                        row.append(f'<td style="{level_style}">{std_value:.2f} {icon}</td>')
                                 else:
                                     row.append(f'<td style="{level_style}">-</td>')
                                 if dm_level and dm_level in analysis['demark']['levels']:
                                     dm_value = analysis['demark']['levels'][dm_level]
                                     dm_reached, dm_date, dm_status = analysis['demark']['history'][dm_level]
                                     if dm_reached:
+                                        # Level wurde getroffen - zeige Datum klein und in grauer Farbe
                                         row.append(
-                                            f'<td style="{level_style}"><span style="color: #10B981">{dm_value:.2f}</span> <small>({dm_date})</small></td>'
+                                            f'<td style="{level_style}">{dm_value:.2f} <span class="pivot-date">{dm_date}</span></td>'
                                         )
                                     else:
-                                        # Farbkodierung für nicht getestete Levels
-                                        if dm_status.endswith('↑'):
-                                            # Widerstand wartet auf Test
-                                            status_color = '#EC4899'  # Pink
-                                        elif dm_status.endswith('↓'):
-                                            # Unterstützung wartet auf Test
-                                            status_color = '#F59E0B'  # Orange
+                                        # Status-Icons für DeMark Levels
+                                        if '⚑' in dm_status or '⚐' in dm_status:
+                                            status_color = '#EC4899'  # Pink für DMS1
+                                        elif '○' in dm_status:
+                                            status_color = '#F59E0B'  # Orange für offene wichtige Levels
                                         else:
-                                            status_color = ''
-                                            
-                                        if dm_status:
-                                            row.append(f'<td style="{level_style}">{dm_value:.2f} <small style="color: {status_color}">{dm_status}</small></td>')
-                                        else:
-                                            row.append(f'<td style="{level_style}">{dm_value:.2f}</td>')
+                                            status_color = '#6B7280'  # Grau für normale Richtungspfeile
+                                        
+                                        icon = f'<span class="pivot-icon" style="color: {status_color}">{dm_status}</span>'
+                                        row.append(f'<td style="{level_style}">{dm_value:.2f} {icon}</td>')
                                 else:
                                     row.append(f'<td style="{level_style}">-</td>')
                                 row.append('</tr>')

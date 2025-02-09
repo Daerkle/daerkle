@@ -1,0 +1,4359 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EOD Stock Scans</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+        <link rel="stylesheet" type="text/css"
+            href="https://cdn.datatables.net/v/bm/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/sc-2.0.5/datatables.min.css" />
+
+</head >
+
+
+<body>
+    <section class="hero is-small is-dark">
+    <div class="hero-head">
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+
+                    <div class="navbar-burger" @click="showNav = !showNav" :class="{ 'is-active': showNav }">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="navbar-menu" :class="{ 'is-active': showNav }">
+                    <div class="navbar-start">
+                        
+                        <a class="navbar-item" href="../../index.html">
+                            
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-home"></i>
+                                    </span>
+                                    <span>Home</span>
+                                </span>
+                            </a>
+
+                            <div class="navbar-item has-dropdown is-hoverable has-background-dark">
+                                <a class="navbar-link">
+                                    <span>Choose Market</span>
+                                </a>
+
+                                <div class="navbar-dropdown has-background-dark">
+                                    
+
+                                    
+                                    <a class="navbar-item" href="../../australia/market_monitor.html">
+                                        <span>Australia</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../belgium/market_monitor.html">
+                                        <span>Belgium</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../canada/market_monitor.html">
+                                        <span>Canada</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../france/market_monitor.html">
+                                        <span>France</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../germany/market_monitor.html">
+                                        <span>Germany</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../hong_kong/market_monitor.html">
+                                        <span>Hong Kong</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../indonesia/market_monitor.html">
+                                        <span>Indonesia</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../italy/market_monitor.html">
+                                        <span>Italy</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../japan/market_monitor.html">
+                                        <span>Japan</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../netherlands/market_monitor.html">
+                                        <span>Netherlands</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../nordic_markets/market_monitor.html">
+                                        <span>Nordic Markets</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../poland/market_monitor.html">
+                                        <span>Poland</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../singapore/market_monitor.html">
+                                        <span>Singapore</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../united_kingdom/market_monitor.html">
+                                        <span>United Kingdom</span>
+                                        
+                                        
+
+                                    
+                                    <a class="navbar-item" href="../../united_states/market_monitor.html">
+                                        <span>United States</span>
+                                        
+                                        
+                                </div>
+                            </div>
+                    </div>
+                    <!-- <div class="navbar-end"></div>
+                    <span class="navbar-item">
+                        <a class="button is-info is-light" href="https://twitter.com/LignoL23">
+                            <span class="icon">
+                                <i class="fab fa-twitter"></i>
+                            </span>
+                            <span>Twitter</span>
+                        </a>
+                    </span>
+                    <span class="navbar-item">
+                        <a class="button  is-success is-light" href="https://www.paypal.com/paypalme/volkerlorrmann/5">
+                            <span class="icon">
+                                <i class="fab fa-paypal"></i>
+                            </span>
+                            <span>paypal.me</span>
+                        </a>
+                    </span>
+                    <span class="navbar-item">
+                        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+                        <script
+                            type='text/javascript'>kofiwidget2.init('Support me', '#d6d6d6', 'W7W0ACJPB'); kofiwidget2.draw();</script>
+                    </span>
+                </div> -->
+            </div>
+        </nav>
+    </div>
+
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="columns is-multiline is-mobile is-centered">
+                <div class="column is-1">
+                    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDEwMCAxMDA7IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOm5vbmU7fQoJLnN0MXtmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjA7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO30KPC9zdHlsZT48dGl0bGUvPjxnPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MS44LDg0YzAuMSwwLjIsMC4xLDAuMywwLjEsMC41YzAsMy4zLDAuMiw2LjcsMC41LDEwYzIuNi0wLjEsNC45LTAuMSw3LjItMC4ydjBjMC4zLDAsMC43LDAsMSwwICAgYy0wLjMtNS0wLjQtMTAtMC41LTE1QzQ4LjQsODAuNCw0NS41LDgyLjEsNDEuOCw4NHoiLz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTYuMyw5NGMtMC4yLDAuMS0wLjQsMC4xLTAuNSwwLjJjMS43LDAuMSw0LjMsMC4yLDcuNywwLjNjMS40LDAsMi43LDAuMSw0LDAuMWMtMC4xLTEuNC0wLjMtMi44LTAuNC00LjEgICBDMjIuNiw5Mi4xLDE4LjgsOTMuMiwxNi4zLDk0eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik02Ni45LDQ3LjVjMy4xLTMuMyw2LjgtNy41LDEwLjgtMTIuN2MwLDAsMCwwLDAtMC4xYzAuNS0wLjYsMS40LTAuNywyLTAuMmMxLjcsMS41LDMuNiwyLjksNS42LDQuNCAgIGMxLDAuOCwyLjEsMS41LDMuMSwyLjJjMC4zLDAuMiwwLjYsMC4zLDEsMC4zYzAuNCwwLDAuOC0wLjIsMS4yLTAuNGMwLjMtMC4zLDAuNS0wLjcsMC41LTEuMWMwLjItNC45LDAuMy05LjksMC4zLTE1di0wLjcgICBjMC01LjYtMC4xLTExLTAuMy0xNi4zYzAtMC4yLDAtMC4zLTAuMS0wLjVjLTAuMy0xLjQtMS43LTIuMy0zLjItMkM3Ni42LDgsNjUuNSwxMC43LDU0LjUsMTMuN2MtMC4zLDAuMS0wLjYsMC4zLTAuOCwwLjUgICBjLTAuMiwwLjMtMC4zLDAuNi0wLjMsMC45YzAsMC41LDAuMywxLDAuNywxLjJjMC45LDAuNiwxLjgsMS4xLDIuNywxLjdjMi4yLDEuMyw0LjMsMi41LDYuMywzLjVjMC43LDAuNCwxLDEuMiwwLjYsMS45ICAgYy0zLjEsNi02LjYsMTEuNy0xMC42LDE3LjFjLTguNSwxMS40LTE4LDIwLTMwLDMwLjhDMTYuNyw3NywxMiw4MSw5LjQsODMuNWMtMC42LDAuNi0xLjIsMS4yLTEuNywxLjhjMC43LTAuMSwxLjQtMC4yLDIuMS0wLjQgICBjMS4xLTAuMywyLjQtMC43LDMuNi0xLjFjMi41LTAuOSw0LjktMS45LDYuMS0yLjRDMjguOSw3Ny42LDQ3LjEsNjguNiw2Ni45LDQ3LjV6Ii8+PHBhdGggY2xhc3M9InN0MCIgZD0iTTMxLjUsODguN2MtMC42LDAuMi0xLjIsMC41LTEuNywwLjdjMC4yLDEuNywwLjQsMy41LDAuNSw1LjJjMC43LDAsMS4zLDAsMS45LDBjMi42LDAsNSwwLDcuMy0wLjEgICBjLTAuMy0zLjEtMC40LTYuMS0wLjUtOS4yQzM2LjgsODYuNSwzNC4yLDg3LjYsMzEuNSw4OC43eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik01Mi45LDc3LjVjMCwwLjEsMCwwLjEsMCwwLjJjMC4xLDUuNSwwLjMsMTEuMSwwLjYsMTYuNmMzLjQtMC4xLDYuOS0wLjIsMTAuNC0wLjNjLTAuMy04LjEtMC41LTE2LjMtMC44LTI0LjQgICBDNTkuOCw3Mi40LDU2LjQsNzUsNTIuOSw3Ny41eiIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik05MS4yLDU1LjNjLTAuMS0wLjEtMC4xLTAuMS0wLjItMC4xYy0wLjEsMC0wLjItMC4xLTAuNS0wLjJjLTAuNi0wLjMtMS42LTAuNy0zLjUtMS42ICAgYy0xLjItMC42LTIuMy0xLjEtMy40LTEuNmMtMC41LTAuMi0xLTAuNC0xLjYtMC40Yy0xLjEsMC0yLjEsMC41LTIuOCwxLjRsMCwwYy0wLjIsMC4zLTAuNCwwLjUtMC42LDAuOGwyLjMsNDAuM2gwLjYgICBjMi4yLDAsMy45LDAsNS4yLTAuMmMxLTAuMSwxLjktMC4zLDIuOC0wLjdjMC41LTAuMiwwLjktMC41LDEuMi0wLjljMC41LTAuNCwwLjgtMSwxLTEuNmMwLjItMC45LDAuMy0xLjgsMC4zLTIuNyAgIGMwLTEuNy0wLjEtNC4xLTAuMS03LjVjMC0yLjEsMC4xLTQuNywwLjMtNy43bDAsMGMwLjMtNC45LDAuOC04LjgsMC44LTExLjhjMC0xLjItMC4xLTIuNC0wLjQtMy41QzkyLjIsNTYuNSw5MS44LDU1LjgsOTEuMiw1NS4zeiAgICIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik02NS44LDY3LjFjMCwwLjEsMC4xLDAuMywwLjEsMC40YzAuMyw4LjgsMC42LDE3LjYsMC45LDI2LjRjMy4yLTAuMSw2LjQtMC4xLDkuNi0wLjF2MGgwLjNoMS4xICAgYzAtMC4xLDAuMS0wLjIsMC4xLTAuNGMtMC43LTEyLjItMS40LTI0LjUtMi4xLTM2LjdDNzIuNyw2MC40LDY5LjMsNjMuOCw2NS44LDY3LjF6Ii8+PHBhdGggZD0iTTIwLjYsODQuMWM5LjYtMy45LDI4LjMtMTMuMSw0OC40LTM0LjZjMi45LTMuMSw2LjMtNywxMC4xLTExLjhjMS40LDEuMiwzLDIuNCw0LjYsMy42YzEuMSwwLjgsMi4xLDEuNSwzLjIsMi4zICAgYzEuOCwxLjIsNC4xLDEuMSw1LjctMC40YzAuOS0wLjgsMS40LTIsMS41LTMuMmMwLjItNC45LDAuMy05LjksMC4zLTE1LjF2LTAuN2MwLTUuNi0wLjEtMTEuMS0wLjMtMTYuNGMtMC4xLTMtMi43LTUuNC01LjctNS4zICAgYy0wLjMsMC0wLjcsMC4xLTEsMC4xQzc2LDUuMiw2NC44LDcuOSw1My43LDEwLjljLTEsMC4zLTEuOCwwLjgtMi40LDEuNmMtMC41LDAuOC0wLjgsMS43LTAuOCwyLjZjMCwxLjUsMC44LDIuOSwyLDMuNyAgIGMwLjksMC42LDEuOCwxLjEsMi44LDEuN2MxLjgsMS4xLDMuNSwyLDUuMiwyLjljLTIuOCw1LjQtNi4xLDEwLjYtOS43LDE1LjVDNDIuNiw1MCwzMy4yLDU4LjQsMjEuMiw2OS4yQzE2LDczLjksMTEuOSw3Ny40LDksNzkuOSAgIGMtMS4yLDEtMi4zLDIuMS0zLjMsMy4zYy0wLjQsMC40LTAuNywwLjgtMSwxLjNjLTAuMywwLjUtMC41LDEtMC41LDEuNWMwLDAuNywwLjMsMS4zLDAuOSwxLjdjMC4zLDAuMiwwLjYsMC40LDEsMC40ICAgYzAuMywwLjEsMC42LDAuMSwxLDAuMWMxLjEsMCwyLjMtMC4yLDMuNC0wLjVjMi0wLjUsMy45LTEuMiw1LjgtMS45QzE4LjEsODUuMSwxOS43LDg0LjQsMjAuNiw4NC4xeiBNOS43LDg0LjkgICBjLTAuNywwLjItMS40LDAuMy0yLjEsMC40YzAuNS0wLjYsMS4xLTEuMiwxLjctMS44QzEyLDgxLDE2LjcsNzcsMjMuMSw3MS40YzEyLTEwLjgsMjEuNi0xOS40LDMwLTMwLjhjNC01LjQsNy42LTExLjEsMTAuNi0xNy4xICAgYzAuNC0wLjcsMC4xLTEuNi0wLjYtMS45Yy0yLjEtMS4xLTQuMi0yLjMtNi4zLTMuNWMtMC45LTAuNi0xLjgtMS4xLTIuNy0xLjdjLTAuNC0wLjMtMC43LTAuNy0wLjctMS4yYzAtMC4zLDAuMS0wLjYsMC4zLTAuOSAgIGMwLjItMC4zLDAuNS0wLjUsMC44LTAuNUM2NS41LDEwLjcsNzYuNiw4LDg3LjgsNS40YzEuNC0wLjMsMi44LDAuNiwzLjIsMkM5MSw3LjYsOTEsNy44LDkxLDcuOWMwLjIsNS4yLDAuMywxMC43LDAuMywxNi4zdjAuNyAgIGMwLDUuMi0wLjEsMTAuMi0wLjMsMTVjMCwwLjQtMC4yLDAuOS0wLjUsMS4xYy0wLjMsMC4zLTAuNywwLjQtMS4yLDAuNGMtMC4zLDAtMC43LTAuMS0xLTAuM2MtMS0wLjctMi0xLjQtMy4xLTIuMiAgIGMtMi0xLjUtMy45LTMtNS42LTQuNGMtMC42LTAuNS0xLjUtMC40LTIsMC4yYzAsMCwwLDAsMCwwLjFjLTQsNS4yLTcuNyw5LjUtMTAuOCwxMi43Yy0xOS43LDIxLjEtMzgsMzAuMS00Ny40LDMzLjkgICBjLTEuMiwwLjUtMy42LDEuNS02LjEsMi40QzEyLjEsODQuMiwxMC44LDg0LjYsOS43LDg0Ljl6Ii8+PGxpbmUgY2xhc3M9InN0MSIgeDE9IjQuNSIgeDI9IjQuNSIgeTE9Ijg3LjEiIHkyPSI4Ny4xIi8+PHBhdGggZD0iTTk1LjcsNjAuN2MwLTEuNS0wLjEtMy0wLjUtNC40Qzk0LjgsNTUsOTQsNTMuOSw5Mi45LDUzYy0wLjItMC4xLTAuNC0wLjMtMC42LTAuNGMtMC4zLTAuMi0wLjYtMC4zLTEuMi0wLjYgICBjLTAuNi0wLjMtMS41LTAuNy0yLjktMS4zYy0xLjItMC42LTIuMy0xLjEtMy4zLTEuNmMtMi43LTEuNC02LTAuNi03LjksMS44bDAsMGMtNy44LDkuOS0xNywxOC40LTI3LjUsMjUuNCAgIGMtNiwzLjgtMTIuNCw3LjEtMTksOS44Yy01LjMsMi4yLTEwLDMuNi0xMy40LDQuN2MtMS43LDAuNS0zLjEsMS00LjEsMS40Yy0wLjUsMC4yLTAuOSwwLjQtMS40LDAuN2MtMC4yLDAuMi0wLjQsMC40LTAuNiwwLjYgICBjLTAuMiwwLjMtMC40LDAuNy0wLjQsMS4xYzAsMC4xLDAsMC4yLDAsMC4ydjB2MGMwLDAuMiwwLjEsMC41LDAuMywwLjdjMC4yLDAuMywwLjUsMC42LDAuOCwwLjdjMC41LDAuMiwxLjEsMC40LDEuNiwwLjUgICBjMS4zLDAuMiwyLjUsMC4zLDMuOCwwLjRjMS42LDAuMSwzLjcsMC4yLDYuMiwwLjJjMy4yLDAuMSw2LjIsMC4xLDguOSwwLjFjNywwLDEyLjUtMC4yLDE3LjQtMC4zYzguOS0wLjIsMTcuOC0wLjYsMjYuNy0wLjZoMC4zICAgYzEuOCwwLDMuNCwwLDQuOCwwYzIuMywwLjEsNC42LDAsNi45LTAuNGMwLjgtMC4xLDEuNi0wLjQsMi40LTAuOGMwLjctMC40LDEuNC0wLjgsMi0xLjRjMC44LTAuOCwxLjQtMS44LDEuOC0yLjkgICBjMC4zLTEuMSwwLjQtMi4zLDAuNC0zLjVjMC0xLjktMC4xLTQuMi0wLjEtNy41YzAtMi4xLDAuMS00LjYsMC4yLTcuNUM5NS4yLDY3LjksOTUuNyw2NCw5NS43LDYwLjd6IE0yMy40LDk0LjUgICBjLTMuNC0wLjEtNi0wLjItNy43LTAuM2MwLjItMC4xLDAuNC0wLjEsMC41LTAuMmMyLjUtMC44LDYuMy0yLDEwLjctMy42YzAuMSwxLjQsMC4zLDIuOCwwLjQsNC4xQzI2LjEsOTQuNiwyNC44LDk0LjYsMjMuNCw5NC41eiAgICBNMzIuMiw5NC42Yy0wLjYsMC0xLjMsMC0xLjksMGMtMC4yLTEuNy0wLjQtMy41LTAuNS01LjJjMC42LTAuMiwxLjEtMC40LDEuNy0wLjdjMi43LTEuMSw1LjMtMi4zLDcuNS0zLjQgICBjMC4xLDMuMSwwLjIsNi4xLDAuNSw5LjJDMzcuMyw5NC42LDM0LjksOTQuNiwzMi4yLDk0LjZ6IE00OS42LDk0LjNMNDkuNiw5NC4zYy0yLjMsMC00LjcsMC4xLTcuMiwwLjJjLTAuMy0zLjMtMC41LTYuNy0wLjUtMTAgICBjMC0wLjIsMC0wLjMtMC4xLTAuNWMzLjctMS45LDYuNi0zLjYsOC4zLTQuN2MwLjEsNSwwLjMsMTAsMC41LDE1QzUwLjMsOTQuMyw0OS45LDk0LjMsNDkuNiw5NC4zeiBNNTMuNSw5NC4yICAgYy0wLjMtNS41LTAuNS0xMS0wLjYtMTYuNmMwLTAuMSwwLTAuMSwwLTAuMmMzLjUtMi40LDYuOS01LjEsMTAuMi03LjljMC4zLDguMSwwLjUsMTYuMywwLjgsMjQuNEM2MC40LDk0LDU2LjksOTQuMSw1My41LDk0LjJ6ICAgIE03Ny44LDkzLjhoLTEuMWgtMC4zdjBjLTMuMiwwLTYuNCwwLjEtOS42LDAuMWMtMC4zLTguOC0wLjYtMTcuNi0wLjktMjYuNGMwLTAuMSwwLTAuMy0wLjEtMC40YzMuNi0zLjMsNi45LTYuOCwxMC4xLTEwLjQgICBjMC43LDEyLjIsMS40LDI0LjUsMi4xLDM2LjdDNzcuOSw5My41LDc3LjgsOTMuNiw3Ny44LDkzLjh6IE05Miw3Mi41TDkyLDcyLjVjLTAuMiwzLTAuMiw1LjYtMC4yLDcuN2MwLDMuNCwwLjEsNS44LDAuMSw3LjUgICBjMCwwLjktMC4xLDEuOC0wLjMsMi43Yy0wLjIsMC42LTAuNSwxLjItMSwxLjZjLTAuNCwwLjQtMC44LDAuNy0xLjIsMC45Yy0wLjksMC40LTEuOCwwLjYtMi44LDAuN2MtMS4zLDAuMS0zLDAuMi01LjIsMC4yaC0wLjYgICBsLTIuMy00MC4zYzAuMi0wLjMsMC40LTAuNSwwLjYtMC44bDAsMGMwLjctMC45LDEuNy0xLjQsMi44LTEuNGMwLjUsMCwxLjEsMC4xLDEuNiwwLjRjMSwwLjUsMi4xLDEuMSwzLjQsMS42ICAgYzEuOSwwLjksMi45LDEuMywzLjUsMS42YzAuMywwLjEsMC40LDAuMiwwLjUsMC4yYzAuMSwwLDAuMSwwLjEsMC4yLDAuMWMwLjYsMC41LDEuMSwxLjIsMS4zLDEuOWMwLjMsMS4xLDAuNCwyLjMsMC40LDMuNSAgIEM5Mi45LDYzLjYsOTIuMyw2Ny42LDkyLDcyLjV6Ii8+PC9nPjwvc3ZnPg==" alt="Logo">
+                </div>
+                <div class="column is-4">
+                    <p class="title">
+                        EOD Stock Market Scans
+                    </p>
+                    <p class="subtitle">
+                        Fintwits most popular stockmarket scans
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-foot">
+        <nav class="tabs is-boxed is-fullwidth">
+            <div class="container">
+                <ul>
+                    
+                    <li class="is-active">
+                        <a href="../Vo/Volume Gainers_result_table.html"> Results </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Vo/Volume Gainers_minicharts.html"> Minicharts </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Vo/Volume Gainers_charts.html"> Charts </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="../Vo/Volume Gainers_criteria.html"> Criteria </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+    
+</section>
+    <div class="columns is-centered">
+        <div class="column is-2">
+            <div class="box has-background-light my-0 mx-2 p-auto">
+    <aside class="menu">
+        <p class="menu-label has-text-dark">
+            Market Monitor
+        </p>
+        <ul class="menu-list">
+            <li><a class="has-text-grey-light">New Highs/Lows</a></li>
+            <li><a class="has-text-grey-light">Breadth</a></li>
+            <li><a class="has-text-grey-light">Above/Below SMA</a></li>
+            <li><a class="has-text-grey-light">Sectors</a></li>
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Kristjan Kullamägi
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Biggest Gainers 1M_minicharts.html">
+                        Biggest Gainers 1M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Biggest Gainers 3M_minicharts.html">
+                        Biggest Gainers 3M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Biggest Gainers 6M_minicharts.html">
+                        Biggest Gainers 6M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Biggest Gainers 12M_minicharts.html">
+                        Biggest Gainers 12M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/EP with Growth_minicharts.html">
+                        EP with Growth
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/EP_minicharts.html">
+                        EP
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/High Trend Intensity_minicharts.html">
+                        High Trend Intensity
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Small Stock Momo_minicharts.html">
+                        Small Stock Momo
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Kristjan Kullamägi/Momentum_minicharts.html">
+                        Momentum
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Brad Schulz
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Brad Schulz/Pocket Pivot_minicharts.html">
+                        Pocket Pivot
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Stockbee
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Stockbee/4 PCT  Gainers_minicharts.html">
+                        4 PCT  Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Stockbee/Combo_minicharts.html">
+                        Combo
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Stockbee/Ants_minicharts.html">
+                        Ants
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Stockbee/Breakout 1M Base_minicharts.html">
+                        Breakout 1M Base
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Stockbee/Breakout 3M Base_minicharts.html">
+                        Breakout 3M Base
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Leif Soreide
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Leif Soreide/HTF_minicharts.html">
+                        HTF
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Blake Davis
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Blake Davis/Strength_minicharts.html">
+                        Strength
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Ben
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ben/Power of 3_minicharts.html">
+                        Power of 3
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ben/Velocity_minicharts.html">
+                        Velocity
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ben/Focus_minicharts.html">
+                        Focus
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Ray
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ray/RSNHBP 5D_minicharts.html">
+                        RSNHBP 5D
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ray/RSNHBP 1M_minicharts.html">
+                        RSNHBP 1M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ray/RSNHBP 3M_minicharts.html">
+                        RSNHBP 3M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ray/RSNHBP 6M_minicharts.html">
+                        RSNHBP 6M
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Ray/RSNHBP 12M_minicharts.html">
+                        RSNHBP 12M
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Mark Minvervini
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Mark Minvervini/Trend Template_minicharts.html">
+                        Trend Template
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+        <p class="menu-label has-text-dark">
+            Vo
+        </p>
+        <ul class="menu-list">
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Top Gainers From Open_minicharts.html">
+                        Top Gainers From Open
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Top Gainers_minicharts.html">
+                        Top Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="is-active"
+                        href="../../canada/Vo/Volume Gainers_minicharts.html">
+                        Volume Gainers
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Insiders_minicharts.html">
+                        Insiders
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Darvas Scan_minicharts.html">
+                        Darvas Scan
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Darvas Scan with Growth_minicharts.html">
+                        Darvas Scan with Growth
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/52W High_minicharts.html">
+                        52W High
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Quite and Tight_minicharts.html">
+                        Quite and Tight
+                    </a>
+                    
+                
+            </li>
+            
+            <li>
+                
+                    
+                    <a class="has-text-grey-light"
+                        href="../../canada/Vo/Mo Scan_minicharts.html">
+                        Mo Scan
+                    </a>
+                    
+                
+            </li>
+            
+        </ul>
+        
+    </aside>
+</div>
+        </div>
+        <div class="column is-10">
+
+            
+<section class="block my-6">
+    <div class="columns ">
+        <div class="column is-5 has-text-left">
+            <h1 class="title is-4">Volume Gainers @ Canada</h1>
+            <h2 class="subtitle is-6">2023-03-07</h2>
+        </div>
+        <div class="column has-text-right mr-5">
+            <div class="media">
+
+                <div class="media-content">
+                    <p class="title is-5">Vo</p>
+                    <p class="subtitle is-6"><a class="has-text-grey-light" href="https://twitter.com/LignoL23">@LignoL23</a></p>
+                </div>
+                <div class="media-right">
+                    <figure class="image is-48x48">
+                        <img src="https://unavatar.io/twitter/LignoL23" alt="Placeholder image">
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+            <section class="my-auto mr-5">
+                
+    <div class="table-container">
+        <table border="1" class="dataframe table is-striped no-wrap" id="data" style="width:100%; font-size:85%">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>symbol</th>
+      <th>yahoo_symbol</th>
+      <th>name</th>
+      <th>sector</th>
+      <th>industry</th>
+      <th>roc</th>
+      <th>close</th>
+      <th>volume</th>
+      <th>rel Volume</th>
+      <th>adr(20)</th>
+      <th>atr(14)</th>
+      <th>roc(5)</th>
+      <th>roc(21)</th>
+      <th>roc(63)</th>
+      <th>roc(126)</th>
+      <th>roc(252)</th>
+      <th>52w High</th>
+      <th>% below 52w High</th>
+      <th>52w Low</th>
+      <th>% above 52w Low</th>
+      <th>UD Ratio</th>
+      <th>50d avg Volume</th>
+      <th>Pocket Pivot</th>
+      <th>1w Pocket Pivots</th>
+      <th>1m Pocket Pivots</th>
+      <th>Rocket Ratio</th>
+      <th>1m RS</th>
+      <th>3m RS</th>
+      <th>RS</th>
+      <th>Industry 1m RS</th>
+      <th>Industry 3m RS</th>
+      <th>Industry RS</th>
+      <th>ema(9)</th>
+      <th>% from 9d ema</th>
+      <th>ema(21)</th>
+      <th>% from 21d ema</th>
+      <th>sma(50)</th>
+      <th>% from 50d sma</th>
+      <th>EPS Growth Q</th>
+      <th>EPS Growth Y</th>
+      <th>EPS Growth FQ</th>
+      <th>EPS Growth FY</th>
+      <th>EPS Growth FQ1</th>
+      <th>EPS Growth FY1</th>
+      <th>Rev Growth Q</th>
+      <th>Rev Growth FQ</th>
+      <th>Rev Growth FY</th>
+      <th>Rev Growth FQ1</th>
+      <th>Rev Growth FY1</th>
+      <th>Insiders %</th>
+      <th>Institutions %</th>
+      <th>Institutions No.</th>
+      <th>Market Cap</th>
+      <th>Shares Outstanding</th>
+      <th>Shares Float</th>
+      <th>Shares Short</th>
+      <th>Short Ratio</th>
+      <th>Net Insider Trading %</th>
+      <th>exchange</th>
+      <th>country</th>
+      <th>IPO Date</th>
+      <th>market</th>
+      <th>date</th>
+      <th>group_name</th>
+      <th>scan_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ARE</td>
+      <td>ARE.TO</td>
+      <td>Aecon Group Inc.</td>
+      <td>Industrials</td>
+      <td>Engineering &amp; Construction</td>
+      <td>4.45</td>
+      <td>13.15</td>
+      <td>1093526.0</td>
+      <td>2.24</td>
+      <td>3.28</td>
+      <td>0.51</td>
+      <td>29.68</td>
+      <td>24.53</td>
+      <td>32.96</td>
+      <td>23.71</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.83</td>
+      <td>487985.92</td>
+      <td>True</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>121.92</td>
+      <td>93</td>
+      <td>84</td>
+      <td>79</td>
+      <td>84</td>
+      <td>48</td>
+      <td>53</td>
+      <td>11.71</td>
+      <td>12.29</td>
+      <td>11.17</td>
+      <td>17.69</td>
+      <td>10.53</td>
+      <td>24.86</td>
+      <td>-0.48</td>
+      <td>-0.44</td>
+      <td>0.02</td>
+      <td>-0.21</td>
+      <td>0.29</td>
+      <td>0.22</td>
+      <td>0.12</td>
+      <td>0.06</td>
+      <td>0.10</td>
+      <td>0.05</td>
+      <td>0.04</td>
+      <td>1.63</td>
+      <td>30.62</td>
+      <td>88.0</td>
+      <td>1.058023e+09</td>
+      <td>6.032060e+07</td>
+      <td>5.949300e+07</td>
+      <td>1783254.0</td>
+      <td>7.16</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-03-11 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>IGM</td>
+      <td>IGM.TO</td>
+      <td>IGM Financial Inc.</td>
+      <td>Financial Services</td>
+      <td>Asset Management</td>
+      <td>1.43</td>
+      <td>43.20</td>
+      <td>515505.0</td>
+      <td>2.02</td>
+      <td>1.64</td>
+      <td>0.67</td>
+      <td>4.05</td>
+      <td>2.08</td>
+      <td>8.95</td>
+      <td>22.21</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.52</td>
+      <td>255412.72</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>322.07</td>
+      <td>73</td>
+      <td>69</td>
+      <td>75</td>
+      <td>44</td>
+      <td>39</td>
+      <td>39</td>
+      <td>42.40</td>
+      <td>1.89</td>
+      <td>42.08</td>
+      <td>2.65</td>
+      <td>41.05</td>
+      <td>5.24</td>
+      <td>0.17</td>
+      <td>0.16</td>
+      <td>0.18</td>
+      <td>0.07</td>
+      <td>0.05</td>
+      <td>0.08</td>
+      <td>0.07</td>
+      <td>0.15</td>
+      <td>0.07</td>
+      <td>0.05</td>
+      <td>0.06</td>
+      <td>65.63</td>
+      <td>8.56</td>
+      <td>217.0</td>
+      <td>1.086755e+10</td>
+      <td>2.397430e+08</td>
+      <td>8.226024e+07</td>
+      <td>3069770.0</td>
+      <td>8.49</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MFI</td>
+      <td>MFI.TO</td>
+      <td>Maple Leaf Foods Inc.</td>
+      <td>Consumer Defensive</td>
+      <td>Packaged Foods</td>
+      <td>0.61</td>
+      <td>28.12</td>
+      <td>326966.0</td>
+      <td>1.81</td>
+      <td>1.80</td>
+      <td>0.51</td>
+      <td>1.59</td>
+      <td>5.28</td>
+      <td>10.75</td>
+      <td>21.57</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.97</td>
+      <td>180361.96</td>
+      <td>True</td>
+      <td>2.0</td>
+      <td>7.0</td>
+      <td>413.71</td>
+      <td>81</td>
+      <td>71</td>
+      <td>73</td>
+      <td>96</td>
+      <td>98</td>
+      <td>94</td>
+      <td>27.69</td>
+      <td>1.54</td>
+      <td>27.10</td>
+      <td>3.77</td>
+      <td>26.09</td>
+      <td>7.80</td>
+      <td>-0.33</td>
+      <td>-0.34</td>
+      <td>0.13</td>
+      <td>0.22</td>
+      <td>0.31</td>
+      <td>0.33</td>
+      <td>0.12</td>
+      <td>0.01</td>
+      <td>0.06</td>
+      <td>NaN</td>
+      <td>0.05</td>
+      <td>39.21</td>
+      <td>24.54</td>
+      <td>107.0</td>
+      <td>4.008100e+09</td>
+      <td>1.240130e+08</td>
+      <td>7.461746e+07</td>
+      <td>2794810.0</td>
+      <td>12.02</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-05-08 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>BEPC</td>
+      <td>BEPC.TO</td>
+      <td>Brookfield Renewable Corp</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>1.59</td>
+      <td>40.84</td>
+      <td>531262.0</td>
+      <td>1.77</td>
+      <td>2.30</td>
+      <td>0.94</td>
+      <td>7.47</td>
+      <td>0.94</td>
+      <td>-7.03</td>
+      <td>-19.37</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.01</td>
+      <td>299497.58</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>382.14</td>
+      <td>69</td>
+      <td>27</td>
+      <td>28</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>39.59</td>
+      <td>3.15</td>
+      <td>39.65</td>
+      <td>2.99</td>
+      <td>39.87</td>
+      <td>2.43</td>
+      <td>1.24</td>
+      <td>1.24</td>
+      <td>0.58</td>
+      <td>2.00</td>
+      <td>0.58</td>
+      <td>-0.58</td>
+      <td>0.08</td>
+      <td>0.42</td>
+      <td>-0.10</td>
+      <td>0.42</td>
+      <td>0.25</td>
+      <td>0.03</td>
+      <td>74.17</td>
+      <td>561.0</td>
+      <td>7.296877e+09</td>
+      <td>1.722180e+08</td>
+      <td>1.144505e+08</td>
+      <td>1315007.0</td>
+      <td>4.07</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2020-07-24 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GFL</td>
+      <td>GFL.TO</td>
+      <td>Gfl Environmental Holdings Inc</td>
+      <td>Industrials</td>
+      <td>Waste Management</td>
+      <td>2.74</td>
+      <td>44.99</td>
+      <td>498915.0</td>
+      <td>1.76</td>
+      <td>2.55</td>
+      <td>1.24</td>
+      <td>8.46</td>
+      <td>6.81</td>
+      <td>13.35</td>
+      <td>19.31</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.19</td>
+      <td>283823.12</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>639.93</td>
+      <td>83</td>
+      <td>73</td>
+      <td>76</td>
+      <td>94</td>
+      <td>88</td>
+      <td>52</td>
+      <td>42.94</td>
+      <td>4.77</td>
+      <td>42.35</td>
+      <td>6.23</td>
+      <td>41.50</td>
+      <td>8.40</td>
+      <td>0.03</td>
+      <td>-0.12</td>
+      <td>0.14</td>
+      <td>0.30</td>
+      <td>0.33</td>
+      <td>0.21</td>
+      <td>0.33</td>
+      <td>0.11</td>
+      <td>0.20</td>
+      <td>0.17</td>
+      <td>0.12</td>
+      <td>3.30</td>
+      <td>77.51</td>
+      <td>312.0</td>
+      <td>1.453642e+10</td>
+      <td>3.315910e+08</td>
+      <td>1.816264e+08</td>
+      <td>2794592.0</td>
+      <td>13.57</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2020-03-03 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>POW</td>
+      <td>POW.TO</td>
+      <td>Power Corporation Of Canada</td>
+      <td>Financial Services</td>
+      <td>Insurance—Life</td>
+      <td>0.11</td>
+      <td>37.07</td>
+      <td>4037439.0</td>
+      <td>1.75</td>
+      <td>1.20</td>
+      <td>0.44</td>
+      <td>1.78</td>
+      <td>2.21</td>
+      <td>8.87</td>
+      <td>9.48</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.33</td>
+      <td>2301955.28</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>247.71</td>
+      <td>73</td>
+      <td>69</td>
+      <td>69</td>
+      <td>16</td>
+      <td>22</td>
+      <td>19</td>
+      <td>36.63</td>
+      <td>1.19</td>
+      <td>36.20</td>
+      <td>2.39</td>
+      <td>35.19</td>
+      <td>5.36</td>
+      <td>0.46</td>
+      <td>0.45</td>
+      <td>0.10</td>
+      <td>0.59</td>
+      <td>-0.15</td>
+      <td>-0.08</td>
+      <td>0.27</td>
+      <td>NaN</td>
+      <td>0.07</td>
+      <td>NaN</td>
+      <td>0.06</td>
+      <td>12.92</td>
+      <td>33.25</td>
+      <td>307.0</td>
+      <td>2.780953e+10</td>
+      <td>6.217560e+08</td>
+      <td>5.702158e+08</td>
+      <td>27176459.0</td>
+      <td>16.68</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>AX_u</td>
+      <td>AX-UN.TO</td>
+      <td>Artis REIT</td>
+      <td>Real Estate</td>
+      <td>REIT—Diversified</td>
+      <td>0.47</td>
+      <td>8.62</td>
+      <td>629439.0</td>
+      <td>1.71</td>
+      <td>2.17</td>
+      <td>0.23</td>
+      <td>-5.17</td>
+      <td>-11.50</td>
+      <td>-5.96</td>
+      <td>-19.83</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.99</td>
+      <td>368140.60</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>231.98</td>
+      <td>20</td>
+      <td>29</td>
+      <td>21</td>
+      <td>31</td>
+      <td>34</td>
+      <td>35</td>
+      <td>8.85</td>
+      <td>-2.62</td>
+      <td>9.09</td>
+      <td>-5.15</td>
+      <td>9.30</td>
+      <td>-7.35</td>
+      <td>0.86</td>
+      <td>1.16</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.13</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>28.88</td>
+      <td>38.23</td>
+      <td>111.0</td>
+      <td>1.607578e+09</td>
+      <td>1.219710e+08</td>
+      <td>8.540039e+07</td>
+      <td>4299525.0</td>
+      <td>7.88</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2007-09-17 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>PXT</td>
+      <td>PXT.TO</td>
+      <td>Parex Resources Inc</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>0.22</td>
+      <td>23.11</td>
+      <td>1035228.0</td>
+      <td>1.62</td>
+      <td>3.38</td>
+      <td>0.80</td>
+      <td>3.91</td>
+      <td>0.39</td>
+      <td>22.02</td>
+      <td>9.01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.29</td>
+      <td>638796.18</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>185.82</td>
+      <td>67</td>
+      <td>80</td>
+      <td>70</td>
+      <td>89</td>
+      <td>44</td>
+      <td>45</td>
+      <td>23.14</td>
+      <td>-0.14</td>
+      <td>23.09</td>
+      <td>0.07</td>
+      <td>22.25</td>
+      <td>3.86</td>
+      <td>1.46</td>
+      <td>1.75</td>
+      <td>1.93</td>
+      <td>3.62</td>
+      <td>NaN</td>
+      <td>0.56</td>
+      <td>0.72</td>
+      <td>1.38</td>
+      <td>0.98</td>
+      <td>NaN</td>
+      <td>0.17</td>
+      <td>1.65</td>
+      <td>45.28</td>
+      <td>132.0</td>
+      <td>3.244624e+09</td>
+      <td>1.192000e+08</td>
+      <td>1.187024e+08</td>
+      <td>2283258.0</td>
+      <td>4.31</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2012-01-24 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>H</td>
+      <td>H.TO</td>
+      <td>Hydro One Limited</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Electric</td>
+      <td>0.42</td>
+      <td>35.96</td>
+      <td>1632573.0</td>
+      <td>1.61</td>
+      <td>1.61</td>
+      <td>0.48</td>
+      <td>1.55</td>
+      <td>0.28</td>
+      <td>-4.89</td>
+      <td>1.58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.90</td>
+      <td>1017132.68</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>588.08</td>
+      <td>66</td>
+      <td>31</td>
+      <td>51</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>35.70</td>
+      <td>0.73</td>
+      <td>35.83</td>
+      <td>0.37</td>
+      <td>36.31</td>
+      <td>-0.98</td>
+      <td>0.03</td>
+      <td>0.06</td>
+      <td>0.00</td>
+      <td>0.07</td>
+      <td>-0.02</td>
+      <td>0.01</td>
+      <td>0.00</td>
+      <td>-0.06</td>
+      <td>0.05</td>
+      <td>0.14</td>
+      <td>0.05</td>
+      <td>47.21</td>
+      <td>21.55</td>
+      <td>276.0</td>
+      <td>1.880794e+10</td>
+      <td>5.982170e+08</td>
+      <td>5.981575e+08</td>
+      <td>9945260.0</td>
+      <td>11.46</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2015-11-17 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>SNC</td>
+      <td>SNC.TO</td>
+      <td>SNC-Lavalin Group Inc.</td>
+      <td>Industrials</td>
+      <td>Engineering &amp; Construction</td>
+      <td>2.18</td>
+      <td>30.41</td>
+      <td>522889.0</td>
+      <td>1.57</td>
+      <td>2.56</td>
+      <td>0.82</td>
+      <td>7.68</td>
+      <td>0.80</td>
+      <td>24.17</td>
+      <td>21.11</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.23</td>
+      <td>333853.12</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>525.20</td>
+      <td>68</td>
+      <td>81</td>
+      <td>81</td>
+      <td>84</td>
+      <td>48</td>
+      <td>53</td>
+      <td>29.19</td>
+      <td>4.17</td>
+      <td>28.88</td>
+      <td>5.29</td>
+      <td>27.92</td>
+      <td>8.91</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.23</td>
+      <td>2.31</td>
+      <td>-0.23</td>
+      <td>0.22</td>
+      <td>0.02</td>
+      <td>0.10</td>
+      <td>0.05</td>
+      <td>0.01</td>
+      <td>-0.01</td>
+      <td>0.08</td>
+      <td>62.37</td>
+      <td>98.0</td>
+      <td>5.099844e+09</td>
+      <td>1.755540e+08</td>
+      <td>1.753383e+08</td>
+      <td>3174359.0</td>
+      <td>5.81</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2002-07-08 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>STN</td>
+      <td>STN.TO</td>
+      <td>Stantec Inc</td>
+      <td>Industrials</td>
+      <td>Engineering &amp; Construction</td>
+      <td>1.31</td>
+      <td>80.38</td>
+      <td>313242.0</td>
+      <td>1.51</td>
+      <td>2.06</td>
+      <td>2.05</td>
+      <td>1.41</td>
+      <td>12.89</td>
+      <td>18.89</td>
+      <td>30.66</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.62</td>
+      <td>207718.98</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>465.56</td>
+      <td>88</td>
+      <td>78</td>
+      <td>82</td>
+      <td>84</td>
+      <td>48</td>
+      <td>53</td>
+      <td>78.42</td>
+      <td>2.50</td>
+      <td>75.60</td>
+      <td>6.33</td>
+      <td>70.59</td>
+      <td>13.88</td>
+      <td>-0.03</td>
+      <td>-0.03</td>
+      <td>0.25</td>
+      <td>0.24</td>
+      <td>0.21</td>
+      <td>0.14</td>
+      <td>0.24</td>
+      <td>0.20</td>
+      <td>0.22</td>
+      <td>0.09</td>
+      <td>0.07</td>
+      <td>0.29</td>
+      <td>77.60</td>
+      <td>291.0</td>
+      <td>7.629562e+09</td>
+      <td>1.107660e+08</td>
+      <td>9.670664e+07</td>
+      <td>1197325.0</td>
+      <td>4.96</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-13 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>BEP_u</td>
+      <td>BEP-UN.TO</td>
+      <td>Brookfield Renewable Partners LP</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>3.10</td>
+      <td>38.30</td>
+      <td>338237.0</td>
+      <td>1.48</td>
+      <td>2.12</td>
+      <td>0.82</td>
+      <td>7.37</td>
+      <td>2.00</td>
+      <td>-1.77</td>
+      <td>-21.29</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.90</td>
+      <td>228415.60</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>901.73</td>
+      <td>73</td>
+      <td>37</td>
+      <td>29</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>36.88</td>
+      <td>3.84</td>
+      <td>36.92</td>
+      <td>3.74</td>
+      <td>37.03</td>
+      <td>3.42</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.07</td>
+      <td>0.83</td>
+      <td>1.18</td>
+      <td>4.12</td>
+      <td>0.14</td>
+      <td>-0.20</td>
+      <td>-0.02</td>
+      <td>0.04</td>
+      <td>0.02</td>
+      <td>0.00</td>
+      <td>62.38</td>
+      <td>329.0</td>
+      <td>2.525601e+10</td>
+      <td>2.752870e+08</td>
+      <td>2.059684e+08</td>
+      <td>1197295.0</td>
+      <td>3.93</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2003-10-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>CPX</td>
+      <td>CPX.TO</td>
+      <td>Capital Power Corporation</td>
+      <td>Utilities</td>
+      <td>Utilities—Independent Power Producers</td>
+      <td>1.39</td>
+      <td>42.24</td>
+      <td>465489.0</td>
+      <td>1.40</td>
+      <td>1.81</td>
+      <td>0.83</td>
+      <td>-0.54</td>
+      <td>-3.54</td>
+      <td>-9.97</td>
+      <td>-16.29</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.83</td>
+      <td>332966.62</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>346.55</td>
+      <td>44</td>
+      <td>23</td>
+      <td>28</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>42.29</td>
+      <td>-0.12</td>
+      <td>42.91</td>
+      <td>-1.57</td>
+      <td>44.48</td>
+      <td>-5.04</td>
+      <td>-0.63</td>
+      <td>-0.74</td>
+      <td>4.17</td>
+      <td>0.76</td>
+      <td>0.06</td>
+      <td>0.12</td>
+      <td>-0.23</td>
+      <td>0.11</td>
+      <td>-0.06</td>
+      <td>0.01</td>
+      <td>0.13</td>
+      <td>0.18</td>
+      <td>19.48</td>
+      <td>88.0</td>
+      <td>4.564288e+09</td>
+      <td>1.146230e+08</td>
+      <td>1.153887e+08</td>
+      <td>932936.0</td>
+      <td>2.86</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2009-08-10 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>GWO</td>
+      <td>GWO.TO</td>
+      <td>Great-West Lifeco Inc.</td>
+      <td>Financial Services</td>
+      <td>Insurance—Life</td>
+      <td>0.22</td>
+      <td>36.84</td>
+      <td>3090107.0</td>
+      <td>1.36</td>
+      <td>1.51</td>
+      <td>0.54</td>
+      <td>-1.05</td>
+      <td>4.10</td>
+      <td>15.38</td>
+      <td>18.76</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.17</td>
+      <td>2273111.84</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>112.67</td>
+      <td>79</td>
+      <td>75</td>
+      <td>77</td>
+      <td>16</td>
+      <td>22</td>
+      <td>19</td>
+      <td>36.74</td>
+      <td>0.26</td>
+      <td>36.27</td>
+      <td>1.58</td>
+      <td>34.74</td>
+      <td>6.05</td>
+      <td>-0.15</td>
+      <td>-0.16</td>
+      <td>0.04</td>
+      <td>0.06</td>
+      <td>0.03</td>
+      <td>0.11</td>
+      <td>0.03</td>
+      <td>-0.94</td>
+      <td>0.06</td>
+      <td>-0.94</td>
+      <td>-0.37</td>
+      <td>70.73</td>
+      <td>11.12</td>
+      <td>249.0</td>
+      <td>3.655919e+10</td>
+      <td>9.307330e+08</td>
+      <td>2.561160e+08</td>
+      <td>29201083.0</td>
+      <td>31.20</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2002-04-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>IAG</td>
+      <td>IAG.TO</td>
+      <td>iA Financial Corporation Inc</td>
+      <td>Financial Services</td>
+      <td>Insurance—Diversified</td>
+      <td>0.34</td>
+      <td>88.32</td>
+      <td>310059.0</td>
+      <td>1.33</td>
+      <td>2.06</td>
+      <td>1.97</td>
+      <td>-3.58</td>
+      <td>7.04</td>
+      <td>15.23</td>
+      <td>27.80</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.19</td>
+      <td>232311.50</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>462.66</td>
+      <td>84</td>
+      <td>75</td>
+      <td>82</td>
+      <td>44</td>
+      <td>39</td>
+      <td>39</td>
+      <td>88.58</td>
+      <td>-0.29</td>
+      <td>87.16</td>
+      <td>1.33</td>
+      <td>83.44</td>
+      <td>5.85</td>
+      <td>0.00</td>
+      <td>-0.01</td>
+      <td>0.21</td>
+      <td>0.07</td>
+      <td>-0.02</td>
+      <td>0.07</td>
+      <td>-0.06</td>
+      <td>NaN</td>
+      <td>-0.78</td>
+      <td>NaN</td>
+      <td>-0.87</td>
+      <td>0.14</td>
+      <td>43.90</td>
+      <td>219.0</td>
+      <td>8.677211e+09</td>
+      <td>1.076310e+08</td>
+      <td>1.074809e+08</td>
+      <td>1073733.0</td>
+      <td>4.71</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2000-02-10 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>EFN</td>
+      <td>EFN.TO</td>
+      <td>Element Fleet Management Corp</td>
+      <td>Industrials</td>
+      <td>Rental &amp; Leasing Services</td>
+      <td>0.72</td>
+      <td>19.55</td>
+      <td>898706.0</td>
+      <td>1.32</td>
+      <td>2.23</td>
+      <td>0.46</td>
+      <td>0.31</td>
+      <td>3.28</td>
+      <td>1.24</td>
+      <td>21.43</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.95</td>
+      <td>682848.86</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>599.17</td>
+      <td>77</td>
+      <td>47</td>
+      <td>77</td>
+      <td>23</td>
+      <td>6</td>
+      <td>9</td>
+      <td>19.42</td>
+      <td>0.66</td>
+      <td>19.30</td>
+      <td>1.29</td>
+      <td>19.01</td>
+      <td>2.82</td>
+      <td>0.20</td>
+      <td>0.34</td>
+      <td>-0.17</td>
+      <td>-0.04</td>
+      <td>-0.04</td>
+      <td>0.08</td>
+      <td>0.02</td>
+      <td>-0.02</td>
+      <td>0.00</td>
+      <td>-0.03</td>
+      <td>0.02</td>
+      <td>0.19</td>
+      <td>52.25</td>
+      <td>115.0</td>
+      <td>5.151800e+09</td>
+      <td>4.105020e+08</td>
+      <td>4.091399e+08</td>
+      <td>8527153.0</td>
+      <td>16.31</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2011-12-16 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>MRE</td>
+      <td>MRE.TO</td>
+      <td>Martinrea International Inc.</td>
+      <td>Consumer Cyclical</td>
+      <td>Auto Parts</td>
+      <td>0.07</td>
+      <td>14.91</td>
+      <td>273543.0</td>
+      <td>1.31</td>
+      <td>2.83</td>
+      <td>0.45</td>
+      <td>6.65</td>
+      <td>7.73</td>
+      <td>23.63</td>
+      <td>42.95</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.47</td>
+      <td>209273.42</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>326.86</td>
+      <td>84</td>
+      <td>81</td>
+      <td>87</td>
+      <td>9</td>
+      <td>32</td>
+      <td>48</td>
+      <td>14.37</td>
+      <td>3.78</td>
+      <td>13.86</td>
+      <td>7.58</td>
+      <td>12.75</td>
+      <td>16.97</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-1.02</td>
+      <td>-0.09</td>
+      <td>-0.29</td>
+      <td>2.11</td>
+      <td>-0.13</td>
+      <td>-0.15</td>
+      <td>0.07</td>
+      <td>-0.06</td>
+      <td>0.12</td>
+      <td>26.85</td>
+      <td>33.12</td>
+      <td>75.0</td>
+      <td>8.012600e+08</td>
+      <td>8.036710e+07</td>
+      <td>6.840285e+07</td>
+      <td>2258581.0</td>
+      <td>8.07</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1998-06-03 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>DSG</td>
+      <td>DSG.TO</td>
+      <td>Descartes Systems Group Inc</td>
+      <td>Technology</td>
+      <td>Software—Application</td>
+      <td>0.07</td>
+      <td>104.00</td>
+      <td>144008.0</td>
+      <td>1.28</td>
+      <td>1.76</td>
+      <td>1.93</td>
+      <td>3.34</td>
+      <td>1.61</td>
+      <td>7.95</td>
+      <td>15.08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.24</td>
+      <td>112265.20</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>6.0</td>
+      <td>715.12</td>
+      <td>71</td>
+      <td>67</td>
+      <td>77</td>
+      <td>35</td>
+      <td>94</td>
+      <td>91</td>
+      <td>102.64</td>
+      <td>1.32</td>
+      <td>101.33</td>
+      <td>2.63</td>
+      <td>98.10</td>
+      <td>6.01</td>
+      <td>0.04</td>
+      <td>0.03</td>
+      <td>0.39</td>
+      <td>0.14</td>
+      <td>0.17</td>
+      <td>0.17</td>
+      <td>0.12</td>
+      <td>0.10</td>
+      <td>0.14</td>
+      <td>0.09</td>
+      <td>0.10</td>
+      <td>0.02</td>
+      <td>91.65</td>
+      <td>369.0</td>
+      <td>8.156099e+09</td>
+      <td>8.481800e+07</td>
+      <td>8.028278e+07</td>
+      <td>669915.0</td>
+      <td>5.38</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1998-06-03 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>TRUL</td>
+      <td>TRUL.CN</td>
+      <td>Trulieve Cannabis Corp</td>
+      <td>Healthcare</td>
+      <td>Drug Manufacturers—Specialty &amp; Generic</td>
+      <td>1.46</td>
+      <td>9.01</td>
+      <td>269785.0</td>
+      <td>1.26</td>
+      <td>5.06</td>
+      <td>0.47</td>
+      <td>4.16</td>
+      <td>2.15</td>
+      <td>-54.10</td>
+      <td>-52.65</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.76</td>
+      <td>214551.22</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>563.48</td>
+      <td>73</td>
+      <td>1</td>
+      <td>2</td>
+      <td>48</td>
+      <td>50</td>
+      <td>24</td>
+      <td>8.75</td>
+      <td>2.94</td>
+      <td>8.80</td>
+      <td>2.36</td>
+      <td>9.10</td>
+      <td>-1.03</td>
+      <td>0.07</td>
+      <td>-0.07</td>
+      <td>-0.29</td>
+      <td>1.06</td>
+      <td>-0.12</td>
+      <td>0.03</td>
+      <td>0.64</td>
+      <td>1.30</td>
+      <td>1.27</td>
+      <td>1.10</td>
+      <td>0.54</td>
+      <td>11.27</td>
+      <td>6.55</td>
+      <td>32.0</td>
+      <td>4.796092e+09</td>
+      <td>7.461160e+07</td>
+      <td>1.208959e+08</td>
+      <td>242780.0</td>
+      <td>0.77</td>
+      <td>0.0</td>
+      <td>CSE</td>
+      <td>Canada</td>
+      <td>2018-09-26 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>CFP</td>
+      <td>CFP.TO</td>
+      <td>Canfor Corporation</td>
+      <td>Basic Materials</td>
+      <td>Lumber &amp; Wood Production</td>
+      <td>0.65</td>
+      <td>23.19</td>
+      <td>270821.0</td>
+      <td>1.22</td>
+      <td>3.45</td>
+      <td>0.89</td>
+      <td>-0.39</td>
+      <td>-13.31</td>
+      <td>-2.64</td>
+      <td>-4.88</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.35</td>
+      <td>222749.92</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>272.22</td>
+      <td>17</td>
+      <td>36</td>
+      <td>38</td>
+      <td>4</td>
+      <td>48</td>
+      <td>49</td>
+      <td>23.13</td>
+      <td>0.26</td>
+      <td>23.46</td>
+      <td>-1.13</td>
+      <td>23.22</td>
+      <td>-0.14</td>
+      <td>-0.04</td>
+      <td>-0.03</td>
+      <td>-0.45</td>
+      <td>1.79</td>
+      <td>-0.17</td>
+      <td>-0.39</td>
+      <td>0.08</td>
+      <td>0.03</td>
+      <td>0.42</td>
+      <td>-0.00</td>
+      <td>-0.08</td>
+      <td>51.92</td>
+      <td>19.33</td>
+      <td>128.0</td>
+      <td>3.667593e+09</td>
+      <td>1.244940e+08</td>
+      <td>6.063710e+07</td>
+      <td>2495186.0</td>
+      <td>8.36</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>DOO</td>
+      <td>DOO.TO</td>
+      <td>BRP Inc</td>
+      <td>Consumer Cyclical</td>
+      <td>Recreational Vehicles</td>
+      <td>0.84</td>
+      <td>118.34</td>
+      <td>141534.0</td>
+      <td>1.17</td>
+      <td>1.54</td>
+      <td>1.86</td>
+      <td>0.09</td>
+      <td>-1.34</td>
+      <td>12.51</td>
+      <td>32.24</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.89</td>
+      <td>120864.40</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>257.94</td>
+      <td>55</td>
+      <td>73</td>
+      <td>81</td>
+      <td>8</td>
+      <td>5</td>
+      <td>5</td>
+      <td>117.85</td>
+      <td>0.41</td>
+      <td>117.09</td>
+      <td>1.07</td>
+      <td>111.96</td>
+      <td>5.70</td>
+      <td>0.11</td>
+      <td>0.15</td>
+      <td>0.25</td>
+      <td>0.20</td>
+      <td>0.41</td>
+      <td>0.05</td>
+      <td>0.71</td>
+      <td>0.27</td>
+      <td>0.30</td>
+      <td>0.28</td>
+      <td>0.09</td>
+      <td>2.76</td>
+      <td>73.60</td>
+      <td>246.0</td>
+      <td>8.501365e+09</td>
+      <td>3.636130e+07</td>
+      <td>3.117533e+07</td>
+      <td>441824.0</td>
+      <td>2.01</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2013-05-22 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>RUS</td>
+      <td>RUS.TO</td>
+      <td>Russel Metals Inc.</td>
+      <td>Industrials</td>
+      <td>Industrial Distribution</td>
+      <td>0.50</td>
+      <td>36.06</td>
+      <td>421586.0</td>
+      <td>1.14</td>
+      <td>2.44</td>
+      <td>0.78</td>
+      <td>1.38</td>
+      <td>10.48</td>
+      <td>24.69</td>
+      <td>28.88</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.57</td>
+      <td>368720.34</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>169.48</td>
+      <td>86</td>
+      <td>81</td>
+      <td>81</td>
+      <td>67</td>
+      <td>71</td>
+      <td>72</td>
+      <td>35.88</td>
+      <td>0.51</td>
+      <td>35.10</td>
+      <td>2.74</td>
+      <td>32.45</td>
+      <td>11.11</td>
+      <td>6.23</td>
+      <td>6.24</td>
+      <td>-0.14</td>
+      <td>-0.54</td>
+      <td>-0.56</td>
+      <td>-0.21</td>
+      <td>0.71</td>
+      <td>0.29</td>
+      <td>-0.04</td>
+      <td>-0.03</td>
+      <td>-0.08</td>
+      <td>0.79</td>
+      <td>31.32</td>
+      <td>110.0</td>
+      <td>2.087986e+09</td>
+      <td>6.310020e+07</td>
+      <td>6.249130e+07</td>
+      <td>2899206.0</td>
+      <td>18.25</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-13 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>DNTL</td>
+      <td>DNTL.TO</td>
+      <td>dentalcorp Holdings Ltd</td>
+      <td>Healthcare</td>
+      <td>Medical Care Facilities</td>
+      <td>0.63</td>
+      <td>9.60</td>
+      <td>177469.0</td>
+      <td>1.11</td>
+      <td>3.72</td>
+      <td>0.36</td>
+      <td>-0.10</td>
+      <td>-2.24</td>
+      <td>12.28</td>
+      <td>-9.26</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.44</td>
+      <td>159969.56</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>455.05</td>
+      <td>51</td>
+      <td>72</td>
+      <td>51</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>9.58</td>
+      <td>0.25</td>
+      <td>9.54</td>
+      <td>0.58</td>
+      <td>9.36</td>
+      <td>2.55</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.30</td>
+      <td>0.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.20</td>
+      <td>0.23</td>
+      <td>0.40</td>
+      <td>58.58</td>
+      <td>37.0</td>
+      <td>2.558314e+09</td>
+      <td>1.648510e+08</td>
+      <td>7.279477e+07</td>
+      <td>1077364.0</td>
+      <td>5.81</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2021-05-21 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>INE</td>
+      <td>INE.TO</td>
+      <td>Innergex Renewable Energy Inc.</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>0.41</td>
+      <td>14.77</td>
+      <td>500062.0</td>
+      <td>1.11</td>
+      <td>2.73</td>
+      <td>0.47</td>
+      <td>1.58</td>
+      <td>-7.63</td>
+      <td>-12.60</td>
+      <td>-25.18</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.89</td>
+      <td>451265.26</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>317.58</td>
+      <td>29</td>
+      <td>19</td>
+      <td>21</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>14.74</td>
+      <td>0.20</td>
+      <td>15.05</td>
+      <td>-1.86</td>
+      <td>15.71</td>
+      <td>-5.98</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.94</td>
+      <td>9.50</td>
+      <td>0.18</td>
+      <td>0.12</td>
+      <td>0.20</td>
+      <td>-0.06</td>
+      <td>0.18</td>
+      <td>0.24</td>
+      <td>0.07</td>
+      <td>21.44</td>
+      <td>38.54</td>
+      <td>130.0</td>
+      <td>3.971241e+09</td>
+      <td>2.040720e+08</td>
+      <td>1.433115e+08</td>
+      <td>6270465.0</td>
+      <td>9.25</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2007-12-07 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>NPI</td>
+      <td>NPI.TO</td>
+      <td>Northland Power Inc.</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>1.72</td>
+      <td>33.69</td>
+      <td>891225.0</td>
+      <td>1.10</td>
+      <td>1.76</td>
+      <td>0.59</td>
+      <td>1.63</td>
+      <td>-2.18</td>
+      <td>-10.59</td>
+      <td>-24.43</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.56</td>
+      <td>809985.32</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>280.13</td>
+      <td>51</td>
+      <td>22</td>
+      <td>23</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>33.21</td>
+      <td>1.43</td>
+      <td>33.69</td>
+      <td>-0.01</td>
+      <td>35.58</td>
+      <td>-5.31</td>
+      <td>1.75</td>
+      <td>1.55</td>
+      <td>0.11</td>
+      <td>0.62</td>
+      <td>2.38</td>
+      <td>0.14</td>
+      <td>0.30</td>
+      <td>0.02</td>
+      <td>0.03</td>
+      <td>0.04</td>
+      <td>0.04</td>
+      <td>6.77</td>
+      <td>42.69</td>
+      <td>244.0</td>
+      <td>9.386150e+09</td>
+      <td>2.268830e+08</td>
+      <td>2.269005e+08</td>
+      <td>2535498.0</td>
+      <td>3.55</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2003-10-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>TIXT</td>
+      <td>TIXT</td>
+      <td>TELUS International</td>
+      <td>Technology</td>
+      <td>Software—Infrastructure</td>
+      <td>1.27</td>
+      <td>30.27</td>
+      <td>118289.0</td>
+      <td>1.09</td>
+      <td>2.56</td>
+      <td>0.68</td>
+      <td>4.02</td>
+      <td>-3.04</td>
+      <td>6.06</td>
+      <td>-18.63</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.66</td>
+      <td>108553.12</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>586.80</td>
+      <td>47</td>
+      <td>63</td>
+      <td>48</td>
+      <td>35</td>
+      <td>94</td>
+      <td>91</td>
+      <td>29.66</td>
+      <td>2.07</td>
+      <td>29.63</td>
+      <td>2.16</td>
+      <td>29.32</td>
+      <td>3.25</td>
+      <td>1.56</td>
+      <td>1.54</td>
+      <td>0.11</td>
+      <td>0.20</td>
+      <td>0.15</td>
+      <td>0.12</td>
+      <td>0.11</td>
+      <td>0.06</td>
+      <td>0.13</td>
+      <td>0.09</td>
+      <td>0.13</td>
+      <td>10.35</td>
+      <td>82.12</td>
+      <td>127.0</td>
+      <td>6.006182e+09</td>
+      <td>6.600000e+07</td>
+      <td>6.369902e+07</td>
+      <td>903176.0</td>
+      <td>4.70</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2021-02-03 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>SJ</td>
+      <td>SJ.TO</td>
+      <td>Stella-Jones Inc.</td>
+      <td>Basic Materials</td>
+      <td>Lumber &amp; Wood Production</td>
+      <td>2.68</td>
+      <td>51.75</td>
+      <td>110333.0</td>
+      <td>1.05</td>
+      <td>2.18</td>
+      <td>1.06</td>
+      <td>4.80</td>
+      <td>4.25</td>
+      <td>5.66</td>
+      <td>29.28</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.21</td>
+      <td>104977.62</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>613.01</td>
+      <td>79</td>
+      <td>62</td>
+      <td>80</td>
+      <td>4</td>
+      <td>48</td>
+      <td>49</td>
+      <td>49.92</td>
+      <td>3.66</td>
+      <td>49.14</td>
+      <td>5.31</td>
+      <td>48.57</td>
+      <td>6.54</td>
+      <td>-0.57</td>
+      <td>-0.56</td>
+      <td>-0.42</td>
+      <td>0.11</td>
+      <td>-0.20</td>
+      <td>-0.01</td>
+      <td>-0.08</td>
+      <td>-0.07</td>
+      <td>0.06</td>
+      <td>0.07</td>
+      <td>-0.02</td>
+      <td>0.14</td>
+      <td>67.73</td>
+      <td>116.0</td>
+      <td>2.623919e+09</td>
+      <td>6.448560e+07</td>
+      <td>6.435281e+07</td>
+      <td>555827.0</td>
+      <td>3.21</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-11-29 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>UNS</td>
+      <td>UNS.TO</td>
+      <td>Uni-Select Inc.</td>
+      <td>Consumer Cyclical</td>
+      <td>Auto Parts</td>
+      <td>0.11</td>
+      <td>46.80</td>
+      <td>219023.0</td>
+      <td>1.03</td>
+      <td>2.44</td>
+      <td>1.51</td>
+      <td>-1.22</td>
+      <td>15.81</td>
+      <td>2.68</td>
+      <td>26.59</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.62</td>
+      <td>212992.94</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>185.84</td>
+      <td>89</td>
+      <td>53</td>
+      <td>81</td>
+      <td>9</td>
+      <td>32</td>
+      <td>48</td>
+      <td>45.50</td>
+      <td>2.86</td>
+      <td>43.45</td>
+      <td>7.71</td>
+      <td>41.23</td>
+      <td>13.51</td>
+      <td>1.68</td>
+      <td>1.42</td>
+      <td>7.33</td>
+      <td>6.94</td>
+      <td>1.56</td>
+      <td>0.22</td>
+      <td>0.08</td>
+      <td>0.36</td>
+      <td>0.39</td>
+      <td>NaN</td>
+      <td>0.07</td>
+      <td>0.18</td>
+      <td>45.06</td>
+      <td>37.0</td>
+      <td>9.945322e+08</td>
+      <td>4.379270e+07</td>
+      <td>3.958158e+07</td>
+      <td>218556.0</td>
+      <td>1.85</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-13 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>TRI</td>
+      <td>TRI.TO</td>
+      <td>Thomson Reuters Corp</td>
+      <td>Industrials</td>
+      <td>Specialty Business Services</td>
+      <td>1.18</td>
+      <td>167.76</td>
+      <td>353655.0</td>
+      <td>1.03</td>
+      <td>1.45</td>
+      <td>1.97</td>
+      <td>1.51</td>
+      <td>4.28</td>
+      <td>5.72</td>
+      <td>16.91</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.06</td>
+      <td>344943.72</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>449.50</td>
+      <td>80</td>
+      <td>63</td>
+      <td>77</td>
+      <td>94</td>
+      <td>88</td>
+      <td>52</td>
+      <td>165.52</td>
+      <td>1.35</td>
+      <td>163.94</td>
+      <td>2.33</td>
+      <td>159.91</td>
+      <td>4.91</td>
+      <td>-0.80</td>
+      <td>-0.80</td>
+      <td>0.61</td>
+      <td>0.27</td>
+      <td>0.20</td>
+      <td>0.28</td>
+      <td>0.03</td>
+      <td>0.04</td>
+      <td>0.05</td>
+      <td>0.03</td>
+      <td>0.04</td>
+      <td>67.81</td>
+      <td>24.34</td>
+      <td>664.0</td>
+      <td>7.575879e+10</td>
+      <td>4.793950e+08</td>
+      <td>1.550506e+08</td>
+      <td>1657360.0</td>
+      <td>4.41</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2008-06-04 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>MTL</td>
+      <td>MTL.TO</td>
+      <td>Mullen Group Ltd.</td>
+      <td>Industrials</td>
+      <td>Trucking</td>
+      <td>0.55</td>
+      <td>14.73</td>
+      <td>295958.0</td>
+      <td>1.02</td>
+      <td>2.20</td>
+      <td>0.27</td>
+      <td>3.44</td>
+      <td>2.65</td>
+      <td>-4.29</td>
+      <td>2.79</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.47</td>
+      <td>290279.14</td>
+      <td>True</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>304.43</td>
+      <td>75</td>
+      <td>32</td>
+      <td>64</td>
+      <td>99</td>
+      <td>52</td>
+      <td>50</td>
+      <td>14.48</td>
+      <td>1.75</td>
+      <td>14.35</td>
+      <td>2.65</td>
+      <td>14.40</td>
+      <td>2.27</td>
+      <td>1.01</td>
+      <td>1.02</td>
+      <td>0.31</td>
+      <td>0.13</td>
+      <td>-0.13</td>
+      <td>0.15</td>
+      <td>0.48</td>
+      <td>0.43</td>
+      <td>0.17</td>
+      <td>0.36</td>
+      <td>0.04</td>
+      <td>5.64</td>
+      <td>46.12</td>
+      <td>84.0</td>
+      <td>1.197723e+09</td>
+      <td>9.453220e+07</td>
+      <td>8.836958e+07</td>
+      <td>1394423.0</td>
+      <td>4.17</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-04-25 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>WSP</td>
+      <td>WSP.TO</td>
+      <td>WSP Global Inc</td>
+      <td>Industrials</td>
+      <td>Engineering &amp; Construction</td>
+      <td>1.18</td>
+      <td>176.06</td>
+      <td>132822.0</td>
+      <td>0.97</td>
+      <td>1.85</td>
+      <td>3.60</td>
+      <td>2.71</td>
+      <td>2.45</td>
+      <td>6.66</td>
+      <td>14.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.59</td>
+      <td>136984.06</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>572.02</td>
+      <td>74</td>
+      <td>65</td>
+      <td>74</td>
+      <td>84</td>
+      <td>48</td>
+      <td>53</td>
+      <td>172.98</td>
+      <td>1.78</td>
+      <td>171.92</td>
+      <td>2.41</td>
+      <td>168.58</td>
+      <td>4.44</td>
+      <td>0.33</td>
+      <td>0.28</td>
+      <td>0.86</td>
+      <td>0.60</td>
+      <td>0.29</td>
+      <td>0.12</td>
+      <td>0.24</td>
+      <td>0.23</td>
+      <td>0.14</td>
+      <td>0.21</td>
+      <td>0.10</td>
+      <td>0.60</td>
+      <td>55.44</td>
+      <td>237.0</td>
+      <td>1.832355e+10</td>
+      <td>1.175340e+08</td>
+      <td>7.835708e+07</td>
+      <td>230920.0</td>
+      <td>1.59</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2014-01-07 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>TSU</td>
+      <td>TSU.TO</td>
+      <td>Trisura Group Ltd</td>
+      <td>Financial Services</td>
+      <td>Insurance—Specialty</td>
+      <td>0.45</td>
+      <td>35.75</td>
+      <td>113443.0</td>
+      <td>0.97</td>
+      <td>4.00</td>
+      <td>1.41</td>
+      <td>3.12</td>
+      <td>-15.12</td>
+      <td>-19.72</td>
+      <td>5.55</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.59</td>
+      <td>117482.84</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>341.88</td>
+      <td>14</td>
+      <td>12</td>
+      <td>34</td>
+      <td>16</td>
+      <td>22</td>
+      <td>19</td>
+      <td>36.11</td>
+      <td>-0.99</td>
+      <td>37.47</td>
+      <td>-4.60</td>
+      <td>41.36</td>
+      <td>-13.57</td>
+      <td>-0.06</td>
+      <td>-0.09</td>
+      <td>-0.13</td>
+      <td>0.19</td>
+      <td>0.20</td>
+      <td>0.25</td>
+      <td>0.57</td>
+      <td>0.57</td>
+      <td>0.50</td>
+      <td>0.98</td>
+      <td>0.15</td>
+      <td>15.06</td>
+      <td>34.42</td>
+      <td>77.0</td>
+      <td>1.555633e+09</td>
+      <td>4.116520e+07</td>
+      <td>4.016530e+07</td>
+      <td>255748.0</td>
+      <td>2.38</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2017-10-03 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>BBDb</td>
+      <td>BBD-B.TO</td>
+      <td>Bombardier Inc</td>
+      <td>Industrials</td>
+      <td>Aerospace &amp; Defense</td>
+      <td>1.79</td>
+      <td>69.50</td>
+      <td>496599.0</td>
+      <td>0.96</td>
+      <td>4.78</td>
+      <td>2.47</td>
+      <td>2.00</td>
+      <td>6.92</td>
+      <td>33.99</td>
+      <td>125.28</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.64</td>
+      <td>517758.70</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>4040.72</td>
+      <td>83</td>
+      <td>85</td>
+      <td>94</td>
+      <td>50</td>
+      <td>54</td>
+      <td>95</td>
+      <td>67.63</td>
+      <td>2.76</td>
+      <td>65.56</td>
+      <td>6.01</td>
+      <td>61.36</td>
+      <td>13.26</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.43</td>
+      <td>0.53</td>
+      <td>0.62</td>
+      <td>1.33</td>
+      <td>-0.24</td>
+      <td>0.26</td>
+      <td>0.09</td>
+      <td>0.16</td>
+      <td>0.11</td>
+      <td>1.50</td>
+      <td>11.98</td>
+      <td>85.0</td>
+      <td>3.536835e+09</td>
+      <td>2.064330e+09</td>
+      <td>2.092117e+09</td>
+      <td>23206538.0</td>
+      <td>2.62</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>TFII</td>
+      <td>TFII.TO</td>
+      <td>TFI International Inc</td>
+      <td>Industrials</td>
+      <td>Trucking</td>
+      <td>0.83</td>
+      <td>172.40</td>
+      <td>195435.0</td>
+      <td>0.96</td>
+      <td>2.06</td>
+      <td>3.14</td>
+      <td>3.54</td>
+      <td>8.22</td>
+      <td>21.03</td>
+      <td>26.98</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.08</td>
+      <td>204300.84</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>400.50</td>
+      <td>85</td>
+      <td>79</td>
+      <td>86</td>
+      <td>99</td>
+      <td>52</td>
+      <td>50</td>
+      <td>169.51</td>
+      <td>1.70</td>
+      <td>165.94</td>
+      <td>3.89</td>
+      <td>153.65</td>
+      <td>12.21</td>
+      <td>0.86</td>
+      <td>0.97</td>
+      <td>0.16</td>
+      <td>0.54</td>
+      <td>-0.06</td>
+      <td>-0.08</td>
+      <td>0.07</td>
+      <td>-0.03</td>
+      <td>0.24</td>
+      <td>-0.04</td>
+      <td>-0.08</td>
+      <td>10.77</td>
+      <td>68.11</td>
+      <td>403.0</td>
+      <td>1.275179e+10</td>
+      <td>8.717980e+07</td>
+      <td>8.182257e+07</td>
+      <td>647338.0</td>
+      <td>4.26</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2003-10-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>AC</td>
+      <td>AC.TO</td>
+      <td>Air Canada</td>
+      <td>Industrials</td>
+      <td>Airlines</td>
+      <td>1.18</td>
+      <td>20.53</td>
+      <td>2221647.0</td>
+      <td>0.96</td>
+      <td>2.78</td>
+      <td>0.69</td>
+      <td>2.04</td>
+      <td>-10.54</td>
+      <td>7.71</td>
+      <td>16.58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.31</td>
+      <td>2325430.82</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>153.59</td>
+      <td>23</td>
+      <td>66</td>
+      <td>69</td>
+      <td>2</td>
+      <td>41</td>
+      <td>48</td>
+      <td>20.42</td>
+      <td>0.56</td>
+      <td>20.91</td>
+      <td>-1.84</td>
+      <td>21.27</td>
+      <td>-3.48</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.62</td>
+      <td>0.34</td>
+      <td>0.55</td>
+      <td>0.83</td>
+      <td>1.78</td>
+      <td>1.94</td>
+      <td>0.04</td>
+      <td>3.01</td>
+      <td>1.42</td>
+      <td>0.26</td>
+      <td>23.27</td>
+      <td>166.0</td>
+      <td>8.811357e+09</td>
+      <td>3.577490e+08</td>
+      <td>3.571624e+08</td>
+      <td>10966665.0</td>
+      <td>4.79</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2010-03-30 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>TA</td>
+      <td>TA.TO</td>
+      <td>TransAlta Corp</td>
+      <td>Utilities</td>
+      <td>Utilities—Independent Power Producers</td>
+      <td>1.03</td>
+      <td>11.79</td>
+      <td>563122.0</td>
+      <td>0.94</td>
+      <td>2.61</td>
+      <td>0.36</td>
+      <td>6.60</td>
+      <td>-5.00</td>
+      <td>-8.39</td>
+      <td>-1.59</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.75</td>
+      <td>598459.70</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>422.83</td>
+      <td>38</td>
+      <td>25</td>
+      <td>31</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>11.58</td>
+      <td>1.83</td>
+      <td>11.82</td>
+      <td>-0.22</td>
+      <td>12.21</td>
+      <td>-3.41</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.86</td>
+      <td>1.40</td>
+      <td>-0.74</td>
+      <td>0.08</td>
+      <td>0.09</td>
+      <td>0.00</td>
+      <td>0.03</td>
+      <td>-0.31</td>
+      <td>-0.14</td>
+      <td>0.20</td>
+      <td>74.33</td>
+      <td>182.0</td>
+      <td>3.337866e+09</td>
+      <td>2.694000e+08</td>
+      <td>2.530474e+08</td>
+      <td>3607907.0</td>
+      <td>6.11</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>SPB</td>
+      <td>SPB.TO</td>
+      <td>Superior Plus Corp</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Gas</td>
+      <td>0.35</td>
+      <td>11.42</td>
+      <td>555549.0</td>
+      <td>0.89</td>
+      <td>2.25</td>
+      <td>0.27</td>
+      <td>2.70</td>
+      <td>11.41</td>
+      <td>13.41</td>
+      <td>4.29</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.07</td>
+      <td>621835.46</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>226.44</td>
+      <td>87</td>
+      <td>74</td>
+      <td>68</td>
+      <td>83</td>
+      <td>31</td>
+      <td>17</td>
+      <td>11.18</td>
+      <td>2.18</td>
+      <td>10.96</td>
+      <td>4.19</td>
+      <td>10.97</td>
+      <td>4.08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.30</td>
+      <td>-0.21</td>
+      <td>0.90</td>
+      <td>1.29</td>
+      <td>0.41</td>
+      <td>-0.02</td>
+      <td>-0.04</td>
+      <td>0.07</td>
+      <td>0.07</td>
+      <td>19.91</td>
+      <td>21.91</td>
+      <td>86.0</td>
+      <td>2.295040e+09</td>
+      <td>1.760000e+08</td>
+      <td>1.408088e+08</td>
+      <td>2587947.0</td>
+      <td>3.65</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2001-03-16 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>TCLa</td>
+      <td>TCL-A.TO</td>
+      <td>Transcontinental Inc</td>
+      <td>Industrials</td>
+      <td>Specialty Business Services</td>
+      <td>0.13</td>
+      <td>15.43</td>
+      <td>136741.0</td>
+      <td>0.72</td>
+      <td>2.00</td>
+      <td>0.31</td>
+      <td>-1.09</td>
+      <td>2.12</td>
+      <td>-8.70</td>
+      <td>-6.20</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.00</td>
+      <td>189485.26</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>391.39</td>
+      <td>73</td>
+      <td>24</td>
+      <td>37</td>
+      <td>92</td>
+      <td>13</td>
+      <td>37</td>
+      <td>15.53</td>
+      <td>-0.66</td>
+      <td>15.39</td>
+      <td>0.25</td>
+      <td>15.27</td>
+      <td>1.03</td>
+      <td>-0.24</td>
+      <td>-0.24</td>
+      <td>0.06</td>
+      <td>-0.02</td>
+      <td>-0.09</td>
+      <td>0.05</td>
+      <td>0.18</td>
+      <td>0.08</td>
+      <td>0.03</td>
+      <td>NaN</td>
+      <td>0.00</td>
+      <td>0.29</td>
+      <td>56.55</td>
+      <td>100.0</td>
+      <td>1.774335e+09</td>
+      <td>7.311210e+07</td>
+      <td>7.416355e+07</td>
+      <td>2319971.0</td>
+      <td>14.56</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-05-08 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>RNW</td>
+      <td>RNW.TO</td>
+      <td>TransAlta Renewables Inc.</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>1.01</td>
+      <td>12.02</td>
+      <td>473671.0</td>
+      <td>0.71</td>
+      <td>2.27</td>
+      <td>0.31</td>
+      <td>4.98</td>
+      <td>-0.50</td>
+      <td>-15.71</td>
+      <td>-30.28</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.03</td>
+      <td>670889.04</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>158.64</td>
+      <td>59</td>
+      <td>15</td>
+      <td>14</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>11.74</td>
+      <td>2.36</td>
+      <td>11.80</td>
+      <td>1.90</td>
+      <td>11.83</td>
+      <td>1.61</td>
+      <td>2.33</td>
+      <td>2.32</td>
+      <td>0.56</td>
+      <td>1.14</td>
+      <td>0.00</td>
+      <td>0.15</td>
+      <td>0.21</td>
+      <td>0.26</td>
+      <td>0.31</td>
+      <td>-0.04</td>
+      <td>0.03</td>
+      <td>60.12</td>
+      <td>11.61</td>
+      <td>99.0</td>
+      <td>4.470575e+09</td>
+      <td>2.669000e+08</td>
+      <td>1.064317e+08</td>
+      <td>2943632.0</td>
+      <td>4.68</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2013-08-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>CTCa</td>
+      <td>CTC-A.TO</td>
+      <td>Canadian Tire Corp Ltd</td>
+      <td>Consumer Cyclical</td>
+      <td>Specialty Retail</td>
+      <td>0.79</td>
+      <td>171.34</td>
+      <td>191792.0</td>
+      <td>0.69</td>
+      <td>1.66</td>
+      <td>3.22</td>
+      <td>0.73</td>
+      <td>3.71</td>
+      <td>10.19</td>
+      <td>8.68</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.14</td>
+      <td>277407.44</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>201.55</td>
+      <td>78</td>
+      <td>70</td>
+      <td>69</td>
+      <td>7</td>
+      <td>4</td>
+      <td>2</td>
+      <td>169.81</td>
+      <td>0.90</td>
+      <td>167.43</td>
+      <td>2.34</td>
+      <td>159.66</td>
+      <td>7.31</td>
+      <td>-0.18</td>
+      <td>-0.18</td>
+      <td>-0.20</td>
+      <td>0.32</td>
+      <td>-0.37</td>
+      <td>0.01</td>
+      <td>-0.02</td>
+      <td>-0.02</td>
+      <td>0.07</td>
+      <td>0.01</td>
+      <td>0.01</td>
+      <td>1.38</td>
+      <td>30.99</td>
+      <td>262.0</td>
+      <td>1.199278e+10</td>
+      <td>5.738380e+07</td>
+      <td>5.591276e+07</td>
+      <td>1033088.0</td>
+      <td>5.58</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1986-01-02 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>VET</td>
+      <td>VET.TO</td>
+      <td>Vermilion Energy Inc.</td>
+      <td>Energy</td>
+      <td>Oil &amp; Gas E&amp;P</td>
+      <td>0.37</td>
+      <td>18.95</td>
+      <td>919554.0</td>
+      <td>0.68</td>
+      <td>3.08</td>
+      <td>0.63</td>
+      <td>3.67</td>
+      <td>-0.94</td>
+      <td>-26.89</td>
+      <td>-45.66</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.59</td>
+      <td>1346976.42</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>117.86</td>
+      <td>57</td>
+      <td>7</td>
+      <td>7</td>
+      <td>89</td>
+      <td>44</td>
+      <td>45</td>
+      <td>18.80</td>
+      <td>0.79</td>
+      <td>19.03</td>
+      <td>-0.40</td>
+      <td>20.11</td>
+      <td>-5.76</td>
+      <td>-0.20</td>
+      <td>-0.22</td>
+      <td>-1.00</td>
+      <td>-0.21</td>
+      <td>-0.24</td>
+      <td>0.21</td>
+      <td>0.80</td>
+      <td>0.06</td>
+      <td>0.57</td>
+      <td>-0.15</td>
+      <td>0.02</td>
+      <td>1.63</td>
+      <td>32.35</td>
+      <td>265.0</td>
+      <td>3.360288e+09</td>
+      <td>1.632000e+08</td>
+      <td>1.587544e+08</td>
+      <td>2857582.0</td>
+      <td>1.92</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-13 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>DFY</td>
+      <td>DFY.TO</td>
+      <td>Definity Financial Corp</td>
+      <td>Financial Services</td>
+      <td>Insurance—Property &amp; Casualty</td>
+      <td>0.17</td>
+      <td>35.81</td>
+      <td>88516.0</td>
+      <td>0.68</td>
+      <td>2.37</td>
+      <td>0.72</td>
+      <td>-0.31</td>
+      <td>3.29</td>
+      <td>-10.30</td>
+      <td>-3.97</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.84</td>
+      <td>129665.26</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>839.44</td>
+      <td>77</td>
+      <td>22</td>
+      <td>41</td>
+      <td>16</td>
+      <td>22</td>
+      <td>19</td>
+      <td>35.74</td>
+      <td>0.19</td>
+      <td>35.95</td>
+      <td>-0.38</td>
+      <td>36.79</td>
+      <td>-2.67</td>
+      <td>-0.50</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.19</td>
+      <td>NaN</td>
+      <td>0.15</td>
+      <td>0.13</td>
+      <td>NaN</td>
+      <td>0.13</td>
+      <td>NaN</td>
+      <td>0.10</td>
+      <td>0.13</td>
+      <td>12.12</td>
+      <td>25.0</td>
+      <td>3.314740e+09</td>
+      <td>1.159000e+08</td>
+      <td>1.088463e+08</td>
+      <td>77537.0</td>
+      <td>0.61</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2021-11-18 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>EIF</td>
+      <td>EIF.TO</td>
+      <td>Exchange Income Corporation</td>
+      <td>Industrials</td>
+      <td>Airlines</td>
+      <td>0.31</td>
+      <td>51.87</td>
+      <td>61227.0</td>
+      <td>0.56</td>
+      <td>1.98</td>
+      <td>1.15</td>
+      <td>2.21</td>
+      <td>-5.26</td>
+      <td>6.88</td>
+      <td>12.03</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.93</td>
+      <td>109076.14</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>325.06</td>
+      <td>37</td>
+      <td>65</td>
+      <td>71</td>
+      <td>2</td>
+      <td>41</td>
+      <td>48</td>
+      <td>51.60</td>
+      <td>0.52</td>
+      <td>52.26</td>
+      <td>-0.75</td>
+      <td>53.21</td>
+      <td>-2.52</td>
+      <td>0.27</td>
+      <td>0.17</td>
+      <td>0.08</td>
+      <td>0.56</td>
+      <td>0.24</td>
+      <td>0.36</td>
+      <td>0.35</td>
+      <td>0.25</td>
+      <td>0.22</td>
+      <td>0.23</td>
+      <td>0.15</td>
+      <td>6.24</td>
+      <td>6.10</td>
+      <td>61.0</td>
+      <td>1.701854e+09</td>
+      <td>3.824390e+07</td>
+      <td>3.545625e+07</td>
+      <td>501435.0</td>
+      <td>6.31</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2004-05-10 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>AQN</td>
+      <td>AQN.TO</td>
+      <td>Algonquin Power &amp; Utilities Corp</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>0.47</td>
+      <td>10.58</td>
+      <td>2500749.0</td>
+      <td>0.56</td>
+      <td>2.69</td>
+      <td>0.30</td>
+      <td>1.54</td>
+      <td>6.98</td>
+      <td>4.03</td>
+      <td>-41.22</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.17</td>
+      <td>4504084.76</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>151.60</td>
+      <td>83</td>
+      <td>57</td>
+      <td>18</td>
+      <td>27</td>
+      <td>25</td>
+      <td>6</td>
+      <td>10.48</td>
+      <td>0.99</td>
+      <td>10.30</td>
+      <td>2.67</td>
+      <td>9.82</td>
+      <td>7.74</td>
+      <td>5.52</td>
+      <td>5.64</td>
+      <td>-0.04</td>
+      <td>-0.06</td>
+      <td>-0.15</td>
+      <td>-0.10</td>
+      <td>0.26</td>
+      <td>0.16</td>
+      <td>0.18</td>
+      <td>0.08</td>
+      <td>0.10</td>
+      <td>0.07</td>
+      <td>46.76</td>
+      <td>473.0</td>
+      <td>6.697761e+09</td>
+      <td>6.834450e+08</td>
+      <td>6.828025e+08</td>
+      <td>12592235.0</td>
+      <td>2.08</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2003-10-09 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>ATD</td>
+      <td>ATD-A.TO</td>
+      <td>Alimentation Couche Tard Inc</td>
+      <td>Consumer Cyclical</td>
+      <td>Specialty Retail</td>
+      <td>0.15</td>
+      <td>65.18</td>
+      <td>789880.0</td>
+      <td>0.55</td>
+      <td>1.97</td>
+      <td>1.27</td>
+      <td>1.83</td>
+      <td>8.04</td>
+      <td>6.19</td>
+      <td>9.62</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.99</td>
+      <td>1427221.02</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>566.82</td>
+      <td>85</td>
+      <td>64</td>
+      <td>71</td>
+      <td>89</td>
+      <td>44</td>
+      <td>45</td>
+      <td>64.48</td>
+      <td>1.08</td>
+      <td>63.73</td>
+      <td>2.27</td>
+      <td>62.23</td>
+      <td>4.74</td>
+      <td>0.23</td>
+      <td>0.28</td>
+      <td>-0.12</td>
+      <td>0.02</td>
+      <td>-0.07</td>
+      <td>0.03</td>
+      <td>0.41</td>
+      <td>0.27</td>
+      <td>0.35</td>
+      <td>0.19</td>
+      <td>0.05</td>
+      <td>22.04</td>
+      <td>20.64</td>
+      <td>207.0</td>
+      <td>5.671187e+10</td>
+      <td>1.062020e+09</td>
+      <td>8.089760e+08</td>
+      <td>6182333.0</td>
+      <td>3.17</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-06 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>EMA</td>
+      <td>EMA.TO</td>
+      <td>Emera Incorporated</td>
+      <td>Utilities</td>
+      <td>Utilities—Regulated Electric</td>
+      <td>0.09</td>
+      <td>53.80</td>
+      <td>714177.0</td>
+      <td>0.54</td>
+      <td>1.77</td>
+      <td>0.97</td>
+      <td>-0.46</td>
+      <td>-0.55</td>
+      <td>2.81</td>
+      <td>-12.25</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.14</td>
+      <td>1330605.16</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>196.15</td>
+      <td>59</td>
+      <td>54</td>
+      <td>39</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>53.82</td>
+      <td>-0.03</td>
+      <td>53.86</td>
+      <td>-0.11</td>
+      <td>53.49</td>
+      <td>0.58</td>
+      <td>0.19</td>
+      <td>0.14</td>
+      <td>-0.01</td>
+      <td>0.09</td>
+      <td>0.11</td>
+      <td>0.06</td>
+      <td>0.22</td>
+      <td>0.18</td>
+      <td>0.37</td>
+      <td>-0.03</td>
+      <td>0.09</td>
+      <td>0.05</td>
+      <td>28.59</td>
+      <td>209.0</td>
+      <td>1.533244e+10</td>
+      <td>2.612000e+08</td>
+      <td>2.610015e+08</td>
+      <td>9912833.0</td>
+      <td>8.00</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>CU</td>
+      <td>CU.TO</td>
+      <td>Canadian Utilities Limited</td>
+      <td>Utilities</td>
+      <td>Utilities—Diversified</td>
+      <td>0.54</td>
+      <td>35.65</td>
+      <td>305963.0</td>
+      <td>0.53</td>
+      <td>1.63</td>
+      <td>0.66</td>
+      <td>-0.39</td>
+      <td>-1.55</td>
+      <td>-2.06</td>
+      <td>-11.41</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.80</td>
+      <td>581447.82</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>458.21</td>
+      <td>54</td>
+      <td>37</td>
+      <td>37</td>
+      <td>27</td>
+      <td>25</td>
+      <td>6</td>
+      <td>35.61</td>
+      <td>0.12</td>
+      <td>35.99</td>
+      <td>-0.94</td>
+      <td>36.70</td>
+      <td>-2.87</td>
+      <td>-0.22</td>
+      <td>-0.26</td>
+      <td>0.00</td>
+      <td>0.09</td>
+      <td>0.06</td>
+      <td>0.02</td>
+      <td>0.09</td>
+      <td>0.09</td>
+      <td>0.09</td>
+      <td>0.03</td>
+      <td>0.02</td>
+      <td>0.27</td>
+      <td>16.67</td>
+      <td>177.0</td>
+      <td>9.467708e+09</td>
+      <td>1.965340e+08</td>
+      <td>2.664268e+08</td>
+      <td>5520581.0</td>
+      <td>11.68</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2000-08-15 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>PRMW</td>
+      <td>PRMW.TO</td>
+      <td>Primo Water Corp</td>
+      <td>Consumer Defensive</td>
+      <td>Beverages—Non-Alcoholic</td>
+      <td>0.05</td>
+      <td>20.92</td>
+      <td>51960.0</td>
+      <td>0.49</td>
+      <td>2.18</td>
+      <td>0.56</td>
+      <td>-1.13</td>
+      <td>-0.43</td>
+      <td>-3.55</td>
+      <td>21.70</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.39</td>
+      <td>104981.12</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>1478.11</td>
+      <td>60</td>
+      <td>34</td>
+      <td>69</td>
+      <td>86</td>
+      <td>27</td>
+      <td>7</td>
+      <td>20.99</td>
+      <td>-0.35</td>
+      <td>21.08</td>
+      <td>-0.77</td>
+      <td>20.98</td>
+      <td>-0.28</td>
+      <td>-0.93</td>
+      <td>-0.93</td>
+      <td>0.71</td>
+      <td>0.24</td>
+      <td>0.17</td>
+      <td>0.28</td>
+      <td>0.06</td>
+      <td>0.06</td>
+      <td>0.08</td>
+      <td>0.02</td>
+      <td>0.04</td>
+      <td>3.27</td>
+      <td>89.32</td>
+      <td>305.0</td>
+      <td>3.282046e+09</td>
+      <td>1.597880e+08</td>
+      <td>1.551737e+08</td>
+      <td>1135666.0</td>
+      <td>12.38</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>BLX</td>
+      <td>BLX.TO</td>
+      <td>Boralex Inc</td>
+      <td>Utilities</td>
+      <td>Utilities—Renewable</td>
+      <td>0.92</td>
+      <td>37.47</td>
+      <td>125289.0</td>
+      <td>0.45</td>
+      <td>2.53</td>
+      <td>0.99</td>
+      <td>3.08</td>
+      <td>-2.47</td>
+      <td>-4.51</td>
+      <td>-20.23</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.89</td>
+      <td>280097.52</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>319.25</td>
+      <td>49</td>
+      <td>32</td>
+      <td>31</td>
+      <td>29</td>
+      <td>19</td>
+      <td>15</td>
+      <td>36.79</td>
+      <td>1.84</td>
+      <td>37.07</td>
+      <td>1.09</td>
+      <td>38.56</td>
+      <td>-2.82</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.29</td>
+      <td>-0.31</td>
+      <td>0.09</td>
+      <td>0.76</td>
+      <td>0.20</td>
+      <td>0.10</td>
+      <td>0.14</td>
+      <td>0.16</td>
+      <td>0.07</td>
+      <td>1.10</td>
+      <td>53.50</td>
+      <td>143.0</td>
+      <td>3.375139e+09</td>
+      <td>1.026190e+08</td>
+      <td>8.942194e+07</td>
+      <td>1467738.0</td>
+      <td>3.45</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1996-08-06 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>CSH_u</td>
+      <td>CSH-UN.TO</td>
+      <td>Chartwell Retirement Residences</td>
+      <td>Real Estate</td>
+      <td>REIT—Healthcare Facilities</td>
+      <td>0.64</td>
+      <td>9.40</td>
+      <td>222979.0</td>
+      <td>0.42</td>
+      <td>2.79</td>
+      <td>0.28</td>
+      <td>2.06</td>
+      <td>-4.18</td>
+      <td>14.63</td>
+      <td>-8.56</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.11</td>
+      <td>530458.92</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>433.59</td>
+      <td>41</td>
+      <td>74</td>
+      <td>55</td>
+      <td>31</td>
+      <td>34</td>
+      <td>35</td>
+      <td>9.28</td>
+      <td>1.29</td>
+      <td>9.37</td>
+      <td>0.28</td>
+      <td>9.29</td>
+      <td>1.23</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.04</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.53</td>
+      <td>38.96</td>
+      <td>93.0</td>
+      <td>2.883076e+09</td>
+      <td>2.304140e+08</td>
+      <td>2.300019e+08</td>
+      <td>4589158.0</td>
+      <td>8.58</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2005-12-19 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>QBRb</td>
+      <td>QBR-B.TO</td>
+      <td>Quebecor Inc Class B</td>
+      <td>Communication Services</td>
+      <td>Telecom Services</td>
+      <td>0.15</td>
+      <td>32.52</td>
+      <td>248044.0</td>
+      <td>0.41</td>
+      <td>1.90</td>
+      <td>0.65</td>
+      <td>0.74</td>
+      <td>1.63</td>
+      <td>9.02</td>
+      <td>15.52</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.54</td>
+      <td>598041.72</td>
+      <td>False</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>284.40</td>
+      <td>71</td>
+      <td>69</td>
+      <td>75</td>
+      <td>19</td>
+      <td>35</td>
+      <td>29</td>
+      <td>32.41</td>
+      <td>0.35</td>
+      <td>32.18</td>
+      <td>1.07</td>
+      <td>31.53</td>
+      <td>3.15</td>
+      <td>0.23</td>
+      <td>0.21</td>
+      <td>0.09</td>
+      <td>0.12</td>
+      <td>0.06</td>
+      <td>0.05</td>
+      <td>0.03</td>
+      <td>0.01</td>
+      <td>0.05</td>
+      <td>0.01</td>
+      <td>0.02</td>
+      <td>0.02</td>
+      <td>63.77</td>
+      <td>236.0</td>
+      <td>7.358858e+09</td>
+      <td>1.636740e+08</td>
+      <td>1.700847e+08</td>
+      <td>5589616.0</td>
+      <td>8.91</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>1995-01-12 14:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>DND</td>
+      <td>DND.TO</td>
+      <td>Dye &amp; Durham Ltd</td>
+      <td>Technology</td>
+      <td>Software—Infrastructure</td>
+      <td>1.49</td>
+      <td>19.08</td>
+      <td>91217.0</td>
+      <td>0.27</td>
+      <td>4.13</td>
+      <td>0.73</td>
+      <td>0.00</td>
+      <td>-13.67</td>
+      <td>41.33</td>
+      <td>37.86</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.88</td>
+      <td>334718.94</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>185.27</td>
+      <td>16</td>
+      <td>87</td>
+      <td>83</td>
+      <td>35</td>
+      <td>94</td>
+      <td>91</td>
+      <td>19.31</td>
+      <td>-1.17</td>
+      <td>19.82</td>
+      <td>-3.75</td>
+      <td>19.65</td>
+      <td>-2.91</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.31</td>
+      <td>1.64</td>
+      <td>1.00</td>
+      <td>1.72</td>
+      <td>2.25</td>
+      <td>NaN</td>
+      <td>1.31</td>
+      <td>0.64</td>
+      <td>0.30</td>
+      <td>18.87</td>
+      <td>72.39</td>
+      <td>87.0</td>
+      <td>1.980861e+09</td>
+      <td>6.914000e+07</td>
+      <td>6.201449e+07</td>
+      <td>1870786.0</td>
+      <td>7.68</td>
+      <td>0.0</td>
+      <td>Toronto</td>
+      <td>Canada</td>
+      <td>2020-07-17 13:30:00</td>
+      <td>canada</td>
+      <td>2023-03-07</td>
+      <td>Vo</td>
+      <td>Volume Gainers</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+            </section>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+    <div class="content has-text-centered">
+        <p>
+            <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+            is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+        </p>
+    </div>
+</footer>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bm/jq-3.6.0/jszip-2.5.0/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/datatables.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#data').DataTable(
+                {
+                    "scrollX": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copy', 'csv', 'excel', 'print'
+                    ]
+
+                }
+            );
+        });
+    </script>
+    
+</body>
+
+</html>

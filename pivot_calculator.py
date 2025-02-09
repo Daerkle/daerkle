@@ -60,16 +60,12 @@ class PivotCalculator:
             # Pivot-Punkte berechnen
             pivot = x / 4
             r1 = (x / 2) - data.low
-            r2 = data.high + (r1 - data.low)  # R2 nach DeMark Methode
             s1 = (x / 2) - data.high
-            s2 = data.low - (data.high - s1)  # S2 nach DeMark Methode
 
             return {
-                'R2': r2,
                 'R1': r1,
                 'P': pivot,
-                'S1': s1,
-                'S2': s2
+                'S1': s1
             }
         except Exception as e:
             print(f"Fehler bei Demark Pivot Berechnung: {str(e)}")
