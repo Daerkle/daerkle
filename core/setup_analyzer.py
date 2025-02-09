@@ -46,14 +46,16 @@ def check_demark_setup(
 
         # Prüfe Long Setup Bedingungen
         if 'R1' in demark_levels and 'R2' in standard_levels:
-            r1_triggered = demark_history['R1'][0]
+            r1_triggered = demark_history['R1'][0]  # Level wurde berührt
             price_above_r1_percent = ((current_price / demark_levels['R1']) - 1) * 100
+            # Long Setup ist aktiv wenn R1 berührt wurde oder Preis mind. 0.1% darüber
             long_active = r1_triggered or price_above_r1_percent >= 0.1
 
         # Prüfe Short Setup Bedingungen
         if 'S1' in demark_levels and 'S2' in standard_levels:
-            s1_triggered = demark_history['S1'][0]
+            s1_triggered = demark_history['S1'][0]  # Level wurde berührt
             price_below_s1_percent = ((current_price / demark_levels['S1']) - 1) * 100
+            # Short Setup ist aktiv wenn S1 berührt wurde oder Preis mind. 0.1% darunter
             short_active = s1_triggered or price_below_s1_percent <= -0.1
 
         # Aktiviere nur das Setup mit der stärkeren Tendenz

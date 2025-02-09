@@ -20,58 +20,101 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 st.set_page_config(
     page_title="Daerkle",
     page_icon="",
-    layout="wide",
-    initial_sidebar_state="expanded"  # Sidebar standardmäßig eingeblendet
+    layout="wide"
 )
 
-# CSS für ein modernes Layout, kompakte Watchlist, Sidebar & Tabellen-Styling
+# CSS für ein responsives Layout
 st.markdown("""
     <style>
+        /* Responsive Base Styles */
+        * {
+            box-sizing: border-box;
+        }
+        
         /* Header */
         .app-header {
             font-family: 'Helvetica Neue', sans-serif;
             text-align: center;
-            padding: 20px 0;
+            padding: clamp(10px, 3vw, 20px) 0;
             background: linear-gradient(90deg, #1f2937, #4b5563);
             color: white;
-            font-size: 2em;
-            margin-bottom: 20px;
+            font-size: clamp(1.5em, 4vw, 2em);
+            margin-bottom: clamp(10px, 3vw, 20px);
         }
-        /* Pivot- und Setup-Tabellen */
-        .pivot-table {
+
+        /* Responsive Grid Settings */
+        .stApp {
+            max-width: 100% !important;
+            padding: 1rem !important;
+        }
+        /* Responsive Tabellen */
+        .pivot-table,
+        .setup-table {
             width: 100%;
-            font-size: 0.9em;
+            font-size: clamp(0.75em, 2vw, 0.9em);
             border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
         }
+        
+        @media (max-width: 768px) {
+            .pivot-table,
+            .setup-table {
+                font-size: 0.75em;
+            }
+            
+            .pivot-table th,
+            .pivot-table td,
+            .setup-table th,
+            .setup-table td {
+                padding: 4px;
+                white-space: nowrap;
+            }
+            
+            /* Horizontales Scrollen für Tabellen auf mobilen Geräten */
+            .setup-table,
+            .pivot-table {
+                max-width: 100vw;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Sticky erste Spalte für bessere Übersicht */
+            .pivot-table th:first-child,
+            .pivot-table td:first-child,
+            .setup-table th:first-child,
+            .setup-table td:first-child {
+                position: sticky;
+                left: 0;
+                background: var(--background-color);
+                z-index: 1;
+            }
+        }
+        
         .pivot-table th,
         .pivot-table td {
-            padding: 4px 8px;
+            padding: clamp(4px, 1vw, 8px);
             text-align: right;
         }
+        
         .pivot-table th:first-child,
         .pivot-table td:first-child {
             text-align: left;
         }
-        .pivot-table tr:hover {
+        
+        .pivot-table tr:hover,
+        .setup-table tr:hover {
             background-color: rgba(255,255,255,0.05);
         }
-        .setup-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
+        
         .setup-table th {
             background-color: rgba(255,255,255,0.05);
-            padding: 8px 12px;
+            padding: clamp(4px, 1vw, 12px);
             text-align: left;
         }
+        
         .setup-table td {
-            padding: 8px 12px;
+            padding: clamp(4px, 1vw, 12px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .setup-table tr:hover {
-            background-color: rgba(255,255,255,0.02);
         }
         .timeframe-badge {
             display: inline-block;
@@ -82,31 +125,74 @@ st.markdown("""
             font-weight: 500;
             font-size: 0.8em;
         }
-        /* Kompakte Watchlist-Buttons: Die Symbol-Buttons sind ganz normal klickbar ... */
+        /* Responsive Watchlist Buttons */
         div.stButton > button {
             background-color: transparent;
             border: none;
-            padding: 4px 8px;
+            padding: clamp(4px, 1vw, 8px);
             margin: 0;
             width: 100%;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             cursor: pointer;
+            min-height: 44px; /* Touch-freundliche Größe */
         }
+
         div.stButton > button:hover {
             background-color: rgba(255,255,255,0.1);
         }
-        /* Wir fassen jede Zeile in einen Container */
+
+        /* Responsiver Watchlist Container */
         .watchlist-row {
             margin-bottom: 1px;
+            display: flex;
+            align-items: center;
         }
-        /* Den Lösch-Button (mit Schlüssel "del_") verstecken – er soll nur bei Hover erscheinen */
-        button[data-key^="del_"] {
-            opacity: 0;
-            transition: opacity 0.2s;
+
+        /* Mobile Anpassungen */
+        @media (max-width: 768px) {
+            /* Watchlist Styling */
+            .watchlist-row {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 4px;
+                background-color: rgba(255,255,255,0.02);
+                border-radius: 4px;
+            }
+
+            /* Lösch-Button immer sichtbar auf Mobilgeräten */
+            button[data-key^="del_"] {
+                opacity: 1 !important;
+                padding: 8px !important;
+                min-width: 44px;
+                border-radius: 4px;
+            }
+
+            /* Chart Anpassungen */
+            .tradingview-widget-container {
+                height: 60vh !important;
+                min-height: 300px;
+            }
+
+            /* Spalten auf volle Breite */
+            .stTabs [data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
+            }
+            .stTabs [data-testid="stHorizontalBlock"] > div {
+                width: 100% !important;
+            }
         }
-        .watchlist-row:hover button[data-key^="del_"] {
-            opacity: 1;
+
+        /* Desktop Styling */
+        @media (min-width: 769px) {
+            button[data-key^="del_"] {
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .watchlist-row:hover button[data-key^="del_"] {
+                opacity: 1;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -119,20 +205,6 @@ def safe_rerun():
         st.experimental_rerun()
     else:
         st._rerun()
-
-# ---------------------------
-# Integration der Navigationsleiste in der Sidebar
-# ---------------------------
-with st.sidebar:
-    # Lies HTML und CSS aus dem Ordner "components"
-    nav_html_path = os.path.join("components", "nav_bar.html")
-    with open(nav_html_path, "r", encoding="utf-8") as f:
-        nav_html = f.read()
-    nav_css_path = os.path.join("components", "nav_bar.css")
-    with open(nav_css_path, "r", encoding="utf-8") as f:
-        nav_css = f.read()
-    nav_component = f"<style>{nav_css}</style>{nav_html}"
-    components.html(nav_component, height=800, scrolling=False)
 
 # ---------------------------
 # Datenbankpfad festlegen
@@ -185,12 +257,26 @@ TIMEFRAME_LABELS = {
 }
 
 # ---------------------------
+# Hilfsfunktion zur Erkennung mobiler Geräte
+# ---------------------------
+def is_mobile():
+    # Streamlit bietet keine direkte Möglichkeit zur Geräteerkennung
+    # Wir nutzen einen Parameter in der URL als Workaround
+    return st.query_params.get("view", "") == "mobile"
+
+# ---------------------------
 # Header anzeigen im Hauptbereich
 # ---------------------------
 # ---------------------------
-# Layout: Hauptinhalt (links) und Watchlist (rechts)
+# Responsives Layout basierend auf Bildschirmbreite
 # ---------------------------
-col_main, col_watchlist = st.columns([3, 1])
+# Mobile Layout: Watchlist oben, Hauptinhalt darunter
+if is_mobile():
+    col_watchlist = st.container()
+    col_main = st.container()
+# Desktop Layout: Hauptinhalt links, Watchlist rechts
+else:
+    col_main, col_watchlist = st.columns([3, 1])
 
 # --- RECHTE SPALTE: WATCHLIST ---
 with col_watchlist:
@@ -325,6 +411,65 @@ with col_main:
                         background-color: #EF4444;
                     }
                 </style>
+                <style>
+                    .setup-table {
+                        width: 100%;
+                        table-layout: fixed;
+                        border-collapse: collapse;
+                    }
+                    .setup-table th,
+                    .setup-table td {
+                        padding: 8px;
+                        text-align: center;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        vertical-align: middle;
+                        border-bottom: 1px solid rgba(255,255,255,0.1);
+                    }
+                    /* Zeiteinheit Spalte */
+                    .setup-table th:first-child,
+                    .setup-table td:first-child {
+                        width: 80px;
+                        text-align: left;
+                        padding-left: 8px;
+                    }
+                    /* Setup Spalte */
+                    .setup-table th:nth-child(2),
+                    .setup-table td:nth-child(2) {
+                        width: 100px;
+                        text-align: left;
+                        padding-left: 8px;
+                    }
+                    /* Trigger und Target Spalten */
+                    .setup-table th:nth-child(3),
+                    .setup-table td:nth-child(3),
+                    .setup-table th:nth-child(4),
+                    .setup-table td:nth-child(4) {
+                        width: 120px;
+                    }
+                    /* Status Spalte */
+                    .setup-table th:nth-child(5),
+                    .setup-table td:nth-child(5) {
+                        width: 80px;
+                    }
+                    /* Distanz Spalte */
+                    .setup-table th:nth-child(6),
+                    .setup-table td:nth-child(6) {
+                        width: 90px;
+                    }
+                    /* Header Styling */
+                    .setup-table th {
+                        background-color: rgba(255,255,255,0.05);
+                        font-weight: 500;
+                        padding: 8px;
+                        font-size: 0.9em;
+                    }
+                    /* Hover Effekt */
+                    .setup-table tr:hover {
+                        background-color: rgba(255,255,255,0.02);
+                    }
+                </style>
                 <table class="setup-table">
                     <tr>
                         <th>Zeiteinheit</th>
@@ -349,12 +494,12 @@ with col_main:
                     distance_class = 'positive' if distance_value > 0 else 'negative'
                     st.markdown(f"""
                     <tr class="setup-active long">
-                        <td><span class="timeframe-badge">{label}</span></td>
-                        <td><span class="setup-badge long">🔼 Long Setup</span></td>
-                        <td>R1 ({setups['long']['trigger']:.2f})</td>
-                        <td>R2 ({setups['long']['target']:.2f})</td>
-                        <td><span style="color: #10B981">● Aktiv</span></td>
-                        <td><span class="setup-distance {distance_class}">{setups['long']['distance']}</span></td>
+                        <td style="text-align: left;"><span class="timeframe-badge">{label}</span></td>
+                        <td style="text-align: left;"><span class="setup-badge long">🔼 Long Setup</span></td>
+                        <td style="text-align: center;">R1 ({setups['long']['trigger']:.2f})</td>
+                        <td style="text-align: center;">R2 ({setups['long']['target']:.2f})</td>
+                        <td style="text-align: center;"><span style="color: #10B981">● Aktiv</span></td>
+                        <td style="text-align: center;"><span class="setup-distance {distance_class}">{setups['long']['distance']}</span></td>
                     </tr>
                     """, unsafe_allow_html=True)
                 if setups['short']['active']:
@@ -363,12 +508,12 @@ with col_main:
                     distance_class = 'positive' if distance_value > 0 else 'negative'
                     st.markdown(f"""
                     <tr class="setup-active short">
-                        <td><span class="timeframe-badge">{label}</span></td>
-                        <td><span class="setup-badge short">🔽 Short Setup</span></td>
-                        <td>S1 ({setups['short']['trigger']:.2f})</td>
-                        <td>S2 ({setups['short']['target']:.2f})</td>
-                        <td><span style="color: #EF4444">● Aktiv</span></td>
-                        <td><span class="setup-distance {distance_class}">{setups['short']['distance']}</span></td>
+                        <td style="text-align: left;"><span class="timeframe-badge">{label}</span></td>
+                        <td style="text-align: left;"><span class="setup-badge short">🔽 Short Setup</span></td>
+                        <td style="text-align: center;">S1 ({setups['short']['trigger']:.2f})</td>
+                        <td style="text-align: center;">S2 ({setups['short']['target']:.2f})</td>
+                        <td style="text-align: center;"><span style="color: #EF4444">● Aktiv</span></td>
+                        <td style="text-align: center;"><span class="setup-distance {distance_class}">{setups['short']['distance']}</span></td>
                     </tr>
                     """, unsafe_allow_html=True)
             if not active_setups_found:
