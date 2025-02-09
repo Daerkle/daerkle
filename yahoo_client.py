@@ -11,9 +11,6 @@ class YahooClient:
         "1d": "1d",     # Tägliche Daten
         "1w": "1wk",    # Wöchentliche Daten
         "1m": "1mo",    # Monatliche Daten
-        "3m": "1mo",    # Quartal (nutze monatliche Daten)
-        "6m": "1mo",    # Halbjahr (nutze monatliche Daten)
-        "1y": "1mo"     # Jahr (nutze monatliche Daten)
     }
     
     def __init__(self):
@@ -23,69 +20,71 @@ class YahooClient:
             "1d": timedelta(minutes=5),    # 5 Minuten Cache für Tagesdaten
             "1w": timedelta(minutes=15),   # 15 Minuten Cache für Wochendaten
             "1m": timedelta(minutes=30),   # 30 Minuten Cache für Monatsdaten
-            "3m": timedelta(hours=1),      # 1 Stunde Cache für Quartalsdaten
-            "6m": timedelta(hours=1),      # 1 Stunde Cache für Halbjahressdaten
-            "1y": timedelta(hours=1)       # 1 Stunde Cache für Jahresdaten
         }
         self.timezone = pytz.timezone('Europe/Berlin')
 
-    def get_current_period_start(self, timeframe: str) -> datetime:
-        """Ermittelt den Start der aktuellen Periode."""
+    def get_last_trading_day(self) -> datetime:
+        """Ermittelt den letzten Handelstag."""
+        now = datetime.now(self.timezone)
+        
+        # Wenn heute Sonntag (6) oder Samstag (5)
+        if now.weekday() == 6:  # Sonntag
+            return (now - timedelta(days=2)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+        elif now.weekday() == 5:  # Samstag
+            return (now - timedelta(days=1)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+        else:
+            # Wenn vor Marktöffnung (15:30 DE Zeit), dann vorheriger Tag
+            if now.hour < 15 or (now.hour == 15 and now.minute < 30):
+                return (now - timedelta(days=1)).replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+            return now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    def get_period_info(self, timeframe: str) -> str:
+        """Gibt Informationen über die aktuelle Periode zurück."""
         now = datetime.now(self.timezone)
         
         if timeframe == "1d":
-            # Aktueller Tag
-            return now.replace(hour=0, minute=0, second=0, microsecond=0)
+            return f"Tag: {now.strftime('%d.%m.%Y')}"
         
         elif timeframe == "1w":
-            # Aktuelle Woche (Montag)
-            return (now - timedelta(days=now.weekday())).replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
+            week_start = (now - timedelta(days=now.weekday()))
+            week_end = week_start + timedelta(days=6)
+            week_number = now.isocalendar()[1]
+            return f"KW {week_number}: {week_start.strftime('%d.%m')} - {week_end.strftime('%d.%m.%Y')}"
         
-        elif timeframe == "1m":
-            # Aktueller Monat
-            return now.replace(
-                day=1, hour=0, minute=0, second=0, microsecond=0
-            )
+        else:  # "1m"
+            return f"Monat: {now.strftime('%B %Y')}"
+
+    def get_current_period_start(self, timeframe: str) -> datetime:
+        """Ermittelt den Start der aktuellen Periode."""
+        last_trading_day = self.get_last_trading_day()
         
-        elif timeframe == "3m":
-            # Aktuelles Quartal
-            quarter_month = (now.month - 1) // 3 * 3 + 1
-            return now.replace(
-                month=quarter_month, day=1,
-                hour=0, minute=0, second=0, microsecond=0
-            )
+        if timeframe == "1d":
+            # Letzter Handelstag
+            return last_trading_day
         
-        elif timeframe == "6m":
-            # Aktuelles Halbjahr
-            half_year_month = (now.month - 1) // 6 * 6 + 1
-            return now.replace(
-                month=half_year_month, day=1,
-                hour=0, minute=0, second=0, microsecond=0
-            )
+        elif timeframe == "1w":
+            # Aktuelle oder letzte vollständige Handelswoche
+            week_start = last_trading_day - timedelta(days=last_trading_day.weekday())
+            return week_start
         
-        else:  # "1y"
-            # Aktuelles Jahr
-            return now.replace(
-                month=1, day=1,
-                hour=0, minute=0, second=0, microsecond=0
-            )
+        else:  # "1m"
+            # Aktueller oder letzter vollständiger Handelsmonat
+            return last_trading_day.replace(day=1)
 
     def get_lookback_period(self, timeframe: str) -> str:
         """Bestimmt den Lookback-Zeitraum basierend auf der Zeiteinheit."""
         if timeframe == "1d":
-            return "5d"
+            return "60d"  # Mehr Tage für bessere historische Analyse
         elif timeframe == "1w":
-            return "1mo"
-        elif timeframe == "1m":
-            return "3mo"
-        elif timeframe == "3m":
             return "6mo"
-        elif timeframe == "6m":
-            return "1y"
-        else:  # "1y"
-            return "2y"
+        else:  # "1m"
+            return "12mo"
 
     def get_data(
         self, 
@@ -97,7 +96,7 @@ class YahooClient:
         
         Args:
             symbol: Trading Symbol (z.B. 'AAPL')
-            timeframe: Zeiteinheit ('1d', '1w', '1m', '3m', '6m', '1y')
+            timeframe: Zeiteinheit ('1d', '1w', '1m')
             
         Returns:
             DataFrame mit OHLC-Daten oder None bei Fehler
@@ -137,10 +136,7 @@ class YahooClient:
                 else:
                     df.index = df.index.tz_localize('UTC').tz_convert(self.timezone)
                 
-                # Nur Daten ab Periodenbeginn
-                df = df[df.index >= period_start]
-                
-                print(f"Gefilterte Daten Shape: {df.shape}")
+                print(f"Verfügbare Daten Shape: {df.shape}")
                 
                 if not df.empty:
                     # Debug-Ausgabe der OHLC-Werte

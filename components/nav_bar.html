@@ -1,0 +1,41 @@
+<!-- components/nav_bar.html -->
+<div id="nav-bar">
+  <div id="nav-header">
+    <a id="nav-title" href="/">
+      <i class="fas fa-chart-bar"></i>
+      <span>Trading Tools</span>
+    </a>
+  </div>
+  
+  <div id="nav-content">
+    <a href="/" class="nav-button active">
+      <i class="fas fa-chart-pie"></i>
+      <span>Pivot Analyzer</span>
+    </a>
+    <a href="/components/scanner_placeholder.html" class="nav-button">
+      <i class="fas fa-search"></i>
+      <span>Market Scanner</span>
+    </a>
+  </div>
+
+  <div id="nav-footer">
+    <div id="nav-footer-heading">
+      <div id="nav-footer-avatar">
+        <img src="https://avatars.githubusercontent.com/u/0" alt="Trading Avatar">
+      </div>
+      <div id="nav-footer-titlebox">
+        <a id="nav-footer-title" href="#">Trader</a>
+        <span id="nav-footer-subtitle">Pro</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Mark current page as active
+document.querySelectorAll('.nav-button').forEach(button => {
+  if (window.location.pathname === button.getAttribute('href')) {
+    button.classList.add('active');
+  }
+});
+</script>
