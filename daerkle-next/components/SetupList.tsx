@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { SetupAnalysis, SetupFilters } from '@/types/setup';
+import { SetupAnalysis, SetupFilters, StockData } from '@/types/setup';
 
 interface SetupListProps {
   symbol: string;
 }
 
 export default function SetupList({ symbol }: SetupListProps) {
-  const [setups, setSetups] = useState<SetupAnalysis[]>([]);
+  const [stockData, setStockData] = useState<StockData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<SetupFilters>({
     quality: ['A+', 'A', 'B'],
     type: ['long', 'short'],
@@ -18,33 +19,81 @@ export default function SetupList({ symbol }: SetupListProps) {
   });
 
   useEffect(() => {
-    const fetchSetups = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`/api/stock-data?symbol=${symbol}`);
-        const data = await response.json();
-        if (data.setups) {
-          setSetups(data.setups);
+        setError(null);
+        const [stockResponse, setupResponse] = await Promise.all([
+          fetch(`/api/stock-data?symbol=${symbol}`),
+          fetch(`/api/pivot-analysis?symbol=${symbol}`)
+        ]);
+
+        if (!stockResponse.ok || !setupResponse.ok) {
+          throw new Error('Failed to fetch data');
         }
+
+        const stockData = await stockResponse.json();
+        const setupData = await setupResponse.json();
+        
+        setStockData({
+          ...stockData,
+          setups: setupData.setups
+        });
       } catch (error) {
-        console.error('Error fetching setups:', error);
+        console.error('Error fetching data:', error);
+        setError('Failed to load setups');
       }
     };
 
-    fetchSetups();
+    if (symbol) {
+      fetchData();
+    }
   }, [symbol]);
 
-  const filteredSetups = setups.filter(setup => {
-    return filters.quality.includes(setup.quality) &&
+  const filteredSetups = stockData?.setups?.filter((setup: SetupAnalysis) => {
+    return setup.quality !== 'avoid' && 
+           filters.quality.includes(setup.quality) &&
            filters.type.includes(setup.type) &&
            setup.rr >= filters.minRR &&
            setup.probability >= filters.minProbability &&
            setup.volumeBuzz >= filters.minVolumeBuzz &&
            filters.timeframes.includes(setup.timeframe) &&
            filters.setupTypes.includes(setup.subType);
-  });
+  }) || [];
+
+  if (error) {
+    return (
+      <div className="p-4 text-red-600 bg-red-50 rounded">
+        {error}
+      </div>
+    );
+  }
+
+  if (!stockData) {
+    return (
+      <div className="p-4 text-gray-600">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
+      {/* Stock Info */}
+      <div className="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm">
+        <div>
+          <h2 className="text-lg font-semibold">{stockData.symbol}</h2>
+          <p className="text-sm text-gray-600">
+            Volume: {stockData.volume.toLocaleString()}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-xl font-bold">${stockData.price.toFixed(2)}</p>
+          <p className={`text-sm ${stockData.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {stockData.change >= 0 ? '+' : ''}{stockData.change.toFixed(2)}%
+          </p>
+        </div>
+      </div>
+
       {/* Filter Controls */}
       <div className="flex flex-wrap gap-2 mb-4">
         <select 
@@ -104,132 +153,138 @@ export default function SetupList({ symbol }: SetupListProps) {
 
       {/* Setup Cards */}
       <div className="grid gap-4">
-        {filteredSetups.map((setup, index) => (
-          <div 
-            key={index}
-            className={`
-              p-3 rounded-lg shadow-sm border-l-4
-              ${setup.type === 'long' 
-                ? 'border-l-green-500 bg-green-50' 
-                : 'border-l-red-500 bg-red-50'
-              }
-            `}
-          >
-            {/* Header */}
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <span className={`
-                  text-xs font-semibold px-2 py-1 rounded
-                  ${setup.quality === 'A+' ? 'bg-purple-200 text-purple-800' :
-                    setup.quality === 'A' ? 'bg-blue-200 text-blue-800' :
-                    'bg-gray-200 text-gray-800'}
-                `}>
-                  {setup.quality}
-                </span>
-                <span className="ml-2 text-sm font-medium">
-                  {setup.type.toUpperCase()} - {setup.subType.replace('_', ' ')}
-                </span>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-gray-500">{setup.timeframe}</span>
-                <div className={`text-xs ${
-                  setup.trendDirection === 'up' ? 'text-green-600' :
-                  setup.trendDirection === 'down' ? 'text-red-600' :
-                  'text-gray-600'
-                }`}>
-                  Trend: {setup.trendDirection}
+        {filteredSetups.length === 0 ? (
+          <div className="p-4 text-gray-600 text-center bg-gray-50 rounded">
+            No setups found matching your criteria
+          </div>
+        ) : (
+          filteredSetups.map((setup, index) => (
+            <div 
+              key={index}
+              className={`
+                p-3 rounded-lg shadow-sm border-l-4
+                ${setup.type === 'long' 
+                  ? 'border-l-green-500 bg-green-50' 
+                  : 'border-l-red-500 bg-red-50'
+                }
+              `}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <span className={`
+                    text-xs font-semibold px-2 py-1 rounded
+                    ${setup.quality === 'A+' ? 'bg-purple-200 text-purple-800' :
+                      setup.quality === 'A' ? 'bg-blue-200 text-blue-800' :
+                      'bg-gray-200 text-gray-800'}
+                  `}>
+                    {setup.quality}
+                  </span>
+                  <span className="ml-2 text-sm font-medium">
+                    {setup.type.toUpperCase()} - {setup.subType.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-gray-500">{setup.timeframe}</span>
+                  <div className={`text-xs ${
+                    setup.trendDirection === 'up' ? 'text-green-600' :
+                    setup.trendDirection === 'down' ? 'text-red-600' :
+                    'text-gray-600'
+                  }`}>
+                    Trend: {setup.trendDirection}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Main Info */}
-            <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
-              <div>
-                <div className="text-gray-600">Entry</div>
-                <div className="font-medium">{setup.entry.toFixed(2)}</div>
+              {/* Main Info */}
+              <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
+                <div>
+                  <div className="text-gray-600">Entry</div>
+                  <div className="font-medium">${setup.entry.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-gray-600">Target</div>
+                  <div className="font-medium">${setup.target.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-gray-600">Stop Loss</div>
+                  <div className="font-medium">${setup.stopLoss.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-gray-600">R/R</div>
+                  <div className="font-medium">{setup.rr.toFixed(2)}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-gray-600">Target</div>
-                <div className="font-medium">{setup.target.toFixed(2)}</div>
-              </div>
-              <div>
-                <div className="text-gray-600">Stop Loss</div>
-                <div className="font-medium">{setup.stopLoss.toFixed(2)}</div>
-              </div>
-              <div>
-                <div className="text-gray-600">R/R</div>
-                <div className="font-medium">{setup.rr.toFixed(2)}</div>
-              </div>
-            </div>
 
-            {/* Trailing Stop */}
-            {setup.trailingStop && (
-              <div className="mb-2 text-xs">
-                <span className="text-gray-600">Trailing Stop @ 1R:</span>
-                <span className="ml-1 font-medium">{setup.trailingStop.toFixed(2)}</span>
-              </div>
-            )}
+              {/* Trailing Stop */}
+              {setup.trailingStop && (
+                <div className="mb-2 text-xs">
+                  <span className="text-gray-600">Trailing Stop @ 1R:</span>
+                  <span className="ml-1 font-medium">${setup.trailingStop.toFixed(2)}</span>
+                </div>
+              )}
 
-            {/* Additional Info */}
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="flex items-center">
-                <div className={`w-2 h-2 rounded-full mr-1
-                  ${setup.probability >= 60 ? 'bg-green-500' :
-                    setup.probability >= 50 ? 'bg-yellow-500' : 'bg-red-500'}
-                `} />
-                <span>{setup.probability}% Prob</span>
-              </div>
-              <div>
-                <span className={setup.volumeBuzz >= 50 ? 'text-green-600' : 'text-gray-600'}>
-                  {setup.volumeBuzz}% Vol
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-600">{setup.bestTime}</span>
-              </div>
-            </div>
-
-            {/* Confirmations */}
-            {setup.confirmations && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {Object.entries(setup.confirmations).map(([key, value]) => (
-                  <span key={key} className={`
-                    text-xs px-2 py-0.5 rounded
-                    ${value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
-                  `}>
-                    {key.replace('_', ' ')}: {value ? '✓' : '✗'}
+              {/* Additional Info */}
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="flex items-center">
+                  <div className={`w-2 h-2 rounded-full mr-1
+                    ${setup.probability >= 60 ? 'bg-green-500' :
+                      setup.probability >= 50 ? 'bg-yellow-500' : 'bg-red-500'}
+                  `} />
+                  <span>{setup.probability}% Prob</span>
+                </div>
+                <div>
+                  <span className={setup.volumeBuzz >= 50 ? 'text-green-600' : 'text-gray-600'}>
+                    {setup.volumeBuzz}% Vol
                   </span>
-                ))}
+                </div>
+                <div>
+                  <span className="text-gray-600">{setup.bestTime}</span>
+                </div>
               </div>
-            )}
 
-            {/* Indicators */}
-            <div className="mt-2 flex gap-2">
-              {setup.cluster && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                  Cluster
-                </span>
+              {/* Confirmations */}
+              {setup.confirmations && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {Object.entries(setup.confirmations).map(([key, value]) => (
+                    <span key={key} className={`
+                      text-xs px-2 py-0.5 rounded
+                      ${value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+                    `}>
+                      {key.replace('_', ' ')}: {value ? '✓' : '✗'}
+                    </span>
+                  ))}
+                </div>
               )}
-              {setup.divergence && (
-                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
-                  Divergence
-                </span>
-              )}
-              {setup.repeatedTests > 1 && (
-                <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
-                  {setup.repeatedTests}x Tested
-                </span>
+
+              {/* Indicators */}
+              <div className="mt-2 flex gap-2">
+                {setup.cluster && (
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                    Cluster
+                  </span>
+                )}
+                {setup.divergence && (
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
+                    Divergence
+                  </span>
+                )}
+                {setup.repeatedTests > 1 && (
+                  <span className="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
+                    {setup.repeatedTests}x Tested
+                  </span>
+                )}
+              </div>
+
+              {/* Additional Targets */}
+              {setup.additionalTargets?.length > 0 && (
+                <div className="mt-2 text-xs text-gray-600">
+                  Additional Targets: {setup.additionalTargets.map(t => t ? `$${t.toFixed(2)}` : '-').join(', ')}
+                </div>
               )}
             </div>
-
-            {/* Additional Targets */}
-            {setup.additionalTargets?.length > 0 && (
-              <div className="mt-2 text-xs text-gray-600">
-                Additional Targets: {setup.additionalTargets.map(t => t?.toFixed(2)).join(', ')}
-              </div>
-            )}
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

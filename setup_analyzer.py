@@ -48,6 +48,60 @@ class SetupAnalyzer:
         self.timeframe = timeframe
         self.tolerance = 0.005  # 0.5% tolerance for level tests
         self.volume_ma = df["Volume"].rolling(window=20).mean()
+        self.rsi = self.calculate_rsi()
+        self.repeated_tests = {}  # Speichert die Anzahl der Tests pro Level
+        self.best_times = self.analyze_best_times()
+
+    def calculate_rsi(self, periods: int = 14) -> pd.Series:
+        """Berechnet den RSI-Indikator"""
+        delta = self.df['Close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=periods).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=periods).mean()
+        rs = gain / loss
+        return 100 - (100 / (1 + rs))
+
+    def analyze_best_times(self) -> Dict[str, str]:
+        """Analysiert die besten Handelszeiten basierend auf historischen Daten"""
+        success_times = {
+            'long': [],
+            'short': []
+        }
+        
+        for i in range(len(self.df) - 1):
+            if self.df['Close'].iloc[i+1] > self.df['Close'].iloc[i]:
+                time = pd.to_datetime(self.df.index[i]).strftime('%H:%M')
+                success_times['long'].append(time)
+            else:
+                time = pd.to_datetime(self.df.index[i]).strftime('%H:%M')
+                success_times['short'].append(time)
+        
+        return {
+            'long': max(set(success_times['long']), key=success_times['long'].count) if success_times['long'] else 'N/A',
+            'short': max(set(success_times['short']), key=success_times['short'].count) if success_times['short'] else 'N/A'
+        }
+
+    def check_divergence(self) -> bool:
+        """Prüft auf Divergenz zwischen Preis und RSI"""
+        if len(self.df) < 2:
+            return False
+            
+        price_higher = self.df['Close'].iloc[-1] > self.df['Close'].iloc[-2]
+        rsi_higher = self.rsi.iloc[-1] > self.rsi.iloc[-2]
+        return price_higher != rsi_higher
+
+    def check_cluster(self, level: float) -> bool:
+        """Prüft ob ein Level Teil eines Clusters ist"""
+        levels = self.calculate_pivot_levels()
+        nearby_levels = [l for l in levels.values() if abs(l - level) / level < 0.01]
+        return len(nearby_levels) >= 2
+
+    def update_level_tests(self, level: float):
+        """Aktualisiert die Anzahl der Tests eines Levels"""
+        level_key = f"{level:.2f}"
+        if level_key not in self.repeated_tests:
+            self.repeated_tests[level_key] = 0
+        self.repeated_tests[level_key] += 1
+        return self.repeated_tests[level_key]
         
     def calculate_pivot_levels(self) -> Dict[str, float]:
         """Calculate pivot levels for the current bar"""
@@ -102,21 +156,52 @@ class SetupAnalyzer:
             target = levels["P"]  # Target at pivot
             rr = (target - entry) / (entry - stop_loss)
             
+            # Zusätzliche Analysen
             volume_confirmed = self.check_volume_confirmation(self.df["Volume"].iloc[-1])
+            cluster = self.check_cluster(s1)
+            divergence = self.check_divergence()
+            repeated_tests = self.update_level_tests(s1)
+            trend = self.calculate_trend_direction()
+            best_time = self.best_times['long']
+            
+            # Quality basierend auf Bestätigungen
+            quality = SetupQuality.B
+            if volume_confirmed and cluster:
+                quality = SetupQuality.A_PLUS
+            elif volume_confirmed or cluster:
+                quality = SetupQuality.A
+            
+            # Wahrscheinlichkeit basierend auf Bestätigungen
+            probability = 55  # Basis
+            if volume_confirmed: probability += 5
+            if cluster: probability += 5
+            if divergence: probability += 5
+            if repeated_tests > 2: probability += 5
+            if trend == "up": probability += 5
             
             return Setup(
                 type=SetupType.LONG,
                 sub_type=SetupSubType.PIVOT_BOUNCE,
-                quality=SetupQuality.A if volume_confirmed else SetupQuality.B,
+                quality=quality,
                 entry=entry,
                 stop_loss=stop_loss,
                 target=target,
-                probability=65 if volume_confirmed else 55,
+                probability=min(probability, 90),  # Max 90%
                 rr=rr,
                 volume_buzz=((self.df["Volume"].iloc[-1] / self.volume_ma.iloc[-1]) - 1) * 100,
                 timeframe=self.timeframe,
-                trend_direction=self.calculate_trend_direction(),
-                confirmations={"volume": volume_confirmed}
+                trend_direction=trend,
+                cluster=cluster,
+                divergence=divergence,
+                repeated_tests=repeated_tests,
+                best_time=best_time,
+                confirmations={
+                    "volume": volume_confirmed,
+                    "trend": trend == "up",
+                    "cluster": cluster,
+                    "divergence": divergence,
+                    "multiple_tests": repeated_tests > 2
+                }
             )
         return None
 
@@ -136,21 +221,52 @@ class SetupAnalyzer:
             target = levels["P"]  # Target at pivot
             rr = (entry - target) / (stop_loss - entry)
             
+            # Zusätzliche Analysen
             volume_confirmed = self.check_volume_confirmation(self.df["Volume"].iloc[-1])
+            cluster = self.check_cluster(r1)
+            divergence = self.check_divergence()
+            repeated_tests = self.update_level_tests(r1)
+            trend = self.calculate_trend_direction()
+            best_time = self.best_times['short']
+            
+            # Quality basierend auf Bestätigungen
+            quality = SetupQuality.B
+            if volume_confirmed and cluster:
+                quality = SetupQuality.A_PLUS
+            elif volume_confirmed or cluster:
+                quality = SetupQuality.A
+            
+            # Wahrscheinlichkeit basierend auf Bestätigungen
+            probability = 55  # Basis
+            if volume_confirmed: probability += 5
+            if cluster: probability += 5
+            if divergence: probability += 5
+            if repeated_tests > 2: probability += 5
+            if trend == "down": probability += 5
             
             return Setup(
                 type=SetupType.SHORT,
                 sub_type=SetupSubType.FALSE_BREAKOUT,
-                quality=SetupQuality.A if volume_confirmed else SetupQuality.B,
+                quality=quality,
                 entry=entry,
                 stop_loss=stop_loss,
                 target=target,
-                probability=70 if volume_confirmed else 60,
+                probability=min(probability, 90),  # Max 90%
                 rr=rr,
                 volume_buzz=((self.df["Volume"].iloc[-1] / self.volume_ma.iloc[-1]) - 1) * 100,
                 timeframe=self.timeframe,
-                trend_direction=self.calculate_trend_direction(),
-                confirmations={"volume": volume_confirmed}
+                trend_direction=trend,
+                cluster=cluster,
+                divergence=divergence,
+                repeated_tests=repeated_tests,
+                best_time=best_time,
+                confirmations={
+                    "volume": volume_confirmed,
+                    "trend": trend == "down",
+                    "cluster": cluster,
+                    "divergence": divergence,
+                    "multiple_tests": repeated_tests > 2
+                }
             )
         return None
 

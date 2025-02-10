@@ -82,7 +82,7 @@ export default function PivotLevels({ symbol }: PivotLevelsProps) {
       try {
         debug('Fetching analysis for symbol:', symbol);
         setLoading(true);
-        const response = await fetch(`/api/pivot-analysis?symbol=${symbol}`);
+        const response = await fetch(`/api/pivot-levels?symbol=${symbol}`);
         debug('Response status:', response.status);
         
         if (!response.ok) {
@@ -92,12 +92,15 @@ export default function PivotLevels({ symbol }: PivotLevelsProps) {
         const responseData = await response.json();
         debug('Received data:', responseData);
         
-        if (!responseData.pivots) {
-          debug('No pivot data in response');
+        if (!responseData.pivots || !responseData.setups) {
+          debug('Invalid response format');
           throw new Error('Invalid response format');
         }
         
-        setData(responseData);
+        setData({
+          pivots: responseData.pivots,
+          setups: responseData.setups
+        });
       } catch (err) {
         const error = err instanceof Error ? err.message : 'An error occurred';
         debug('Error:', error);

@@ -8,6 +8,14 @@ export interface PivotLevels {
   s3: number;
 }
 
+export interface StockData {
+  symbol: string;
+  price: number;
+  change: number;
+  volume: number;
+  setups?: SetupAnalysis[];
+}
+
 export interface SetupAnalysis {
   type: 'long' | 'short';
   subType: 'pivot_bounce' | 'breakout' | 'support_confirmation' | 'resistance_rejection' | 'support_breakdown' | 'resistance_failure';
@@ -36,6 +44,7 @@ export interface SetupAnalysis {
     risingLows?: boolean;
     multipleTests?: boolean;
     fallingHighs?: boolean;
+    cluster?: boolean;  // Hinzugefügt
   };
 }
 

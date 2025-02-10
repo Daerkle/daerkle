@@ -1,5 +1,8 @@
 {
+  "/api/pivot-analysis/route": "app/api/pivot-analysis/route.js",
   "/page": "app/page.js",
-  "/setups/page": "app/setups/page.js",
-  "/api/stock-data/route": "app/api/stock-data/route.js"
+  "/api/pivot-levels/route": "app/api/pivot-levels/route.js",
+  "/api/stock-data/route": "app/api/stock-data/route.js",
+  "/api/watchlist/route": "app/api/watchlist/route.js",
+  "/setups/page": "app/setups/page.js"
 }

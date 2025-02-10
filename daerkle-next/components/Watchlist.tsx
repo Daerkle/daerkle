@@ -33,18 +33,25 @@ export default function Watchlist({ onSymbolSelect, selectedSymbol }: WatchlistP
   const [loading, setLoading] = useState(false);
   const { close } = useSidebar();
 
-  // Load saved symbols on mount (client-side only)
+  // Load watchlist from backend API on mount
   useEffect(() => {
-    const savedItems = localStorage.getItem('watchlist');
-    if (savedItems) {
-      setItems(JSON.parse(savedItems));
-    }
+    const fetchWatchlist = async () => {
+      try {
+        const response = await fetch('/api/watchlist');
+        if (!response.ok) throw new Error('Failed to fetch watchlist');
+        const data = await response.json();
+        setItems(data.symbols.map((symbol: string) => ({ 
+          symbol, 
+          name: symbol,
+          loading: true 
+        })));
+      } catch (error) {
+        console.error('Error loading watchlist:', error);
+        toast.error('Fehler beim Laden der Watchlist');
+      }
+    };
+    fetchWatchlist();
   }, []);
-
-  // Save changes to localStorage
-  useEffect(() => {
-    localStorage.setItem('watchlist', JSON.stringify(items));
-  }, [items]);
 
   // Update stock data periodically
   useEffect(() => {
@@ -91,22 +98,48 @@ export default function Watchlist({ onSymbolSelect, selectedSymbol }: WatchlistP
     return () => clearInterval(interval);
   }, [items.length]);
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSymbol || items.some(item => item.symbol === newSymbol)) {
       return;
     }
 
-    setItems(prev => [...prev, { 
-      symbol: newSymbol, 
-      name: newSymbol,
-      loading: true 
-    }]);
-    setNewSymbol('');
+    try {
+      const response = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol: newSymbol })
+      });
+      
+      if (!response.ok) throw new Error('Failed to add symbol');
+      
+      setItems(prev => [...prev, { 
+        symbol: newSymbol, 
+        name: newSymbol,
+        loading: true 
+      }]);
+      setNewSymbol('');
+    } catch (error) {
+      console.error('Error adding symbol:', error);
+      toast.error('Fehler beim Hinzufügen des Symbols');
+    }
   };
 
-  const handleRemove = (symbol: string) => {
-    setItems(prev => prev.filter(item => item.symbol !== symbol));
+  const handleRemove = async (symbol: string) => {
+    try {
+      const response = await fetch('/api/watchlist', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol })
+      });
+      
+      if (!response.ok) throw new Error('Failed to remove symbol');
+      
+      setItems(prev => prev.filter(item => item.symbol !== symbol));
+    } catch (error) {
+      console.error('Error removing symbol:', error);
+      toast.error('Fehler beim Entfernen des Symbols');
+    }
   };
 
   const handleSelect = (symbol: string) => {

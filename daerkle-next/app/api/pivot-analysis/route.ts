@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import { SetupAnalysis } from '@/types/setup';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,15 +10,16 @@ export async function GET(request: Request) {
   }
 
   console.log('[API] GET /api/pivot-analysis', { symbol });
-  console.log('[API] Fetching from Python backend...');
 
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/api/pivot-analysis?symbol=${symbol}`);
-    const setups: SetupAnalysis[] = response.data.setups;
+    // Hole die Daten von der stock-data Route
+    const response = await axios.get(`http://localhost:3000/api/stock-data?symbol=${symbol}`);
+    const data = response.data;
 
+    // Extrahiere nur die Setup-Daten
     return NextResponse.json({
       symbol,
-      setups
+      setups: data.setups
     });
   } catch (error) {
     console.log('[API] Error:', error);
