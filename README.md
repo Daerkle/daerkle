@@ -1,137 +1,98 @@
-# Daerkle
+# Daerkle Trading Analysis
 
-Eine Streamlit-App zur Analyse von Pivot-Punkten mit TradingView Integration und historischer Überprüfung.
+Eine Handelsanalyse-Plattform, die Pivot-Punkte, DeMark-Setups und technische Analysen kombiniert.
+
+## Installation
+
+### Backend (Python)
+
+1. Python-Abhängigkeiten installieren:
+```bash
+pip install -r requirements.txt
+```
+
+2. FastAPI-Server starten:
+```bash
+python api_server.py
+```
+Der Server läuft dann auf http://localhost:8000
+
+### Frontend (Next.js)
+
+1. In das Frontend-Verzeichnis wechseln:
+```bash
+cd daerkle-next
+```
+
+2. NPM-Abhängigkeiten installieren:
+```bash
+npm install
+```
+
+3. Frontend-Server starten:
+```bash
+npm run dev
+```
+Die Anwendung ist dann unter http://localhost:3000 erreichbar.
 
 ## Features
 
-- TradingView Charts Integration
-- Automatische Berechnung von Standard und Demark Pivot-Punkten
-- Live-Kursdaten und Handelsvolumen in der Watchlist
-- Unterstützung für verschiedene Zeiteinheiten (Tag bis Jahr)
-- Historische Überprüfung von erreichten Levels
-- Persistente Datenbank für Watchlist und Level-Historie
+- Echtzeit Kurs-Charts mit TradingView-Integration
+- Pivot-Level Analyse:
+  - Standard Pivot-Punkte (R1-R5, PP, S1-S5)
+  - DeMark Pivot-Punkte
+  - Historische Level-Tests
+- Setup-Analyse:
+  - Long/Short Setups für verschiedene Zeitrahmen
+  - DeMark Setup-Status
+  - Automatische Setup-Erkennung
+- Watchlist:
+  - Symbol-Verwaltung
+  - Echtzeit-Kurse und Indikatoren
+  - Schnelle Navigation
 
-## Installation & Start
+## Komponenten
 
-### Lokale Installation
+### Python-Backend
 
-1. Repository klonen:
-```bash
-git clone https://github.com/yourusername/pivot-plotter-pro.git
-cd pivot-plotter-pro
-```
+- `api_server.py`: FastAPI-Server für Datenanalyse
+- `yahoo_client.py`: Yahoo Finance Integration
+- `pivot_calculator.py`: Pivot-Berechnungen
+- `core/setup_analyzer.py`: Setup-Analysen
+- `core/pivot_base.py`: Basis-Pivot-Funktionen
 
-2. Dependencies installieren:
-```bash
-pip install -r requirements.txt
-```
+### Next.js Frontend
 
-3. App starten:
-```bash
-streamlit run app.py
-```
+- `app/page.tsx`: Hauptseite mit Layout
+- `contexts/SymbolContext.tsx`: Symbol-State Management
+- `components/`:
+  - `Chart.tsx`: TradingView Chart Integration
+  - `PivotLevels.tsx`: Pivot-Level Anzeige
+  - `SetupList.tsx`: Setup-Übersicht
+  - `Watchlist.tsx`: Symbol-Verwaltung
 
-### Docker Installation
+## API-Endpunkte
 
-1. Container bauen und starten:
-```bash
-docker-compose up --build
-```
+- `/api/stock-data`: OHLC-Daten
+- `/api/pivot-analysis`: Pivot- und Setup-Analyse
+- `/api/watchlist`: Watchlist-Verwaltung
 
-2. App im Browser öffnen:
-```
-http://localhost:8501
-```
+## Entwicklung
 
-## Streamlit Cloud Deployment
+### Backend erweitern
 
-1. Fork dieses Repository auf GitHub
+1. Neue Analysen in `core/` implementieren
+2. FastAPI-Endpunkt in `api_server.py` hinzufügen
+3. Tests schreiben und ausführen
 
-2. Auf [share.streamlit.io](https://share.streamlit.io) gehen:
-   - Mit GitHub anmelden
-   - "New app" klicken
-   - Repository auswählen
-   - Branch auswählen (main)
-   - Haupt-Python-Datei auswählen (app.py)
-   - "Deploy!" klicken
+### Frontend erweitern
 
-Die App wird automatisch deployed und ist über eine öffentliche URL erreichbar.
+1. Neue Komponente in `components/` erstellen
+2. Route in `app/` hinzufügen falls nötig
+3. API-Integration implementieren
+4. TypeScript-Typen definieren
 
-## Lokale Entwicklung
+## Known Issues
 
-### Projektstruktur
-
-```
-pivot-plotter-pro/
-├── app.py                  # Hauptanwendung
-├── requirements.txt        # Python Dependencies
-├── .streamlit/
-│   └── config.toml        # Streamlit Konfiguration
-└── src/
-    └── pivot_plotter_pro/
-        ├── core/          # Core Funktionalität
-        │   └── pivot_calculator.py
-        ├── data/          # Datenhandling
-        │   ├── database.py
-        │   └── yahoo_client.py
-        └── utils/         # Hilfsfunktionen
-            └── helpers.py
-```
-
-### Entwicklungsumgebung
-
-1. Virtual Environment erstellen:
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-```
-
-2. Dependencies installieren:
-```bash
-pip install -r requirements.txt
-```
-
-3. App im Debug-Modus starten:
-```bash
-streamlit run app.py --server.runOnSave=true
-```
-
-## Benutzung
-
-1. Symbole zur Watchlist hinzufügen (z.B. AAPL, MSFT, GOOGL)
-2. Symbol aus der Watchlist auswählen
-3. TradingView Chart und Pivot-Punkte werden automatisch angezeigt
-4. Verschiedene Zeiteinheiten über die Tabs auswählen
-5. Erreichte Pivot-Punkte werden grün markiert
-
-## Datenbank
-
-Die App nutzt SQLite für die persistente Speicherung:
-- Watchlist
-- Berechnete Pivot-Punkte
-- Historie der erreichten Levels
-
-Die Datenbank wird automatisch erstellt.
-
-## Updates & Wartung
-
-1. Code aktualisieren:
-```bash
-git pull origin main
-```
-
-2. Dependencies aktualisieren:
-```bash
-pip install -r requirements.txt --upgrade
-```
-
-## Support
-
-Bei Fragen oder Problemen:
-1. GitHub Issues erstellen
-2. Pull Requests sind willkommen
-
-## Lizenz
-
-MIT License
+- Watchlist wird nur beim Start synchronisiert
+- Setup-Analyse benötigt mehr historische Daten für präzisere Ergebnisse

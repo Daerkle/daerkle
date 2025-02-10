@@ -12,9 +12,17 @@ import tempfile
 import warnings
 from core.pivot_base import check_pivot_status
 from core.setup_analyzer import analyze_timeframes_setups
+from fastapi import FastAPI, HTTPException
+import logging
 
 # Warnungen (z. B. von yfinance) unterdrücken
 warnings.filterwarnings('ignore', category=FutureWarning)
+
+# FastAPI App erstellen
+app = FastAPI()
+
+# Logger einrichten
+logger = logging.getLogger(__name__)
 
 # Seitentitel und Layout setzen
 st.set_page_config(
@@ -288,11 +296,15 @@ def safe_rerun():
 # ---------------------------
 # Datenbankpfad festlegen
 # ---------------------------
-if os.getenv('STREAMLIT_CLOUD'):
-    DB_PATH = os.path.join(tempfile.gettempdir(), 'pivot_plotter.db')
+if os.getenv('VERCEL_ENV') or os.getenv('STREAMLIT_CLOUD'):
+    # Verwende temporäres Verzeichnis für Vercel/Cloud-Deployment
+    DB_PATH = os.path.join(tempfile.gettempdir(), 'watchlist.db')
 else:
-    DB_PATH = os.path.join('data', 'pivot_plotter.db')
-    os.makedirs('data', exist_ok=True)
+    # Lokaler Entwicklungspfad
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'watchlist.db')
+
+# Initialisiere die Datenbank
+db = Database(DB_PATH)
 
 # ---------------------------
 # Funktionen zur Speicherung des zuletzt geöffneten Symbols
@@ -317,6 +329,20 @@ if 'db' not in st.session_state:
     st.session_state.db = Database(DB_PATH)
 if 'selected_symbol' not in st.session_state or st.session_state.selected_symbol is None:
     st.session_state.selected_symbol = load_last_symbol()
+if 'active_page' not in st.session_state:
+    st.session_state.active_page = 'pivot'
+
+# Navigation CSS und HTML laden
+with open('components/nav_bar.css') as f:
+    nav_css = f.read()
+with open('components/nav_bar.html') as f:
+    nav_html = f.read()
+
+# CSS für die Navigation einbinden
+st.markdown(f"<style>{nav_css}</style>", unsafe_allow_html=True)
+
+# Navigation anzeigen
+st.markdown(nav_html, unsafe_allow_html=True)
 
 def handle_symbol_submit():
     """Behandelt die Symbol-Eingabe."""
@@ -353,9 +379,14 @@ def is_mobile():
 if is_mobile():
     col_watchlist = st.container()
     col_main = st.container()
-# Desktop Layout: Hauptinhalt links, Watchlist rechts
 else:
     col_main, col_watchlist = st.columns([3, 1])
+    if is_mobile():
+        col_watchlist = st.container()
+        col_main = st.container()
+    # Desktop Layout: Hauptinhalt links, Watchlist rechts
+    else:
+        col_main, col_watchlist = st.columns([3, 1])
 
 # --- RECHTE SPALTE: WATCHLIST ---
 with col_watchlist:
@@ -763,3 +794,30 @@ with col_main:
                         st.info("Keine Daten verfügbar für diesen Zeitraum.")
     else:
         st.info("Bitte wähle ein Symbol aus der Watchlist aus.")
+
+@app.get("/api/stock-data")
+async def get_stock_data(symbol: str, timeframe: str = "1d"):
+    """Gibt die Kursdaten für ein Symbol zurück"""
+    logger.debug(f"GET /api/stock-data - symbol: {symbol}, timeframe: {timeframe}")
+    try:
+        df = st.session_state.yahoo_client.get_data(symbol, timeframe)
+        if df is None:
+            logger.error(f"Symbol {symbol} nicht gefunden")
+            raise HTTPException(status_code=404, detail=f"Symbol {symbol} nicht gefunden")
+        
+        # DataFrame in eine Liste von Dictionaries umwandeln
+        data = []
+        for index, row in df.iterrows():
+            data.append({
+                "date": index.isoformat(),
+                "open": float(row["Open"]),
+                "high": float(row["High"]),
+                "low": float(row["Low"]),
+                "close": float(row["Close"]),
+                "volume": int(row["Volume"])
+            })
+        
+        return data
+    except Exception as e:
+        logger.error(f"Fehler in get_stock_data: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

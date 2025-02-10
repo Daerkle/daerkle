@@ -129,6 +129,15 @@ class YahooClient:
             # DataFrame aufbereiten
             if not df.empty:
                 df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
+                # Stelle explizit die Datentypen sicher
+                df['Open'] = df['Open'].astype(float)
+                df['High'] = df['High'].astype(float)
+                df['Low'] = df['Low'].astype(float)
+                df['Close'] = df['Close'].astype(float)
+                df['Volume'] = df['Volume'].astype(int)
+                
+                # Berechne die tägliche prozentuale Änderung korrekt
+                df['PctChange'] = df['Close'].pct_change() * 100
                 
                 # Timezone konvertieren
                 if df.index.tz is not None:
